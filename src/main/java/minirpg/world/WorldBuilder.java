@@ -1,33 +1,39 @@
 package minirpg.world;
 
 public class WorldBuilder {
-    private Tile[][] tiles;
+    private Tile[][] terrain;
+    private Tile[][] interactables;
     private int width;
     private int height;
 
     public WorldBuilder (int width, int height) {
         this.width = width;
         this.height = height;
-        tiles = new Tile[width][height];
+        terrain = new Tile[width][height];
+        interactables = new Tile[width][height];
     }
 
     private void clearWorld () {
-        tiles = new Tile[width][height];
+        terrain = new Tile[width][height];
+        interactables = new Tile[width][height];
     }
 
-    private void populateRandomly () {
+
+
+
+
+    private void randomTerrain () {
         for (int x=0; x<width; x++) {
             for (int y=0; y<height; y++) {
-                if (Math.random() < 0.5) {
-                    tiles[x][y] = Tile.FLOOR;
-                } else {
-                    tiles[x][y] = Tile.WALL;
-                }
+                if (Math.random() < 0.5)
+                    terrain[x][y] = Tile.DIRT;
+                else
+                    terrain[x][y] = Tile.WATER;
             }
         }
     }
 
-    private void smoothWorld () {
+    private void smoothTerrain () {
         Tile[][] smootherTiles = new Tile[width][height];
         
         for (int x=0; x<width; x++) {
@@ -42,35 +48,76 @@ public class WorldBuilder {
                         if (checkX < 0 || checkX >= width || checkY < 0 || checkY >= height)
                             continue;
 
-                        if (tiles[x+dx][y+dy] == Tile.FLOOR)
+                        if (terrain[x+dx][y+dy] == Tile.DIRT)
                             sumOfNeighbours++;
                     }
                 }
 
+                // Bias towards dirt
                 if (sumOfNeighbours > 4) {
-                    smootherTiles[x][y] = Tile.FLOOR;
+                    smootherTiles[x][y] = Tile.DIRT;
                 } else {
-                    smootherTiles[x][y] = Tile.WALL;
+                    smootherTiles[x][y] = Tile.WATER;
                 }
             }
         }
 
-        tiles = smootherTiles;
+        terrain = smootherTiles;
     }
 
 
 
-    //
-    // World Types
-    //
-    public World generateCaveWorld () {
+
+
+    private void fillInteractablesEmpty () {
+        for (int x=0; x<width; x++) {
+            for (int y=0; y<height; y++) {
+                interactables[x][y] = Tile.EMPTY;
+            }
+        }
+    }
+
+    /**
+     * Places trees randomly into the interactables array,
+     * unless there is water there (from terrain array)
+     */
+    private void randomTrees (double percentFill) {
+        for (int x=0; x<width; x++) {
+            for (int y=0; y<height; y++) {
+                if (terrain[x][y] != Tile.WATER &&
+                    Math.random() < percentFill)
+                    interactables[x][y] = Tile.TREE;
+            }
+        }
+    }
+
+    private void randomOres (double percentFill) {
+        for (int x=0; x<width; x++) {
+            for (int y=0; y<height; y++) {
+                if (terrain[x][y] != Tile.WATER &&
+                    Math.random() < percentFill)
+                    interactables[x][y] = Tile.ORE_COAL;
+            }
+        }
+    }
+
+
+
+
+
+    public World generateDefaultWorld () {
         clearWorld();
-        populateRandomly();
+        randomTerrain();
         
         int smoothingIterations = 10;
         for (int i=0; i<smoothingIterations; i++)
-            smoothWorld();
+            smoothTerrain();
         
-        return new World(tiles);
+        fillInteractablesEmpty();
+        randomTrees(0.05);
+        randomOres(0.1);
+
+
+        return new World(terrain, interactables);
     }
 }

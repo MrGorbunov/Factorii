@@ -1,23 +1,17 @@
 package minirpg.world;
 
-import java.awt.Color;
 import asciiPanel.AsciiPanel;
 
+// TODO: Add Z-sorting (every tile holds a z-value)
+
 public enum Tile {
-    WALL  ((char) 178, AsciiPanel.yellow), // filled in shade
-    FLOOR ((char) 176, AsciiPanel.yellow), // light shade
-    BOUNDS ( 'x', AsciiPanel.brightBlack);
-    
-    private char glyph;
-    private Color color;
+    EMPTY, // EMPTY should always be first so it's defaulted to
+    BOUNDS,
 
-    public char glyph() { return glyph; }
-    public Color color() { return color; }
+    DIRT, 
+    WATER, 
 
-
-    Tile (char glyph, Color color) {
-        this.glyph = glyph;
-        this.color = color;
-    }
-
+    TREE, 
+    ORE_COAL,
+    PLAYER
 }
