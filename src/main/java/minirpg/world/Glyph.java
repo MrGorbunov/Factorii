@@ -6,11 +6,11 @@ public enum Glyph {
     EMPTY (' ', new Color(0, 0, 0)),
     BOUNDS ('X', Color.GRAY),
 
-    DIRT ('#', new Color(0.4f, 0.25f, 0.15f)),
-    WATER ('#', Color.BLUE),
+    DIRT ('#', new Color(0.3f, 0.15f, 0.1f)),
+    WATER ('#', new Color(0.13f, 0.15f, 0.5f)),
 
     TREE ('^', Color.GREEN),
-    ORE_COAL ('*', Color.GRAY),
+    ORE_COAL ('*', new Color(0.3f, 0.4f, 0.5f)),
     PLAYER ('!', Color.WHITE);
 
 

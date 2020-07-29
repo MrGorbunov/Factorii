@@ -39,7 +39,6 @@ public class PlayScreen implements Screen {
     //   Display
     //
 
-    // TODO: Create methods in World that generate String & Color arrays
     public void displayOutput (AsciiPanel terminal) {
         Glyph[][] slice = world.getWorldSlice(screenWidth, screenHeight);
 

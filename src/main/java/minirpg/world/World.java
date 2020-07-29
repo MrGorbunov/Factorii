@@ -13,6 +13,10 @@ public class World {
     private int width;
     private int height;
 
+    // TODO: Later on this should be either in Player class or as an Inventory class
+    private int amntWood;
+    private int amntCoal;
+
     public int width () { return width; }
     public int height () { return height; }
 
@@ -69,9 +73,18 @@ public class World {
     public Glyph[][] getWorldSlice (int sliceWidth, int sliceHeight) {
         Glyph[][] worldSlice = new Glyph[sliceWidth][sliceHeight];
 
-        // Remember, integer arithmatic; the +1 means that startX - endX always equals screenWidth
-        int startX = getPlayerX() - (sliceWidth / 2);
-        int startY = getPlayerY() - (sliceHeight / 2);
+        int pad = 10;
+
+        int maxX = width - sliceWidth / 2 + pad;
+        int minX = sliceWidth / 2 - pad;
+        int centerX = Math.max(minX, Math.min(maxX, getPlayerX()));
+
+        int maxY = height - sliceHeight / 2 + pad;
+        int minY = sliceHeight / 2 - pad;
+        int centerY = Math.max(minY, Math.min(maxY, getPlayerY()));
+
+        int startX = centerX - (sliceWidth / 2);
+        int startY = centerY - (sliceHeight / 2);
 
         for (int x=0; x<sliceWidth; x++) {
             for (int y=0; y<sliceHeight; y++) {
@@ -124,6 +137,8 @@ public class World {
 
 
     public void handleNewInput (int keyCode) {
+        System.out.println("Current Inventory: " + amntWood + "x Wood, " + amntCoal + "x Coal");
+
         int newX = player.getX();
         int newY = player.getY();
 
@@ -131,6 +146,7 @@ public class World {
         else if (keyCode == KeyEvent.VK_RIGHT) { newX += 1; }
         else if (keyCode == KeyEvent.VK_UP) { newY -= 1; }
         else if (keyCode == KeyEvent.VK_DOWN) { newY += 1; }
+        else if (keyCode == KeyEvent.VK_SPACE) { harvestAdjacent(); updateStatics(); }
         else { return; }
 
         if (newX < 0 || newX >= width || newY < 0 || newY >= height)
@@ -143,6 +159,53 @@ public class World {
         player.setX(newX);
         player.setY(newY);
         updateActives();
+    }
+
+    private void harvestAdjacent () {
+        // If standing on something -> harvest
+        // else look around & harvest trees first, then ore
+        Tile standingOver = interactables[getPlayerX()][getPlayerY()];
+        if (standingOver == Tile.ORE_COAL) {
+            amntCoal++;
+            interactables[getPlayerX()][getPlayerY()] = Tile.EMPTY;
+            updateStatics();
+            return;
+        }
+
+        int finalDx = 0;
+        int finalDy = 0;
+        Tile collectTile = Tile.EMPTY;
+
+        outer : for (int dx=-1; dx<=1; dx++) {
+            for (int dy=-1; dy<=1; dy++) {
+                if (dx == 0 && dy == 0) continue;
+
+                int testX = getPlayerX() + dx;
+                int testY = getPlayerY() + dy;
+                if (testX < 0 || testX >= width || testY < 0 || testY >= height) continue;
+
+                Tile testTile = interactables[getPlayerX()+dx][getPlayerY()+dy];
+                if (testTile == Tile.EMPTY) continue;
+
+                finalDx = dx;
+                finalDy = dy;
+                collectTile = testTile;
+
+                // Trees always are always preffered
+                if (testTile == Tile.TREE) { 
+                    break outer;
+                } 
+            }
+        }
+
+        // No interactable found
+        if (finalDx == 0 && finalDy == 0) return;
+
+        // Do updating
+        if (collectTile == Tile.ORE_COAL) { amntCoal++; }
+        else if (collectTile == Tile.TREE) { amntWood++; }
+        interactables[getPlayerX()+finalDx][getPlayerY()+finalDy] = Tile.EMPTY;
+        updateStatics();
     }
 
 }
