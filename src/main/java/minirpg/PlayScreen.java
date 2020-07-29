@@ -40,14 +40,29 @@ public class PlayScreen implements Screen {
     //
 
     public void displayOutput (AsciiPanel terminal) {
-        Glyph[][] slice = world.getWorldSlice(screenWidth, screenHeight);
+        drawWorld(terminal, -5);
+        drawGUI(terminal);
+    }
+
+    private void drawWorld (AsciiPanel terminal, int heightOffset) {
+        if (heightOffset > 0)
+            throw new IllegalArgumentException("HeightOffset must be 0 or negative");
+
+        int yOff = -(heightOffset + 2) / 3;
+        Glyph[][] worldSlice = world.getWorldSlice(screenWidth, screenHeight + heightOffset, 0, yOff);
 
         for (int x=0; x<screenWidth; x++) {
-            for (int y=0; y<screenHeight; y++) {
-                Glyph glyph = slice[x][y];
+            for (int y=0; y<screenHeight+heightOffset; y++) {
+                Glyph glyph = worldSlice[x][y];
                 terminal.write(glyph.getChar(), x, y, glyph.getColor());
             }
         }
+    }
+
+    // TODO: Right now, drawGUI assumes that there are 5 lines to work with
+    private void drawGUI (AsciiPanel terminal) {
+        terminal.write("Wood: " + world.getWood(), 13, screenHeight - 4);
+        terminal.write("Coal: " + world.getCoal(), 13, screenHeight - 3);
     }
 
 }
