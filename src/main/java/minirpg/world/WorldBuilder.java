@@ -12,7 +12,7 @@ public class WorldBuilder {
     public World generateDefaultWorld () {
         boolean[][] terrainMask = randomMask();
         for (int i=0; i<6; i++)
-            terrainMask = smoothMask(terrainMask, 2);
+            terrainMask = smoothMask(terrainMask, 3);
 
         boolean[][] landMask = erodeMask(terrainMask);
         boolean[][] coalMask = randomMaskPercent(0.9);
@@ -42,6 +42,7 @@ public class WorldBuilder {
     Operations are done on boolean[][] masks, and then
     layer on they're converted to Tile[][] layers.
      */
+
     private boolean[][] blankMask () {
         // Because these are primitives, they default to false
         return new boolean[width][height];
@@ -196,9 +197,4 @@ public class WorldBuilder {
 
         return newLayer;
     }
-
-
-
-
-
 }
