@@ -1,39 +1,36 @@
 package minirpg;
 
+import minirpg.inventory.ItemIndex;
 import minirpg.world.*;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import asciiPanel.AsciiPanel;
 
-public class PlayScreen implements Screen {
-    private World world;
+public class WorldScreen implements Screen {
     private int screenWidth;
     private int screenHeight;
 
-    public PlayScreen () {
+    public WorldScreen () {
         screenWidth = 80;
         screenHeight = 24;
-
-        world = new WorldBuilder(screenWidth + 30, screenHeight + 30)
-                    .generateDefaultWorld();
-        
     }
 
     public Screen handleInput (KeyEvent key) {
         switch (key.getKeyCode()) {
-            case KeyEvent.VK_ESCAPE:
-                return new LoseScreen();
-
-            case KeyEvent.VK_ENTER:
-                return new WinScreen();
+            case KeyEvent.VK_C:
+                return new CraftScreen();
         
             default:
-                world.handleNewInput(key.getKeyCode());
+                GameState.world.handleNewInput(key.getKeyCode());
         }
 
         return this;
     } 
+
+
+
+
 
     //
     //   Display
@@ -49,7 +46,7 @@ public class PlayScreen implements Screen {
             throw new IllegalArgumentException("HeightOffset must be 0 or negative");
 
         int yOff = -(heightOffset + 2) / 3;
-        Glyph[][] worldSlice = world.getWorldSlice(screenWidth, screenHeight + heightOffset, 0, yOff);
+        Glyph[][] worldSlice = GameState.world.getWorldSlice(screenWidth, screenHeight + heightOffset, 0, yOff);
 
         for (int x=0; x<screenWidth; x++) {
             for (int y=0; y<screenHeight+heightOffset; y++) {
@@ -61,8 +58,8 @@ public class PlayScreen implements Screen {
 
     // TODO: Right now, drawGUI assumes that there are 5 lines to work with
     private void drawGUI (AsciiPanel terminal) {
-        terminal.write("Wood: " + world.getWood(), 13, screenHeight - 4);
-        terminal.write("Coal: " + world.getCoal(), 13, screenHeight - 3);
+        terminal.write("Wood: " + GameState.inventory.getQuantity(ItemIndex.WOOD), 13, screenHeight - 4);
+        terminal.write("Coal: " + GameState.inventory.getQuantity(ItemIndex.ORE_COAL), 13, screenHeight - 3);
     }
 
 }

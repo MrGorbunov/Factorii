@@ -2,6 +2,9 @@ package minirpg.world;
 
 import java.awt.event.KeyEvent;
 
+import minirpg.GameState;
+import minirpg.inventory.ItemIndex;
+
 public class World {
     private Tile[][] terrain;    
     private Tile[][] interactables;
@@ -13,18 +16,11 @@ public class World {
     private int width;
     private int height;
 
-    // TODO: Later on this should be either in Player class or as an Inventory class
-    private int amntWood;
-    private int amntCoal;
-
     public int width () { return width; }
     public int height () { return height; }
 
     public int getPlayerX () { return player.getX(); }
     public int getPlayerY () { return player.getY(); }
-
-    public int getWood () { return amntWood; }
-    public int getCoal () { return amntCoal; }
 
     public World (Tile[][] terrain, Tile[][] interactables, int playerX, int playerY) {
         this.terrain = terrain;
@@ -167,7 +163,7 @@ public class World {
         // else look around & harvest trees first, then ore
         Tile standingOver = interactables[getPlayerX()][getPlayerY()];
         if (standingOver == Tile.ORE_COAL) {
-            amntCoal++;
+            GameState.inventory.addItem(ItemIndex.ORE_COAL);
             interactables[getPlayerX()][getPlayerY()] = Tile.EMPTY;
             updateStatics();
             return;
@@ -203,8 +199,8 @@ public class World {
         if (finalDx == 0 && finalDy == 0) return;
 
         // Do updating
-        if (collectTile == Tile.ORE_COAL) { amntCoal++; }
-        else if (collectTile == Tile.TREE) { amntWood++; }
+        if (collectTile == Tile.ORE_COAL) { GameState.inventory.addItem(ItemIndex.ORE_COAL); }
+        else if (collectTile == Tile.TREE) { GameState.inventory.addItem(ItemIndex.WOOD); }
         interactables[getPlayerX()+finalDx][getPlayerY()+finalDy] = Tile.EMPTY;
         updateStatics();
     }

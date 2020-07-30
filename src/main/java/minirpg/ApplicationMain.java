@@ -23,6 +23,9 @@ public class ApplicationMain extends JFrame implements KeyListener {
         screen = new StartScreen();
         addKeyListener(this);
         repaint();
+
+        GameState.initGameState(200, 170);
+        GameState.makeNewWorld();
     }
 
     public void repaint () {

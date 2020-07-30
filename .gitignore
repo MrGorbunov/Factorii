@@ -1,6 +1,6 @@
-build/**/*
-bin/**/*
-.gradle/**/*
-.idea/**/*
-.vscode/**/*
-.settings/**/*
+build
+bin
+.gradle
+.idea
+.vscode
+.settings
