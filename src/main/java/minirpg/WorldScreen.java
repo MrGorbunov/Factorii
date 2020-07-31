@@ -17,6 +17,10 @@ public class WorldScreen implements Screen {
     private InventoryRenderer invRend;
     private String[] craftedItemStrings;
 
+    private boolean selectionMode;
+    private int selectionX;
+    private int selectionY;
+
     public WorldScreen () {
         screenWidth = 80;
         screenHeight = 24;
@@ -31,11 +35,14 @@ public class WorldScreen implements Screen {
                 return new CraftScreen();
 
             case KeyEvent.VK_X:
-                // Go to selection
+                toggleSelectionMode();
                 break;
 
             default:
-                GameState.world.handleNewInput(key.getKeyCode());
+                if (selectionMode)
+                    handleSelectionInput (key.getKeyCode());
+                else
+                    GameState.world.handleNewInput(key.getKeyCode());
         }
 
         return this;
@@ -48,6 +55,42 @@ public class WorldScreen implements Screen {
         for (int i=0; i<craftedItems.size(); i++) {
             ItemIndex item = craftedItems.get(i);
             craftedItemStrings[i] = item + " x" + GameState.inventory.getQuantity(item);
+        }
+    }
+
+
+
+
+
+    //
+    // Selection Mode
+    //
+
+    private void toggleSelectionMode () {
+        selectionMode = !selectionMode;
+    }
+
+    private void handleSelectionInput (int keyCode) {
+        switch (keyCode) {
+            case KeyEvent.VK_UP:
+                selectionY = Math.max(selectionY - 1, 0);
+                break;
+
+            case KeyEvent.VK_DOWN:
+                // TODO: This hardcoded 3 comes from the # of rows
+                selectionY = Math.min(selectionY + 1, 2);
+                break;
+            
+            case KeyEvent.VK_LEFT:
+                selectionX = Math.max(selectionX - 1, 0);
+                break;
+            
+            case KeyEvent.VK_RIGHT:
+                selectionX = Math.min(selectionX + 1, 2);
+                break;
+            
+            default:
+                return;
         }
     }
 
@@ -85,14 +128,24 @@ public class WorldScreen implements Screen {
         int xCord = 1;
         int colWidth = (screenWidth - 2) / 3;
 
+        int xCell = 0;
+        int yCell = 0;
+
         for (String s : craftedItemStrings) {
-            terminal.write(s, xCord, yCord);
+            Color backgroundFill = Color.BLACK;
+            if (selectionMode &&
+                xCell == selectionX && yCell == selectionY)
+                    backgroundFill = Color.GRAY;
+            terminal.write(s, xCord, yCord, Color.LIGHT_GRAY, backgroundFill);
             
             yCord++;
+            yCell++;
 
             if (yCord >= screenHeight - 1) {
                 yCord = screenHeight - lines + 1;
                 xCord += colWidth;
+                xCell++;
+                yCell = 0;
 
                 if (xCord >= screenWidth)
                     return;
