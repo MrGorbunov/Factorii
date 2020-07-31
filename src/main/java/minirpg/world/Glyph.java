@@ -10,7 +10,13 @@ public enum Glyph {
     WATER ('#', new Color(0.13f, 0.15f, 0.5f)),
 
     TREE ('^', Color.GREEN),
-    ORE_COAL ('*', new Color(0.3f, 0.4f, 0.5f)),
+    STONE ('%', new Color(0.3f, 0.4f, 0.5f)),
+    SAND ('#', Color.YELLOW),
+
+    ORE_COAL ('%', new Color(0.2f, 0.2f, 0.22f)),
+    ORE_COPPER ('%', new Color(0.5f, 0.35f, 0.18f)),
+    ORE_IRON ('%', new Color(0.55f, 0.47f, 0.4f)),
+
     PLAYER ('!', Color.WHITE);
 
 

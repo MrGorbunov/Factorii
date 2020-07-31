@@ -8,10 +8,16 @@ public enum Tile {
     EMPTY, // EMPTY should always be first so it's defaulted to
     BOUNDS,
 
-    DIRT, 
+    DIRT,
     WATER, 
 
-    TREE, 
+    TREE,
+    STONE,
+    SAND,
+
     ORE_COAL,
+    ORE_COPPER,
+    ORE_IRON,
+
     PLAYER
 }

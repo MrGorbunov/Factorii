@@ -101,7 +101,7 @@ Then later on you can make a forge, which unlocks
  - Steel funnel
  - Tall boots
 
-- Submarine => End goal
+Submarine => End goal
  * Air Tanks
  * Hull
  * Control Unit

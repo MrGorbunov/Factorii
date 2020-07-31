@@ -15,12 +15,16 @@ public class GameState {
     public static World world;
     public static Inventory inventory;
 
+    public static TechLevel techLevel;
+
     private static WorldBuilder worldBuilder;
 
 
     public static void initGameState (int worldWidth, int worldHeight) {
         worldBuilder = new WorldBuilder(worldWidth, worldHeight);
         inventory = new Inventory();
+
+        techLevel = TechLevel.START;
     }
 
     public static void makeNewWorld () {

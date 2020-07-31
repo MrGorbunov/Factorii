@@ -14,20 +14,21 @@ public class WorldBuilder {
         for (int i=0; i<6; i++)
             terrainMask = smoothMask(terrainMask, 3);
 
-        boolean[][] landMask = erodeMask(terrainMask);
-        boolean[][] coalMask = randomMaskPercent(0.9);
-        coalMask = erodeMask(coalMask);
-        coalMask = smoothMask(coalMask, 1);
-        coalMask = masksAND(landMask, coalMask);
+        boolean[][] landMask = terrainMask;
+        boolean[][] stoneMask = randomMaskPercent(0.9);
+        stoneMask = erodeMask(stoneMask);
+        stoneMask = smoothMask(stoneMask, 1);
+        stoneMask = masksAND(landMask, stoneMask);
         
         // The erosion keeps the trees away from the shore
+        landMask = erodeMask(landMask);
         landMask = erodeMask(landMask);
         boolean[][] treeMask = randomMask();
         treeMask = smoothMask(treeMask, 1);
         treeMask = masksAND(landMask, treeMask);
 
         Tile[][] terrain = convertMask(terrainMask, Tile.DIRT, Tile.WATER);
-        Tile[][] interactables = convertMask(coalMask, Tile.ORE_COAL, Tile.EMPTY);
+        Tile[][] interactables = convertMask(stoneMask, Tile.STONE, Tile.EMPTY);
         interactables = addToLayer(interactables, treeMask, Tile.TREE, false);
 
         return new World(terrain, interactables);

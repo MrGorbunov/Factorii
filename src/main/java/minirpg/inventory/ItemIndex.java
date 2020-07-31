@@ -4,6 +4,9 @@ package minirpg.inventory;
 // int[], and this enum stores the indicies
 // of the different items
 
+// The order here does NOT matter and is only grouped
+// for readability
+
 public enum ItemIndex {
 	// Raw Resources
 	WOOD, STONE, 
@@ -11,8 +14,11 @@ public enum ItemIndex {
 	SAND,
 
 	// Craftable Resources
-	GLASS, ALLOY_BRONZE, ALLOY_STEEL,
+	BAR_COPPER, BAR_IRON, GLASS, 
+	ALLOY_BRONZE, ALLOY_STEEL,
 
 	// Craftable Items
+	PICKAXE, SHOVEL,
 	WORKBENCH, COPPER_WORKBENCH;
+
 }

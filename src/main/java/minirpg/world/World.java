@@ -117,11 +117,18 @@ public class World {
             case WATER:
                 return Glyph.WATER;
 
+
+
             case TREE:
                 return Glyph.TREE;
 
+            case STONE:
+                return Glyph.STONE;
+
             case ORE_COAL:
                 return Glyph.ORE_COAL;
+
+
 
             case PLAYER:
                 return Glyph.PLAYER;
@@ -162,8 +169,8 @@ public class World {
         // If standing on something -> harvest
         // else look around & harvest trees first, then ore
         Tile standingOver = interactables[getPlayerX()][getPlayerY()];
-        if (standingOver == Tile.ORE_COAL) {
-            GameState.inventory.addItem(ItemIndex.ORE_COAL);
+        if (standingOver == Tile.STONE) {
+            GameState.inventory.addItem(ItemIndex.STONE);
             interactables[getPlayerX()][getPlayerY()] = Tile.EMPTY;
             updateStatics();
             return;
@@ -199,7 +206,7 @@ public class World {
         if (finalDx == 0 && finalDy == 0) return;
 
         // Do updating
-        if (collectTile == Tile.ORE_COAL) { GameState.inventory.addItem(ItemIndex.ORE_COAL); }
+        if (collectTile == Tile.STONE) { GameState.inventory.addItem(ItemIndex.STONE); }
         else if (collectTile == Tile.TREE) { GameState.inventory.addItem(ItemIndex.WOOD); }
         interactables[getPlayerX()+finalDx][getPlayerY()+finalDy] = Tile.EMPTY;
         updateStatics();
