@@ -4,6 +4,8 @@ import java.awt.Color;
 
 import javax.swing.JFrame;
 import asciiPanel.AsciiPanel;
+import minirpg.inventory.ItemIndex;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -26,6 +28,17 @@ public class ApplicationMain extends JFrame implements KeyListener {
 
         GameState.initGameState(200, 170);
         GameState.makeNewWorld();
+
+        // Temporary
+        GameState.inventory.addItem(ItemIndex.ALLOY_BRONZE);
+        GameState.inventory.addItem(ItemIndex.FUNNEL_COPPER);
+        GameState.inventory.addItem(ItemIndex.FUNNEL_WOOD);
+        GameState.inventory.addItem(ItemIndex.FUNNEL_WOOD);
+        GameState.inventory.addItem(ItemIndex.WORKBENCH);
+        GameState.inventory.addItem(ItemIndex.COPPER_WORKBENCH);
+        GameState.inventory.addItem(ItemIndex.CHEST);
+        GameState.inventory.addItem(ItemIndex.AUTO_MINING_UPGRADE);
+        GameState.inventory.addItem(ItemIndex.MINING_DRILL);
     }
 
     public void repaint () {

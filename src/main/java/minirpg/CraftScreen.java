@@ -6,12 +6,12 @@ import java.util.ArrayList;
 
 import asciiPanel.AsciiPanel;
 import minirpg.inventory.CraftingRecipe;
-import minirpg.inventory.CraftingRenderer;
+import minirpg.inventory.InventoryRenderer;
 import minirpg.inventory.ItemIndex;
 
 public class CraftScreen implements Screen {
     
-    private CraftingRenderer invRenderer;
+    private InventoryRenderer invRenderer;
     // These guys don't need to be updated every frame, so
     // are kept persistently
     private ArrayList<String> resources;
@@ -22,20 +22,29 @@ public class CraftScreen implements Screen {
     private int currentSelection;
 
     public CraftScreen () {
-        invRenderer = new CraftingRenderer();
+        invRenderer = new InventoryRenderer();
         updateAllLists();
         currentSelection = 0;
     }
 
     public Screen handleInput (KeyEvent key) {
-        if      (key.getKeyCode() == KeyEvent.VK_C)
-            return new WorldScreen();
-        else if (key.getKeyCode() == KeyEvent.VK_UP)
-            selectUp();
-        else if (key.getKeyCode() == KeyEvent.VK_DOWN)
-            selectDown();
-        else if (key.getKeyCode() == KeyEvent.VK_X)
-            craftSelection();
+        switch (key.getKeyCode()) {
+            case KeyEvent.VK_C:
+                return new WorldScreen();
+            
+            case KeyEvent.VK_UP:
+                selectUp();
+                break;
+
+            case KeyEvent.VK_DOWN:
+                selectDown();
+                break;
+            
+            case KeyEvent.VK_X:
+                craftSelection();
+                break;
+
+        }
 
         return this;
     }
@@ -106,7 +115,7 @@ public class CraftScreen implements Screen {
         for (int i=0; i<craftedItems.size(); i++) {
             ItemIndex item = craftedItems.get(i);
             int amount = GameState.inventory.getQuantity(item);
-            terminal.write(item.toString() + " x " + amount, 1, yCord);
+            terminal.write(item.toString() + " x" + amount, 1, yCord);
             yCord++;
         }
 

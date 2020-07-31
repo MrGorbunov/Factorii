@@ -6,11 +6,11 @@ import minirpg.GameState;
 import minirpg.TechLevel;
 
 
-public class CraftingRenderer {
+public class InventoryRenderer {
 
     CraftingRecipe[] starterRecipes;
 
-    public CraftingRenderer () {
+    public InventoryRenderer () {
         initializeRecipes();
     }
 
@@ -91,7 +91,7 @@ public class CraftingRenderer {
         Inventory inv = GameState.inventory;
 
         for (ItemIndex in : ItemIndex.values()) {
-            if (in.isResource() ||
+            if (!in.isPlacable() ||
                 inv.getQuantity(in) == 0)
                     continue;
             

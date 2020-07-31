@@ -1,32 +1,55 @@
 package minirpg;
 
+import minirpg.inventory.InventoryRenderer;
 import minirpg.inventory.ItemIndex;
 import minirpg.world.*;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+
 import asciiPanel.AsciiPanel;
 
 public class WorldScreen implements Screen {
     private int screenWidth;
     private int screenHeight;
+    // TODO: Very duplicate code between CraftScreen & here > maybe create SubScreen for individual parts
+    private InventoryRenderer invRend;
+    private String[] craftedItemStrings;
 
     public WorldScreen () {
         screenWidth = 80;
         screenHeight = 24;
+
+        invRend = new InventoryRenderer();
+        updateList();
     }
 
     public Screen handleInput (KeyEvent key) {
         switch (key.getKeyCode()) {
             case KeyEvent.VK_C:
                 return new CraftScreen();
-        
+
+            case KeyEvent.VK_X:
+                // Go to selection
+                break;
+
             default:
                 GameState.world.handleNewInput(key.getKeyCode());
         }
 
         return this;
     } 
+
+    private void updateList () {
+        ArrayList<ItemIndex> craftedItems = invRend.getCraftedItems();
+        craftedItemStrings = new String[craftedItems.size()];
+
+        for (int i=0; i<craftedItems.size(); i++) {
+            ItemIndex item = craftedItems.get(i);
+            craftedItemStrings[i] = item + " x" + GameState.inventory.getQuantity(item);
+        }
+    }
 
 
 
@@ -38,7 +61,7 @@ public class WorldScreen implements Screen {
 
     public void displayOutput (AsciiPanel terminal) {
         drawWorld(terminal, -5);
-        drawGUI(terminal);
+        drawInventoryPane(terminal, 5);
     }
 
     private void drawWorld (AsciiPanel terminal, int heightOffset) {
@@ -56,10 +79,25 @@ public class WorldScreen implements Screen {
         }
     }
 
-    // TODO: Right now, drawGUI assumes that there are 5 lines to work with
-    private void drawGUI (AsciiPanel terminal) {
-        terminal.write("Wood: " + GameState.inventory.getQuantity(ItemIndex.WOOD), 13, screenHeight - 4);
-        terminal.write("Coal: " + GameState.inventory.getQuantity(ItemIndex.ORE_COAL), 13, screenHeight - 3);
+    // TODO: Right now, it's assumed that none of the names are too too long
+    private void drawInventoryPane (AsciiPanel terminal, int lines) {
+        int yCord = screenHeight - lines + 1;
+        int xCord = 1;
+        int colWidth = (screenWidth - 2) / 3;
+
+        for (String s : craftedItemStrings) {
+            terminal.write(s, xCord, yCord);
+            
+            yCord++;
+
+            if (yCord >= screenHeight - 1) {
+                yCord = screenHeight - lines + 1;
+                xCord += colWidth;
+
+                if (xCord >= screenWidth)
+                    return;
+            }
+        }
     }
 
 }
