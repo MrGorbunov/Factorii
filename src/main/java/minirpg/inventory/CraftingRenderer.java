@@ -27,15 +27,32 @@ public class CraftingRenderer {
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
                 new int[]       {3,             2},
                 ItemIndex.PICKAXE, "Pickaxe",
-                "Allows for harvesting coal and ores")
-            
+                "Allows for harvesting coal and ores"),
+
+            new CraftingRecipe(
+                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
+                new int[]       {3,             1},
+                ItemIndex.SHOVEL, "Shovel",
+                "Allows for sand collection"),
+
+
         };
+    }
+
+    // TODO: This feels pretty sloppy
+    public CraftingRecipe getRecipe (String name) {
+        for (CraftingRecipe cr : starterRecipes) {
+            if (cr.resultName().equals(name))
+                return cr;
+        }
+
+        return null;
     }
 
 
 
     //
-    // Actual calls
+    // Inventory Management Calls
     //
 
     public ArrayList<String> getResourceList () {
@@ -68,6 +85,36 @@ public class CraftingRenderer {
         
         return resources;
     }
+
+    public ArrayList<ItemIndex> getCraftedItems () {
+        ArrayList<ItemIndex> items = new ArrayList<ItemIndex> ();
+        Inventory inv = GameState.inventory;
+
+        for (ItemIndex in : ItemIndex.values()) {
+            if (in.isResource() ||
+                inv.getQuantity(in) == 0)
+                    continue;
+            
+            items.add(in);
+        }
+
+        return items;
+    }
+
+    // public ArrayList<Integer> getCraftedQuantites () {
+    //     ArrayList<Integer> itemAmnts = new ArrayList<Integer> ();
+    //     Inventory inv = GameState.inventory;
+    //
+    //     for (ItemIndex in : ItemIndex.values()) {
+    //         if (in.isResource() ||
+    //             inv.getQuantity(in) == 0)
+    //                 continue;
+    //
+    //         itemAmnts.add(inv.getQuantity(in));
+    //     }
+    //
+    //     return itemAmnts;
+    // }
 
     public ArrayList<String> recipesUnlocked () {
         ArrayList<String> resources = new ArrayList<String> ();
