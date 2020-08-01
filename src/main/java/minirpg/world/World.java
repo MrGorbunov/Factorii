@@ -8,7 +8,7 @@ import minirpg.inventory.ItemIndex;
 public class World {
     private Tile[][] terrain;    
     private Tile[][] interactables;
-    private Player player;
+    private PlayerTile player;
 
     // Used to be efficient
     private Tile[][] worldBuffer;
@@ -25,7 +25,7 @@ public class World {
     public World (Tile[][] terrain, Tile[][] interactables, int playerX, int playerY) {
         this.terrain = terrain;
         this.interactables = interactables;
-        player = new Player(playerX, playerY);
+        player = new PlayerTile(playerX, playerY);
 
         width = terrain.length;
         height = terrain[0].length;

@@ -1,7 +1,5 @@
 package minirpg.inventory;
 
-import java.security.InvalidParameterException;
-
 public class Inventory {
 
     private int[] itemAmounts;
@@ -12,8 +10,10 @@ public class Inventory {
 
 
 
+
+
     //
-    // Inventory operations
+    // Basic Inventory operations
     //
 
     public void addItem (ItemIndex item) {
@@ -23,23 +23,6 @@ public class Inventory {
     public void addItemMulti (ItemIndex item, int amount) {
         itemAmounts[item.ordinal()] += amount;
     }
-
-    public void removeItem (ItemIndex item) {
-        if (itemAmounts[item.ordinal()] < 1)
-            throw new InvalidParameterException("Attempted to remove item with 0 quantity");
-
-        itemAmounts[item.ordinal()]--;
-
-    }
-
-    public void removeItemMulti (ItemIndex item, int amount) {
-        if (itemAmounts[item.ordinal()] < amount)
-            throw new InvalidParameterException("Attempted to remove item without sufficient quantity");
-
-        itemAmounts[item.ordinal()] -= amount;
-    }
-
-
 
     public int getQuantity (ItemIndex item) {
         return itemAmounts[item.ordinal()];
@@ -55,4 +38,67 @@ public class Inventory {
         return total;
     }
 
+
+
+
+
+    //
+    // Crafting
+    //
+
+    /**
+     * If it cannot craft, nothing happens
+     * make sure to check with canCraft/ canCraftMultiple
+     */
+    public void craftItem (CraftingRecipe recipe) {
+        if (canCraft(recipe) == false) return;
+
+        ItemIndex[] ingredients = recipe.inputItems();
+        int[] quantities = recipe.inputAmounts();
+
+        for (int i=0; i<ingredients.length; i++) {
+            itemAmounts[ingredients[i].ordinal()] -= quantities[i];
+        }
+
+        itemAmounts[recipe.result().ordinal()]++;
+    }
+
+    /**
+     * If it cannot craft, nothing happens
+     * make sure to check with canCraft/ canCraftMultiple
+     */
+    public void craftItemMultiple (CraftingRecipe recipe, int amount) {
+        if (canCraftMultiple(recipe, amount) == false) return;
+
+        ItemIndex[] ingredients = recipe.inputItems();
+        int[] quantities = recipe.inputAmounts();
+
+        for (int i=0; i<ingredients.length; i++) {
+            itemAmounts[ingredients[i].ordinal()] -= quantities[i] * amount;
+        }
+
+        itemAmounts[recipe.result().ordinal()] += amount;
+    }
+
+    public boolean canCraft (CraftingRecipe recipe) {
+        ItemIndex[] ingredients = recipe.inputItems();
+        int[] quantities = recipe.inputAmounts();
+
+        for (int i=0; i<ingredients.length; i++) {
+            if (getQuantity(ingredients[i]) < quantities[i])
+                return false;
+        }
+        return true;
+    }
+
+    public boolean canCraftMultiple (CraftingRecipe recipe, int amount) {
+        ItemIndex[] ingredients = recipe.inputItems();
+        int[] quantities = recipe.inputAmounts();
+
+        for (int i=0; i<ingredients.length; i++) {
+            if (getQuantity(ingredients[i]) < quantities[i] * amount)
+                return false;
+        }
+        return true;
+    }
 }

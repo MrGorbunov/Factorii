@@ -5,13 +5,14 @@ import java.awt.Color;
 import javax.swing.JFrame;
 import asciiPanel.AsciiPanel;
 import minirpg.inventory.ItemIndex;
+import minirpg.screen.*;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 
 public class ApplicationMain extends JFrame implements KeyListener {
-    private static final long serialVersionUID = 1060623638149583738L;
+    private static final long serialVersionUID = -5955110992780994159L;
 
     private Screen screen;
     private AsciiPanel terminal;

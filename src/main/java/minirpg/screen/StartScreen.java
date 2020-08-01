@@ -1,4 +1,4 @@
-package minirpg;
+package minirpg.screen;
 
 import java.awt.event.KeyEvent;
 import asciiPanel.AsciiPanel;

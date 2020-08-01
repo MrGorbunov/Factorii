@@ -1,10 +1,11 @@
-package minirpg;
+package minirpg.screen;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import asciiPanel.AsciiPanel;
+import minirpg.GameState;
 import minirpg.inventory.CraftingRecipe;
 import minirpg.inventory.InventoryRenderer;
 import minirpg.inventory.ItemIndex;
@@ -75,7 +76,7 @@ public class CraftScreen implements Screen {
             return;
 
         CraftingRecipe recipe = invRenderer.getRecipe(recipeResults.get(currentSelection));
-        recipe.craft(GameState.inventory);
+        GameState.inventory.craftItem(recipe);
         updateAllLists();
     }
 

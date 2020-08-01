@@ -1,5 +1,6 @@
-package minirpg;
+package minirpg.screen;
 
+import minirpg.GameState;
 import minirpg.inventory.InventoryRenderer;
 import minirpg.inventory.ItemIndex;
 import minirpg.world.*;
@@ -34,14 +35,17 @@ public class WorldScreen implements Screen {
             case KeyEvent.VK_C:
                 return new CraftScreen();
 
-            case KeyEvent.VK_X:
+            case KeyEvent.VK_Z:
                 toggleSelectionMode();
                 break;
 
             default:
-                if (selectionMode)
+                if (selectionMode) {
+                    if (key.getKeyCode() == KeyEvent.VK_SPACE)
+                        return this;
+
                     handleSelectionInput (key.getKeyCode());
-                else
+                } else
                     GameState.world.handleNewInput(key.getKeyCode());
         }
 
@@ -94,6 +98,9 @@ public class WorldScreen implements Screen {
         }
     }
 
+    private void enterPlacementScreen() {
+
+    }
 
 
 

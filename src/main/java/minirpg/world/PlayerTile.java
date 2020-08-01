@@ -1,8 +1,8 @@
 package minirpg.world;
 
-public class Player extends Entity {
+public class PlayerTile extends Entity {
 
-    public Player (int x, int y) {
+    public PlayerTile (int x, int y) {
         super(x, y, Tile.PLAYER);
     }
 

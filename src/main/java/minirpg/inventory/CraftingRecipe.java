@@ -28,44 +28,4 @@ public class CraftingRecipe {
     public ItemIndex[] inputItems () { return items; }
     public int[] inputAmounts () { return itemQuantities; }
 
-    public boolean canCraft (Inventory inv) {
-        for (int i=0; i<items.length; i++) {
-            if (inv.getQuantity(items[i]) < itemQuantities[i])
-                return false;
-        }
-
-        return true;
-    }
-
-    public boolean canCraftMultiple (Inventory inv, int amount) {
-        for (int i=0; i<items.length; i++) {
-            if (inv.getQuantity(items[i]) * amount < itemQuantities[i])
-                return false;
-        }
-
-        return true;
-    }
-
-    public void craft (Inventory inv) {
-        if (!canCraft(inv))
-            throw new InvalidParameterException("Given an inventory with insufficient resources");
-
-        for (int i=0; i<items.length; i++) {
-            inv.removeItemMulti(items[i], itemQuantities[i]);
-        }
-
-        inv.addItem(result);
-    }
-
-    public void craftMultiple (Inventory inv, int amount) {
-        if (!canCraftMultiple(inv, amount))
-            throw new InvalidParameterException("Given an inventory with insufficient resources");
-
-        for (int i=0; i<items.length; i++) {
-            inv.removeItemMulti(items[i], itemQuantities[i] * amount);
-        }
-
-        inv.addItemMulti(result, amount);
-    }
-
 }

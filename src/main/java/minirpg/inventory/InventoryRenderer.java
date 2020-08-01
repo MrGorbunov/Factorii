@@ -101,21 +101,6 @@ public class InventoryRenderer {
         return items;
     }
 
-    // public ArrayList<Integer> getCraftedQuantites () {
-    //     ArrayList<Integer> itemAmnts = new ArrayList<Integer> ();
-    //     Inventory inv = GameState.inventory;
-    //
-    //     for (ItemIndex in : ItemIndex.values()) {
-    //         if (in.isResource() ||
-    //             inv.getQuantity(in) == 0)
-    //                 continue;
-    //
-    //         itemAmnts.add(inv.getQuantity(in));
-    //     }
-    //
-    //     return itemAmnts;
-    // }
-
     public ArrayList<String> recipesUnlocked () {
         ArrayList<String> resources = new ArrayList<String> ();
 
@@ -131,7 +116,7 @@ public class InventoryRenderer {
         ArrayList<Boolean> availabality = new ArrayList<Boolean> ();
 
         for (CraftingRecipe recipe : starterRecipes) {
-            availabality.add(recipe.canCraft(inv));
+            availabality.add(inv.canCraft(recipe));
         }
 
         return availabality;
