@@ -22,43 +22,43 @@ In this game there are ~25 craftable items. A lot of these items fall
 into progressions (direct upgrades) of their own. 
 
 ### Resources
-**Glass**: Sand gets processed into glass
-**Copper Bars**: From copper ore
-**Iron Bars**: From iron ore
-**Bronze Alloy**: Copper + Iron
-**Steel Alloy**: Coal + Iron
+- **Glass**: Sand gets processed into glass
+- **Copper Bars**: From copper ore
+- **Iron Bars**: From iron ore
+- **Bronze Alloy**: Copper + Iron
+- **Steel Alloy**: Coal + Iron
 
 ### Resource Collection
-**Pickaxe**: Can now mine coal & ores
-**Shovel**: Can now pick up sand
-**Mining Drill**: Produces stone, coal, & ores when used, without
+- **Pickaxe**: Can now mine coal & ores
+- **Shovel**: Can now pick up sand
+- **Mining Drill**: Produces stone, coal, & ores when used, without
 	requiring the resource on the surface. If placed on a
 	beach will produce sand.
-**Auto Mining Upgrade**: Placed on top of a mining drill to
+- **Auto Mining Upgrade**: Placed on top of a mining drill to
 	make it automatic.
 
 ### Improved Crafting
-**Workstation**: Can craft more items
-**Copper Workstation**: Can be set to automatically craft input items.
-**Kiln**: Allows for copper processing
-**Forge**: Allows for Iron & alloy processing. 
+- **Workstation**: Can craft more items
+- **Copper Workstation**: Can be set to automatically craft input items.
+- **Kiln**: Allows for copper processing
+- **Forge**: Allows for Iron & alloy processing. 
 
 ### Improved Mobility
-**Boat**: Can now walk on water
-**Tall Boots**: Can now walk over funnels
-**Wooden Float**: Allows for walking over what was water
+- **Boat**: Can now walk on water
+- **Tall Boots**: Can now walk over funnels
+- **Wooden Float**: Allows for walking over what was water
 	does get in the way of boats
-**Bronze Float**: Like wooden floats, but machinery can be placed on them
+- **Bronze Float**: Like wooden floats, but machinery can be placed on them
 
 ### Item Transport
-**Chest**: Holds upto 100 items. Funnels pull out & put items into chests
+- **Chest**: Holds upto 100 items. Funnels pull out & put items into chests
 	automatically. If next to an item-producing station (ex: Kiln) will
 	get filled up automatically.
-**Wooden Funnel**: Transfers items along a direction. Items cannot be picked
+- **Wooden Funnel**: Transfers items along a direction. Items cannot be picked
 	up mid-transport. Cannot be above water.
-**Copper Funnel**: Same as wooden, but moves items faster.
-**Iron Funnel**: Same as Copper but allows for merging funnels together.
-**Steel Funnel**: Same as Copper but allows for spliting (sorting).
+- **Copper Funnel**: Same as wooden, but moves items faster.
+- **Iron Funnel**: Same as Copper but allows for merging funnels together.
+- **Steel Funnel**: Same as Copper but allows for spliting (sorting).
 
 ### Submarine
 The end goal for the game is to produce a submarine. The submarine itself requires creating the following parts, and then crafting them all together:
