@@ -101,9 +101,13 @@ public enum ItemIndex {
 			case FUNNEL_STEEL:
 				return "Steel Funnel";
 
-			default:
-				return "";
+			case KILN:
+				return "Kiln";
+			case FORGE:
+				return "Forge";
 		}
+
+		return "";
 	}
 
 }

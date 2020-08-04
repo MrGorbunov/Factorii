@@ -16,11 +16,13 @@ public class World {
     private int width;
     private int height;
 
-    public int width () { return width; }
-    public int height () { return height; }
+    public int getWidth () { return width; }
+    public int getHeight () { return height; }
 
     public int getPlayerX () { return player.getX(); }
     public int getPlayerY () { return player.getY(); }
+
+    public Tile[][] getWorld () { return worldBuffer; }
 
     public World (Tile[][] terrain, Tile[][] interactables, int playerX, int playerY) {
         this.terrain = terrain;
@@ -67,76 +69,6 @@ public class World {
 
 
 
-
-
-    public Glyph[][] getWorldSlice (int sliceWidth, int sliceHeight, int xOff, int yOff) {
-        Glyph[][] worldSlice = new Glyph[sliceWidth][sliceHeight];
-
-        int pad = 10;
-
-        int maxX = width - sliceWidth / 2 + pad;
-        int minX = sliceWidth / 2 - pad;
-        int centerX = Math.max(minX, Math.min(maxX, getPlayerX())) + xOff;
-
-        int maxY = height - sliceHeight / 2 + pad;
-        int minY = sliceHeight / 2 - pad;
-        int centerY = Math.max(minY, Math.min(maxY, getPlayerY())) + yOff;
-
-        int startX = centerX - (sliceWidth / 2);
-        int startY = centerY - (sliceHeight / 2);
-
-        for (int x=0; x<sliceWidth; x++) {
-            for (int y=0; y<sliceHeight; y++) {
-                int worldX = x+startX;
-                int worldY = y+startY;
-
-                if (worldX < 0 || worldX >= width ||
-                    worldY < 0 || worldY >= height) {
-                        worldSlice[x][y] = Glyph.EMPTY;
-                        continue;
-                }
-                
-                worldSlice[x][y] = tileToGlyph(worldBuffer[worldX][worldY]);
-            }
-        }
-
-        return worldSlice;
-    }
-
-    private Glyph tileToGlyph (Tile tile) {
-        switch (tile) {
-            case EMPTY:
-                return Glyph.EMPTY;
-
-            case BOUNDS:
-                return Glyph.BOUNDS;
-
-            case DIRT:
-                return Glyph.DIRT;
-
-            case WATER:
-                return Glyph.WATER;
-
-
-
-            case TREE:
-                return Glyph.TREE;
-
-            case STONE:
-                return Glyph.STONE;
-
-            case ORE_COAL:
-                return Glyph.ORE_COAL;
-
-
-
-            case PLAYER:
-                return Glyph.PLAYER;
-
-        }
-
-        return Glyph.EMPTY;
-    }
 
 
 

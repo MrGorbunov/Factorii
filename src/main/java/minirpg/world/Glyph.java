@@ -14,7 +14,7 @@ public enum Glyph {
     SAND ('#',  Convert.hex("#9D9C1C")),
 
     ORE_COAL ('%',  Convert.hex("#2A2C36")),
-    ORE_COPPER ('%',Convert.hex("#B5342E")),
+    ORE_COPPER ('%',Convert.hex("#B5542E")),
     ORE_IRON ('%',  Convert.hex("#4C4C7D")),
 
     WORKBENCH ('@', Convert.hex("#D48781")),

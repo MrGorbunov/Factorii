@@ -24,7 +24,7 @@ public class GameState {
         worldBuilder = new WorldBuilder(worldWidth, worldHeight);
         inventory = new Inventory();
 
-        techLevel = TechLevel.START;
+        techLevel = TechLevel.IRON;
     }
 
     public static void makeNewWorld () {
