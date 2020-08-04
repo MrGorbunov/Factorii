@@ -56,6 +56,10 @@ public class WorldScreen implements Screen {
                 rightInput();
                 break;
 
+			case KeyEvent.VK_SPACE:
+				spaceInput();
+				break;
+
 
         }
 
@@ -67,7 +71,7 @@ public class WorldScreen implements Screen {
 
 
     //
-    // Selection Mode
+    // Input handling
     //
 
     private void toggleSelectionMode () {
@@ -83,32 +87,37 @@ public class WorldScreen implements Screen {
         }
     }
 
+	private void spaceInput () {
+		if (selectionMode == false)
+			GameState.world.harvestAdjacent();
+	}
+
     private void upInput () {
         if (selectionMode) 
             inventoryGridSubscreen.moveUp();
         else
-            GameState.world.handleNewInput(KeyEvent.VK_UP);
+            GameState.world.moveUp();
     }
 
     private void downInput () {
         if (selectionMode) 
             inventoryGridSubscreen.moveDown();
         else
-            GameState.world.handleNewInput(KeyEvent.VK_DOWN);
+			GameState.world.moveDown();
     }
 
     private void leftInput () {
         if (selectionMode) 
             inventoryGridSubscreen.moveLeft();
         else
-            GameState.world.handleNewInput(KeyEvent.VK_LEFT);
+			GameState.world.moveLeft();
     }
 
     private void rightInput () {
         if (selectionMode) 
             inventoryGridSubscreen.moveRight();
         else
-            GameState.world.handleNewInput(KeyEvent.VK_RIGHT);
+			GameState.world.moveRight();
     }
 
 

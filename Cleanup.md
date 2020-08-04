@@ -10,10 +10,13 @@ weird inventory manager with order-restrictions.
 **Entanglement** (Kind of the next bullet) but it's not obvious what role 
 each class has.
 
-**It's not clear what logic goes into Screen, World, and World 
+~~~**It's not clear what logic goes into Screen, World, and World 
 Renderer.** Looking at Inventory, InventoryRenderer is used by
 CraftScreen & WorldScreen, which both handle formatting & drawing,
-although instinctively I would look for that in renderer.
+although instinctively I would look for that in renderer.~~~
+
+**Input logic is very repetitive** It may work to have an input interface
+and then logic will be activeScreen.upInput();
 
 **Both the CraftScreen & WorldScreen have simlar tab-through menus**
 but the code is not recycled (unless ctrl + c & v count). Creating SubScreens 

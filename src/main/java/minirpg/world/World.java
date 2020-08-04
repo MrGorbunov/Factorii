@@ -10,7 +10,7 @@ public class World {
     private Tile[][] interactables;
     private PlayerTile player;
 
-    // Used to be efficient
+    // Used in order to be efficient
     private Tile[][] worldBuffer;
     private Tile[][] staticsBuffer;
     private int width;
@@ -72,32 +72,55 @@ public class World {
 
 
 
+	public void moveUp () {
+		int newY = player.getY() - 1;
+		Tile testTile = worldBuffer[player.getX()][newY];
+		if (newY < 0 ||
+			testTile == Tile.BOUNDS || testTile == Tile.TREE) { 
+				return; 
+		}
 
+		player.setY(newY);
+		updateActives();
+	}
+	
+	public void moveDown () {
+		int newY = player.getY() + 1;
+		Tile testTile = worldBuffer[player.getX()][newY];
+		if (newY >= height ||
+			testTile == Tile.BOUNDS || testTile == Tile.TREE) { 
+				return; 
+		}
 
-    public void handleNewInput (int keyCode) {
-        int newX = player.getX();
-        int newY = player.getY();
+		player.setY(newY);
+		updateActives();
+	}
 
-        if      (keyCode == KeyEvent.VK_LEFT) { newX -= 1; }
-        else if (keyCode == KeyEvent.VK_RIGHT) { newX += 1; }
-        else if (keyCode == KeyEvent.VK_UP) { newY -= 1; }
-        else if (keyCode == KeyEvent.VK_DOWN) { newY += 1; }
-        else if (keyCode == KeyEvent.VK_SPACE) { harvestAdjacent(); updateStatics(); }
-        else { return; }
+	public void moveLeft () {
+		int newX = player.getX() - 1;
+		Tile testTile = worldBuffer[newX][player.getY()];
+		if (newX < 0 ||
+			testTile == Tile.BOUNDS || testTile == Tile.TREE) { 
+				return; 
+		}
 
-        if (newX < 0 || newX >= width || newY < 0 || newY >= height)
-            return;
+		player.setX(newX);
+		updateActives();
+	}
 
-        Tile testTile = worldBuffer[newX][newY];
-        if (testTile == Tile.BOUNDS || testTile == Tile.TREE)
-            return;
-        
-        player.setX(newX);
-        player.setY(newY);
-        updateActives();
-    }
+	public void moveRight () {
+		int newX = player.getX() + 1;
+		Tile testTile = worldBuffer[newX][player.getY()];
+		if (newX >= width ||
+			testTile == Tile.BOUNDS || testTile == Tile.TREE) { 
+				return; 
+		}
 
-    private void harvestAdjacent () {
+		player.setX(newX);
+		updateActives();
+	}
+
+    public void harvestAdjacent () {
         // If standing on something -> harvest
         // else look around & harvest trees first, then ore
         Tile standingOver = interactables[getPlayerX()][getPlayerY()];
@@ -142,6 +165,7 @@ public class World {
         else if (collectTile == Tile.TREE) { GameState.inventory.addItem(ItemIndex.WOOD); }
         interactables[getPlayerX()+finalDx][getPlayerY()+finalDy] = Tile.EMPTY;
         updateStatics();
+		updateActives();
     }
 
 }
