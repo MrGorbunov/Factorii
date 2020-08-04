@@ -84,7 +84,7 @@ public class CraftingSubscreen {
 
 
     //
-    //
+    // Small things
     //
 
     public void setActive (boolean active) {
@@ -163,6 +163,16 @@ public class CraftingSubscreen {
             selection = 0;
         }
     }
+
+	/**
+	 * Crafts the current selection. If not possible,
+	 * (insufficient materials) nothing happens.
+	 */
+	public void craftSelection () {
+		CraftingRecipe selectedRecipe = recipes.get(selection);
+		// craftItem auto-checks for proper # ingredients
+		GameState.inventory.craftItem(selectedRecipe);
+	}
 
 
 

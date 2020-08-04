@@ -55,8 +55,8 @@ public class CraftScreen implements Screen {
                 switchActiveSubscreen();
                 break;
             
-            case KeyEvent.VK_X:
-                // TODO: Craft selection
+            case KeyEvent.VK_SPACE:
+				spaceInput();
                 break;
 
         }
@@ -109,5 +109,11 @@ public class CraftScreen implements Screen {
                 craftingSubscreen.selectionDown();
         }
     }
+
+	private void spaceInput () {
+		if (lookingAtInventory == false) {
+			craftingSubscreen.craftSelection();
+		}
+	}
 
 }
