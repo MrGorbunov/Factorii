@@ -1,9 +1,5 @@
 package minirpg.world;
 
-import asciiPanel.AsciiPanel;
-
-// TODO: Add Z-sorting (every tile holds a z-value)
-
 public enum Tile {
     EMPTY, // EMPTY should always be first so it's defaulted to
     BOUNDS,
@@ -19,5 +15,11 @@ public enum Tile {
     ORE_COPPER,
     ORE_IRON,
 
-    PLAYER
+    PLAYER,
+
+    MINING_DRILL, AUTO_MINING_UPGRADE, 
+    WORKBENCH, COPPER_WORKBENCH, KILN, FORGE,
+	WOODEN_FLOAT, BRONZE_FLOAT,
+    CHEST, FUNNEL_WOOD, FUNNEL_COPPER, FUNNEL_IRON, FUNNEL_STEEL;
+    
 }

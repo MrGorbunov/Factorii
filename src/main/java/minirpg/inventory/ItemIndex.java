@@ -1,5 +1,7 @@
 package minirpg.inventory;
 
+import minirpg.world.Tile;
+
 // Instead of a hashmap, inventory is an
 // int[], and this enum stores the indicies
 // of the different items
@@ -40,6 +42,37 @@ public enum ItemIndex {
 			   this == SHOVEL ||
 			   this == BOAT ||
 			   this == TALL_BOOTS;
+	}
+
+	public static Tile itemToTile (ItemIndex item) {
+        switch (item) {
+            case WOOD:  return Tile.TREE;
+            case STONE: return Tile.STONE;
+            case SAND:  return Tile.SAND;
+
+            case ORE_COAL:   return Tile.ORE_COAL;
+            case ORE_COPPER: return Tile.ORE_COPPER;
+            case ORE_IRON:   return Tile.ORE_IRON;
+
+            case MINING_DRILL:        return Tile.MINING_DRILL;
+            case AUTO_MINING_UPGRADE: return Tile.AUTO_MINING_UPGRADE;
+
+            case WORKBENCH:        return Tile.WORKBENCH;
+            case COPPER_WORKBENCH: return Tile.COPPER_WORKBENCH;
+            case KILN:             return Tile.KILN;
+            case FORGE:            return Tile.FORGE;
+
+            case WOODEN_FLOAT: return Tile.WOODEN_FLOAT;
+            case BRONZE_FLOAT: return Tile.BRONZE_FLOAT;
+
+            case CHEST:         return Tile.CHEST;
+            case FUNNEL_WOOD:   return Tile.FUNNEL_WOOD;
+            case FUNNEL_COPPER: return Tile.FUNNEL_COPPER;
+            case FUNNEL_IRON:   return Tile.FUNNEL_IRON;
+            case FUNNEL_STEEL:  return Tile.FUNNEL_STEEL;
+        }
+
+        return Tile.EMPTY;
 	}
 
 	@Override
