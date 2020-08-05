@@ -49,7 +49,6 @@ public class InventoryGridSubscreen {
         rows = height - 2*pad;
 
         updateLists();
-
         maxScroll = (displayStrings.length + 2) / cols - 3;
     }
 
@@ -59,6 +58,16 @@ public class InventoryGridSubscreen {
 
     public void setActive (boolean active) {
         this.active = active;
+    }
+
+    public ItemIndex getSelectedItem () {
+        int index = (scrollPos + yPos) * cols + xPos;
+        return allCraftedItems().get(index);
+    }
+
+    public void refresh () {
+        updateLists();
+        maxScroll = (displayStrings.length + 2) / cols - 3;
     }
 
 
@@ -216,6 +225,5 @@ public class InventoryGridSubscreen {
 
         return res.toString();
     }
-
 
 }

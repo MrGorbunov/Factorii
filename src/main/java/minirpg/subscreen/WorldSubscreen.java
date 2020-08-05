@@ -71,7 +71,7 @@ public class WorldSubscreen {
                         continue;
                 }
                 
-                worldSlice[x][y] = tileToGlyph(worldTiles[worldX][worldY]);
+                worldSlice[x][y] = Glyph.tileToGlyph(worldTiles[worldX][worldY]);
             }
         }
 
@@ -79,45 +79,5 @@ public class WorldSubscreen {
     }
 
 
-
-
-    //
-    // Drawing Utility Methods
-    //
-
-    private Glyph tileToGlyph (Tile tile) {
-        switch (tile) {
-            case EMPTY:
-                return Glyph.EMPTY;
-
-            case BOUNDS:
-                return Glyph.BOUNDS;
-
-            case DIRT:
-                return Glyph.DIRT;
-
-            case WATER:
-                return Glyph.WATER;
-
-
-
-            case TREE:
-                return Glyph.TREE;
-
-            case STONE:
-                return Glyph.STONE;
-
-            case ORE_COAL:
-                return Glyph.ORE_COAL;
-
-
-
-            case PLAYER:
-                return Glyph.PLAYER;
-
-        }
-
-        return Glyph.EMPTY;
-    }
 
 }

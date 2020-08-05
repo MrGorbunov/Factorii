@@ -38,6 +38,18 @@ public class Inventory {
         return total;
     }
 
+    /**
+     * Attempts to remove an item. If not possible, debugs a warning
+     */
+    public void removeItem (ItemIndex item) {
+        if (itemAmounts[item.ordinal()] == 0) {
+            System.out.println("ERROR: Attempted to remove item which has 0 quantity");
+            return;
+        }
+
+        itemAmounts[item.ordinal()]--;
+    }
+
 
 
 

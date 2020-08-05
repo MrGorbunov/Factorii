@@ -1,13 +1,12 @@
 package minirpg.world;
 
-import java.awt.event.KeyEvent;
-
 import minirpg.GameState;
 import minirpg.inventory.ItemIndex;
 
 public class World {
     private Tile[][] terrain;    
-    private Tile[][] interactables;
+    private Tile[][] resources; // TODO: rename to resources
+    private Tile[][] factory;
     private PlayerTile player;
 
     // Used in order to be efficient
@@ -24,9 +23,10 @@ public class World {
 
     public Tile[][] getWorld () { return worldBuffer; }
 
-    public World (Tile[][] terrain, Tile[][] interactables, int playerX, int playerY) {
+    public World (Tile[][] terrain, Tile[][] interactables, Tile[][] factory, int playerX, int playerY) {
         this.terrain = terrain;
-        this.interactables = interactables;
+        this.resources = interactables;
+        this.factory = factory;
         player = new PlayerTile(playerX, playerY);
 
         width = terrain.length;
@@ -36,12 +36,9 @@ public class World {
         updateActives();
     }
 
-    public World (Tile[][] terrain, Tile[][] interactables) {
-        this(terrain, interactables, 0, 0);
+    public World (Tile[][] terrain, Tile[][] interactables, Tile[][] factory) {
+        this(terrain, interactables, factory, 0, 0);
     }
-
-
-
 
     private void updateStatics () {
         staticsBuffer = new Tile[width][height];
@@ -50,11 +47,25 @@ public class World {
         
         for (int x=0; x<width; x++) {
             for (int y=0; y<height; y++) {
-                Tile interact = interactables[x][y];
-                if (interact == Tile.EMPTY)
-                    continue;
+                Tile resource = resources[x][y];
+                Tile factoryTile = factory[x][y];
+
+                if (resource != Tile.EMPTY)
+                    staticsBuffer[x][y] = resource;
+                else if (factoryTile != Tile.EMPTY)
+                    staticsBuffer[x][y] = factoryTile;
                 
-                staticsBuffer[x][y] = interact;
+                // Tile resource = interactables[x][y];
+                // Tile factoryTile = factory[x][y];
+                // if (resource == Tile.EMPTY) {
+                //     if (factoryTile == Tile.EMPTY)
+                //         continue;
+
+                //     staticsBuffer[x][y] = factoryTile;
+
+                // } else {
+                //     staticsBuffer[x][y] = resource;
+                // }
             }
         }
     }
@@ -71,6 +82,11 @@ public class World {
 
 
 
+
+    //
+    // Input handling
+    //
+    // TODO: Get this out of here?
 
 	public void moveUp () {
 		int newY = player.getY() - 1;
@@ -123,10 +139,10 @@ public class World {
     public void harvestAdjacent () {
         // If standing on something -> harvest
         // else look around & harvest trees first, then ore
-        Tile standingOver = interactables[getPlayerX()][getPlayerY()];
+        Tile standingOver = resources[getPlayerX()][getPlayerY()];
         if (standingOver == Tile.STONE) {
             GameState.inventory.addItem(ItemIndex.STONE);
-            interactables[getPlayerX()][getPlayerY()] = Tile.EMPTY;
+            resources[getPlayerX()][getPlayerY()] = Tile.EMPTY;
             updateStatics();
             return;
         }
@@ -143,7 +159,7 @@ public class World {
                 int testY = getPlayerY() + dy;
                 if (testX < 0 || testX >= width || testY < 0 || testY >= height) continue;
 
-                Tile testTile = interactables[getPlayerX()+dx][getPlayerY()+dy];
+                Tile testTile = resources[getPlayerX()+dx][getPlayerY()+dy];
                 if (testTile == Tile.EMPTY) continue;
 
                 finalDx = dx;
@@ -163,9 +179,35 @@ public class World {
         // Do updating
         if (collectTile == Tile.STONE) { GameState.inventory.addItem(ItemIndex.STONE); }
         else if (collectTile == Tile.TREE) { GameState.inventory.addItem(ItemIndex.WOOD); }
-        interactables[getPlayerX()+finalDx][getPlayerY()+finalDy] = Tile.EMPTY;
+        resources[getPlayerX()+finalDx][getPlayerY()+finalDy] = Tile.EMPTY;
         updateStatics();
 		updateActives();
+    }
+
+    /**
+     * Returns true if successfully was able to place the tile
+     */
+    public boolean placeFactoryTile (Tile factoryTile, int x, int y) {
+        if (canPlaceAt(x, y) == false)
+            return false;
+
+        factory[x][y] = factoryTile;
+        updateStatics();
+        updateActives();
+        return true;
+    }
+
+    public boolean canPlaceAt (int x, int y) {
+        if (x < 0 || x >= width || y < 0 || y >= height ||
+            (x == getPlayerX() && y == getPlayerY()))
+                return false;
+
+        if (terrain[x][y] == Tile.WATER ||
+            resources[x][y] != Tile.EMPTY ||
+            factory[x][y] != Tile.EMPTY) // This will need changing when upgrading is implemented
+                return false;
+        
+        return true;
     }
 
 }

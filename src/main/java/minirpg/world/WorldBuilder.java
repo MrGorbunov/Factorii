@@ -31,7 +31,10 @@ public class WorldBuilder {
         Tile[][] interactables = convertMask(stoneMask, Tile.STONE, Tile.EMPTY);
         interactables = addToLayer(interactables, treeMask, Tile.TREE, false);
 
-        return new World(terrain, interactables);
+        // Create a blank tile map for the factory (avoids nulls)
+        Tile[][] factoryMap = convertMask(blankMask(), Tile.CHEST, Tile.EMPTY);
+
+        return new World(terrain, interactables, factoryMap);
     }
 
 
@@ -44,6 +47,9 @@ public class WorldBuilder {
     layer on they're converted to Tile[][] layers.
      */
 
+    /**
+     * Generates a blank mask of false
+    */
     private boolean[][] blankMask () {
         // Because these are primitives, they default to false
         return new boolean[width][height];
