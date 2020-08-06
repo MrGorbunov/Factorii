@@ -5,6 +5,7 @@ import java.awt.Color;
 
 import asciiPanel.AsciiPanel;
 import minirpg.GameState;
+import minirpg.inventory.CraftingLocation;
 import minirpg.inventory.CraftingRecipe;
 import minirpg.inventory.Inventory;
 import minirpg.inventory.ItemIndex;
@@ -20,7 +21,6 @@ On the bottom, it shows a preview of the current craft option
 */
 
 public class CraftingSubscreen {
-
     private int width;
     private int height;
     private int xOff;
@@ -33,7 +33,7 @@ public class CraftingSubscreen {
     private ArrayList<CraftingRecipe> recipes;
     private ArrayList<Boolean> availability;
 
-    private CraftingRecipe[] starterRecipes;
+    private CraftingRecipe[] craftingRecipes;
 
     public CraftingSubscreen (int width, int height, int xOff, int yOff) {
         this.width = width;
@@ -55,31 +55,9 @@ public class CraftingSubscreen {
     }
 
     public void initRecipeLists () {
-        // TODO: Read out of a json or something
-        starterRecipes = new CraftingRecipe[] {
-            new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
-                new int[]       {5,             3},
-                ItemIndex.WORKBENCH, "Workbench",
-                "Unlocks more crafting options"),
-            
-            new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
-                new int[]       {3,             2},
-                ItemIndex.PICKAXE, "Pickaxe",
-                "Allows for harvesting coal and ores"),
-
-            new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
-                new int[]       {3,             1},
-                ItemIndex.SHOVEL, "Shovel",
-                "Allows for sand collection"),
-
-
-        };
+        CraftingLocation location = GameState.world.getCraftingLocation();
+        craftingRecipes = GameState.craftingGlobals.getUnlockedRecieps(location);
     }
-
-
 
 
 
@@ -113,7 +91,7 @@ public class CraftingSubscreen {
     private ArrayList<CraftingRecipe> recipesUnlocked () {
         ArrayList<CraftingRecipe> recipes = new ArrayList<CraftingRecipe> ();
 
-        for (CraftingRecipe recipe : starterRecipes) {
+        for (CraftingRecipe recipe : craftingRecipes) {
             recipes.add(recipe);
         }
 
@@ -124,7 +102,7 @@ public class CraftingSubscreen {
         Inventory inv = GameState.inventory;
         ArrayList<Boolean> availabality = new ArrayList<Boolean> ();
 
-        for (CraftingRecipe recipe : starterRecipes) {
+        for (CraftingRecipe recipe : craftingRecipes) {
             availabality.add(inv.canCraft(recipe));
         }
 
@@ -183,10 +161,18 @@ public class CraftingSubscreen {
     // Descriptions display
     //
 
-    public void drawDescription (AsciiPanel terminal) {
+    private void drawDescription (AsciiPanel terminal) {
+        int yCord = descriptionY;
+
         CraftingRecipe recipe = recipes.get(selection);
-        terminal.write(recipe.resultName(), xOff, descriptionY, Color.CYAN);
-        terminal.write(recipe.description(), xOff, descriptionY+1);
+        terminal.write(recipe.resultName(), xOff, yCord, Color.CYAN);
+        yCord++;
+
+        String[] brokenUpDesc = breakupDescription(recipe.description());
+        for (String s : brokenUpDesc) {
+            terminal.write(s, xOff, yCord);
+            yCord++;
+        }
 
         for (int i=0; i<recipe.inputItems().length; i++) {
             ItemIndex ingredient = recipe.inputItems()[i];
@@ -195,8 +181,32 @@ public class CraftingSubscreen {
             boolean enoughOfIngredient = GameState.inventory.getQuantity(ingredient) >= amount;
             Color textColor = enoughOfIngredient ? Color.WHITE : Color.LIGHT_GRAY;
 
-            terminal.write(ingredient + " x" + amount, xOff, descriptionY+2+i, textColor);
+            terminal.write(ingredient + " x" + amount, xOff, yCord, textColor);
+            yCord++;
         }
+    }
+
+    /**
+     * Breaks up the description into multiple lines
+     * so it fits into the space
+     */
+    public String[] breakupDescription (String descString) {
+        int maxLineLength = width - 2*pad;
+        // This is the same as a ceiling operation, but more efficient
+        // i.e. equivalent to ```(int) Math.ceil((double) descString.length() / maxLineLength)
+        int numLines = (descString.length() + maxLineLength - 1) / maxLineLength;
+        String[] brokenUp = new String[numLines];
+
+        for (int i=0; i<numLines; i++) {
+            if (i + 1 >= numLines) {
+                brokenUp[i] = descString.substring(i*maxLineLength);
+
+            } else {
+                brokenUp[i] = descString.substring(i*maxLineLength, (i+1)*maxLineLength);
+            }
+        }
+
+        return brokenUp;
     }
 
 }

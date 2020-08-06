@@ -180,7 +180,7 @@ public class InventorySubscreen {
             resources.add("Iron Ore: " + inv.getQuantity(ItemIndex.ORE_IRON));
         }
 
-        if (GameState.techLevel.ordinal() >= TechLevel.COPPER.ordinal()) {
+        if (GameState.techLevel.ordinal() >= TechLevel.KILN.ordinal()) {
             resources.add(4, "Sand: " + inv.getQuantity(ItemIndex.SAND));
             resources.add("");
 
@@ -188,7 +188,7 @@ public class InventorySubscreen {
             resources.add("Copper Bars: " + inv.getQuantity(ItemIndex.BAR_COPPER));
         }
 
-        if (GameState.techLevel.ordinal() >= TechLevel.IRON.ordinal()) {
+        if (GameState.techLevel.ordinal() >= TechLevel.FORGE.ordinal()) {
             resources.add("Iron Bars: " + inv.getQuantity(ItemIndex.BAR_IRON));
             resources.add("Bronze: " + inv.getQuantity(ItemIndex.ALLOY_BRONZE));
             resources.add("Steel: " + inv.getQuantity(ItemIndex.ALLOY_STEEL));

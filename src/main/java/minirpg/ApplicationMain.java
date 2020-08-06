@@ -31,22 +31,22 @@ public class ApplicationMain extends JFrame implements KeyListener {
         GameState.makeNewWorld();
 
         // Temporary
-        GameState.inventory.addItem(ItemIndex.CHEST);
-        GameState.inventory.addItem(ItemIndex.FUNNEL_COPPER);
-        GameState.inventory.addItem(ItemIndex.FUNNEL_WOOD);
-        GameState.inventory.addItem(ItemIndex.FUNNEL_WOOD);
-        GameState.inventory.addItem(ItemIndex.FUNNEL_IRON);
-        GameState.inventory.addItem(ItemIndex.FUNNEL_STEEL);
+        // GameState.inventory.addItem(ItemIndex.CHEST);
+        // GameState.inventory.addItem(ItemIndex.FUNNEL_COPPER);
+        // GameState.inventory.addItem(ItemIndex.FUNNEL_WOOD);
+        // GameState.inventory.addItem(ItemIndex.FUNNEL_WOOD);
+        // GameState.inventory.addItem(ItemIndex.FUNNEL_IRON);
+        // GameState.inventory.addItem(ItemIndex.FUNNEL_STEEL);
 
-        GameState.inventory.addItem(ItemIndex.MINING_DRILL);
-        GameState.inventory.addItem(ItemIndex.MINING_DRILL);
-        GameState.inventory.addItem(ItemIndex.AUTO_MINING_UPGRADE);
+        // GameState.inventory.addItem(ItemIndex.MINING_DRILL);
+        // GameState.inventory.addItem(ItemIndex.MINING_DRILL);
+        // GameState.inventory.addItem(ItemIndex.AUTO_MINING_UPGRADE);
 
-        GameState.inventory.addItem(ItemIndex.WORKBENCH);
-        GameState.inventory.addItem(ItemIndex.COPPER_WORKBENCH);
+        // GameState.inventory.addItem(ItemIndex.WORKBENCH);
+        // GameState.inventory.addItem(ItemIndex.COPPER_WORKBENCH);
 
-        GameState.inventory.addItem(ItemIndex.KILN);
-        GameState.inventory.addItem(ItemIndex.FORGE);
+        // GameState.inventory.addItem(ItemIndex.KILN);
+        // GameState.inventory.addItem(ItemIndex.FORGE);
     }
 
     public void repaint () {

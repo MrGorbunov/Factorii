@@ -1,11 +1,12 @@
 package minirpg.world;
 
 import minirpg.GameState;
+import minirpg.inventory.CraftingLocation;
 import minirpg.inventory.ItemIndex;
 
 public class World {
     private Tile[][] terrain;    
-    private Tile[][] resources; // TODO: rename to resources
+    private Tile[][] resources;
     private Tile[][] factory;
     private PlayerTile player;
 
@@ -54,18 +55,6 @@ public class World {
                     staticsBuffer[x][y] = resource;
                 else if (factoryTile != Tile.EMPTY)
                     staticsBuffer[x][y] = factoryTile;
-                
-                // Tile resource = interactables[x][y];
-                // Tile factoryTile = factory[x][y];
-                // if (resource == Tile.EMPTY) {
-                //     if (factoryTile == Tile.EMPTY)
-                //         continue;
-
-                //     staticsBuffer[x][y] = factoryTile;
-
-                // } else {
-                //     staticsBuffer[x][y] = resource;
-                // }
             }
         }
     }
@@ -78,6 +67,62 @@ public class World {
         worldBuffer[player.getX()][player.getY()] = player.getTile();
     }
 
+    /**
+     * Checks what crafting location the player is at.
+     * First checks if standing over anything. Then checks
+     * for directly adjacent crafting places, prioritizing
+     * the highest level ((Copper) WorkBench < Kiln < Forge).
+     */
+    public CraftingLocation getCraftingLocation () {
+        // If standing on a craftin surface -> use that
+        // else look around & harvest trees first, then ore
+        Tile standingOver = factory[getPlayerX()][getPlayerY()];
+        CraftingLocation testLocation = checkTileCrafting(standingOver);
+        if (testLocation != null) {
+            return testLocation;
+        }
+
+        CraftingLocation highestLocation = CraftingLocation.PLAYER;
+
+        for (int dx=-1; dx<=1; dx++) {
+            for (int dy=-1; dy<=1; dy++) {
+                if (dx == 0 && dy == 0) continue;
+
+                int testX = getPlayerX() + dx;
+                int testY = getPlayerY() + dy;
+                if (testX < 0 || testX >= width || testY < 0 || testY >= height) continue;
+
+                Tile testTile = factory[getPlayerX()+dx][getPlayerY()+dy];
+                testLocation = checkTileCrafting(testTile);
+                if (testLocation == null) continue;
+
+                if (testLocation.ordinal() > highestLocation.ordinal()) {
+                        highestLocation = testLocation;
+                }
+            }
+        }
+
+        // Defaults to player if nothing found
+        return highestLocation;
+    }
+
+    /**
+     * Checks if the input tiles is a crafting location, returns
+     * null otherwise. Does NOT return player type; only
+     * WORKBENCH, KILN, FORGE.
+     */
+    private CraftingLocation checkTileCrafting (Tile testTile) {
+        if (testTile == Tile.WORKBENCH || testTile == Tile.COPPER_WORKBENCH)
+            return CraftingLocation.WORKBENCH;
+        
+        if (testTile == Tile.KILN)
+            return CraftingLocation.KILN;
+
+        if (testTile == Tile.FORGE)
+            return CraftingLocation.FORGE;
+        
+        return null;
+    }
 
 
 
@@ -173,7 +218,7 @@ public class World {
             }
         }
 
-        // No interactable found
+        // No resources found
         if (finalDx == 0 && finalDy == 0) return;
 
         // Do updating

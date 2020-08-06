@@ -1,5 +1,6 @@
 package minirpg;
 
+import minirpg.inventory.CraftingGlobals;
 import minirpg.inventory.Inventory;
 import minirpg.world.World;
 import minirpg.world.WorldBuilder;
@@ -15,6 +16,7 @@ public class GameState {
     public static World world;
     public static Inventory inventory;
 
+    public static CraftingGlobals craftingGlobals;
     public static TechLevel techLevel;
 
     private static WorldBuilder worldBuilder;
@@ -24,7 +26,8 @@ public class GameState {
         worldBuilder = new WorldBuilder(worldWidth, worldHeight);
         inventory = new Inventory();
 
-        techLevel = TechLevel.IRON;
+        techLevel = TechLevel.START;
+        craftingGlobals = new CraftingGlobals();
     }
 
     public static void makeNewWorld () {

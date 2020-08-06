@@ -4,5 +4,5 @@ package minirpg;
 // a player is at or above a certain stage and to progress them
 
 public enum TechLevel {
-    START, WORKBENCH, COPPER, IRON;
+    START, WORKBENCH, KILN, FORGE;
 }

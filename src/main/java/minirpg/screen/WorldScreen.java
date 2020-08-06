@@ -109,7 +109,6 @@ public class WorldScreen implements Screen {
 	private void spaceInput () {
         if (placementMode) {
             boolean placedSuccesfully = worldPlacementSubscreen.placeItem();
-            System.out.println(placedSuccesfully);
             if (placedSuccesfully) {
                 GameState.inventory.removeItem(inventoryGridSubscreen.getSelectedItem());
                 inventoryGridSubscreen.refresh();
