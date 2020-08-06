@@ -19,8 +19,7 @@ public class WorldScreen implements Screen {
     private WorldPlacementSubscreen worldPlacementSubscreen;
     private InventoryGridSubscreen inventoryGridSubscreen;
 
-    private boolean selectionMode;
-    private boolean placementMode;
+    private ScreenState state;
 
     public WorldScreen () {
         screenWidth = 80;
@@ -31,42 +30,9 @@ public class WorldScreen implements Screen {
         inventoryGridSubscreen = new InventoryGridSubscreen(screenWidth, 5, 0, screenHeight - 5);
 
         inventoryGridSubscreen.setActive(false);
+
+        state = ScreenState.TRAVERSAL;
     }
-
-    public Screen handleInput (KeyEvent key) {
-        switch (key.getKeyCode()) {
-            case KeyEvent.VK_C:
-                return changeScreen();
-
-            case KeyEvent.VK_Z:
-                toggleSelectionMode();
-                break;
-
-            case KeyEvent.VK_UP:
-                upInput();
-                break;
-
-            case KeyEvent.VK_DOWN:
-                downInput();
-                break;
-
-            case KeyEvent.VK_LEFT:
-                leftInput();
-                break;
-
-            case KeyEvent.VK_RIGHT:
-                rightInput();
-                break;
-
-			case KeyEvent.VK_SPACE:
-				spaceInput();
-				break;
-
-
-        }
-
-        return this;
-    } 
 
 
 
@@ -76,100 +42,143 @@ public class WorldScreen implements Screen {
     // Input handling
     //
 
-    private Screen changeScreen () {
-        if (placementMode) {
-            placementMode = false;
-            selectionMode = false;
-            return this;
+    public Screen handleInput (KeyEvent key) {
+        switch (state) {
+            case TRAVERSAL:
+                return traversalInput(key);
+
+            case SELECTION:
+                return selectionInput(key);
+
+            case PLACEMENT:
+                return placementInput(key);
         }
 
-        return new CraftScreen();
-    }
+        return this;
+    } 
 
-    private void toggleSelectionMode () {
-        if (placementMode) {
-            placementMode = false;
-            selectionMode = true;
-            inventoryGridSubscreen.setActive(true);
-            return;
+    private Screen traversalInput (KeyEvent key) {
+        switch (key.getKeyCode()) {
+            // Goto crafting
+            case KeyEvent.VK_C:
+                return new CraftScreen();
+            
+            // Goto selection
+            case KeyEvent.VK_Z:
+                state = ScreenState.SELECTION;
+                inventoryGridSubscreen.setActive(true);
+                break;
+            
+            case KeyEvent.VK_SPACE:
+                GameState.world.harvestAdjacent();
+                break;
+
+            case KeyEvent.VK_UP:
+                GameState.world.moveUp();
+                break;
+
+            case KeyEvent.VK_DOWN:
+                GameState.world.moveDown();
+                break;
+            
+            case KeyEvent.VK_LEFT:
+                GameState.world.moveLeft();
+                break;
+            
+            case KeyEvent.VK_RIGHT:
+                GameState.world.moveRight();
+                break;
         }
 
-        if (selectionMode == true) {
-            inventoryGridSubscreen.setActive(false);
-            // worldSubscreen.setActive(true);
-            selectionMode = false;
+        return this;
+    }
 
-        } else {
-            inventoryGridSubscreen.setActive(true);
-            // worldSubscreen.setActive(true);
-            selectionMode = true;
+    private Screen selectionInput (KeyEvent key) {
+        switch (key.getKeyCode()) {
+            // Goto crafting
+            case KeyEvent.VK_C:
+                return new CraftScreen();
+
+            // Get out of selection
+            case KeyEvent.VK_Z:
+                state = ScreenState.TRAVERSAL;
+                inventoryGridSubscreen.setActive(false);
+                break;
+            
+            // Go into placement mode
+            case KeyEvent.VK_SPACE:
+                state = ScreenState.PLACEMENT;
+
+                ItemIndex selectedItem = inventoryGridSubscreen.getSelectedItem();
+                Tile activeTile = ItemIndex.itemToTile(selectedItem);
+                worldPlacementSubscreen.setActiveTile(activeTile);
+                worldPlacementSubscreen.refresh();
+
+                inventoryGridSubscreen.setActive(false);
+                break;
+
+            case KeyEvent.VK_UP:
+                inventoryGridSubscreen.moveUp();
+                break;
+
+            case KeyEvent.VK_DOWN:
+                inventoryGridSubscreen.moveDown();
+                break;
+            
+            case KeyEvent.VK_LEFT:
+                inventoryGridSubscreen.moveLeft();
+                break;
+            
+            case KeyEvent.VK_RIGHT:
+                inventoryGridSubscreen.moveRight();
+                break;
         }
+
+        return this;
     }
 
-	private void spaceInput () {
-        if (placementMode) {
-            boolean placedSuccesfully = worldPlacementSubscreen.placeItem();
-            if (placedSuccesfully) {
-                GameState.inventory.removeItem(inventoryGridSubscreen.getSelectedItem());
-                inventoryGridSubscreen.refresh();
-                placementMode = false;
-                selectionMode = false;
-            }
+    private Screen placementInput (KeyEvent key) {
+        switch (key.getKeyCode()) {
+            // Exit placement mode
+            case KeyEvent.VK_C:
+                state = ScreenState.TRAVERSAL;
+                break;
 
+            // Goto selection mode
+            case KeyEvent.VK_Z:
+                state = ScreenState.SELECTION;
+                inventoryGridSubscreen.setActive(true);
+                break;
+            
+            // Place down object
+            case KeyEvent.VK_SPACE:
+                boolean placedSuccesfully = worldPlacementSubscreen.placeItem();
+                if (placedSuccesfully) {
+                    GameState.inventory.removeItem(inventoryGridSubscreen.getSelectedItem());
+                    inventoryGridSubscreen.refresh();
+                    state = ScreenState.TRAVERSAL;
+                }
+                break;
 
-            return;
+            case KeyEvent.VK_UP:
+                worldPlacementSubscreen.moveUp();
+                break;
+
+            case KeyEvent.VK_DOWN:
+                worldPlacementSubscreen.moveDown();
+                break;
+            
+            case KeyEvent.VK_LEFT:
+                worldPlacementSubscreen.moveLeft();
+                break;
+            
+            case KeyEvent.VK_RIGHT:
+                worldPlacementSubscreen.moveRight();
+                break;
         }
 
-        if (selectionMode) {
-            ItemIndex selectedItem = inventoryGridSubscreen.getSelectedItem();
-            Tile activeTile = ItemIndex.itemToTile(selectedItem);
-            worldPlacementSubscreen.setActiveTile(activeTile);
-            worldPlacementSubscreen.refresh();
-
-            inventoryGridSubscreen.setActive(false);
-            placementMode = true;
-
-        } else {
-            GameState.world.harvestAdjacent();
-        }
-	}
-
-    private void upInput () {
-        if (placementMode)
-            worldPlacementSubscreen.moveUp();
-        else if (selectionMode) 
-            inventoryGridSubscreen.moveUp();
-        else
-            GameState.world.moveUp();
+        return this;
     }
-
-    private void downInput () {
-        if (placementMode)
-            worldPlacementSubscreen.moveDown();
-        else if (selectionMode) 
-            inventoryGridSubscreen.moveDown();
-        else
-			GameState.world.moveDown();
-    }
-
-    private void leftInput () {
-        if (placementMode)
-            worldPlacementSubscreen.moveLeft();
-        else if (selectionMode) 
-            inventoryGridSubscreen.moveLeft();
-        else
-			GameState.world.moveLeft();
-    }
-
-    private void rightInput () {
-        if (placementMode)
-            worldPlacementSubscreen.moveRight();
-        else if (selectionMode) 
-            inventoryGridSubscreen.moveRight();
-        else
-			GameState.world.moveRight();
-    }
-
 
 
 
@@ -180,7 +189,7 @@ public class WorldScreen implements Screen {
     //
 
     public void displayOutput (AsciiPanel terminal) {
-        if (placementMode)
+        if (state == ScreenState.PLACEMENT)
             worldPlacementSubscreen.drawSubscreen(terminal);
         else
             worldSubscreen.drawSubscreen(terminal);
@@ -188,4 +197,10 @@ public class WorldScreen implements Screen {
         inventoryGridSubscreen.drawSubscreen(terminal);
     }
 
+}
+
+enum ScreenState {
+    TRAVERSAL, // When player is moving aroudn
+    SELECTION, // When player is selecting something to place
+    PLACEMENT  // When player is placing down something
 }
