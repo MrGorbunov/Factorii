@@ -1,5 +1,8 @@
 package minirpg.inventory;
 
+import minirpg.GameState;
+import minirpg.TechLevel;
+
 public class Inventory {
 
     private int[] itemAmounts;
@@ -73,6 +76,7 @@ public class Inventory {
         }
 
         itemAmounts[recipe.result().ordinal()]++;
+        updateTechLevel(recipe.result());
     }
 
     /**
@@ -90,6 +94,7 @@ public class Inventory {
         }
 
         itemAmounts[recipe.result().ordinal()] += amount;
+        updateTechLevel(recipe.result());
     }
 
     public boolean canCraft (CraftingRecipe recipe) {
@@ -112,5 +117,24 @@ public class Inventory {
                 return false;
         }
         return true;
+    }
+
+
+    // TODO: If enough of these checks are needed, switch to observer pattern
+    private void updateTechLevel (ItemIndex craftedItem) {
+        TechLevel techLevel = GameState.techLevel;
+
+        if (craftedItem == ItemIndex.WORKBENCH &&
+            techLevel.ordinal() <= TechLevel.START.ordinal()) {
+                GameState.techLevel = TechLevel.WORKBENCH;
+
+        } else if (craftedItem == ItemIndex.KILN &&
+            techLevel.ordinal() <= TechLevel.WORKBENCH.ordinal()) {
+                GameState.techLevel = TechLevel.KILN;
+
+        } else if (craftedItem == ItemIndex.FORGE &&
+            techLevel.ordinal() <= TechLevel.KILN.ordinal()) {
+                GameState.techLevel = TechLevel.FORGE;
+        } 
     }
 }

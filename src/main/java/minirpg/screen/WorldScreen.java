@@ -65,8 +65,9 @@ public class WorldScreen implements Screen {
             
             // Goto selection
             case KeyEvent.VK_Z:
-                state = ScreenState.SELECTION;
-                inventoryGridSubscreen.setActive(true);
+                boolean canTransition = inventoryGridSubscreen.setActive(true);
+                if (canTransition)
+                    state = ScreenState.SELECTION;
                 break;
             
             case KeyEvent.VK_SPACE:
@@ -146,8 +147,12 @@ public class WorldScreen implements Screen {
 
             // Goto selection mode
             case KeyEvent.VK_Z:
-                state = ScreenState.SELECTION;
-                inventoryGridSubscreen.setActive(true);
+                boolean canGotoInventorygrid = inventoryGridSubscreen.setActive(true);
+
+                if (canGotoInventorygrid)
+                    state = ScreenState.SELECTION;
+                else
+                    state = ScreenState.TRAVERSAL;
                 break;
             
             // Place down object

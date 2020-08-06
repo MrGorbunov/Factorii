@@ -162,13 +162,13 @@ public class InventorySubscreen {
     //
 
     private void updateLists () {
-        resources = getResourceList();
-        craftedItems = getCraftedList();
+        updateResourceList();
+        updateCraftedList();
     }
 
-    private ArrayList<String> getResourceList () {
+    private void updateResourceList () {
         Inventory inv = GameState.inventory;
-        ArrayList<String> resources = new ArrayList<String>();
+        resources = new ArrayList<String>();
 
         resources.add("Wood: " + inv.getQuantity(ItemIndex.WOOD));
         resources.add("Stone: " + inv.getQuantity(ItemIndex.STONE));
@@ -193,20 +193,16 @@ public class InventorySubscreen {
             resources.add("Bronze: " + inv.getQuantity(ItemIndex.ALLOY_BRONZE));
             resources.add("Steel: " + inv.getQuantity(ItemIndex.ALLOY_STEEL));
         }
-        
-        return resources;
     }
 
-    private ArrayList<String> getCraftedList () {
+    private void updateCraftedList () {
         ArrayList<ItemIndex> items = getCraftedItems();
-        ArrayList<String> craftedItemsList = new ArrayList<String> ();
+        craftedItems = new ArrayList<String> ();
         Inventory inv = GameState.inventory;
 
         for (ItemIndex item : items) {
-            craftedItemsList.add(item.toString() + " x" + inv.getQuantity(item));
+            craftedItems.add(item.toString() + " x" + inv.getQuantity(item));
         }
-
-        return craftedItemsList;
     }
 
     private ArrayList<ItemIndex> getCraftedItems () {

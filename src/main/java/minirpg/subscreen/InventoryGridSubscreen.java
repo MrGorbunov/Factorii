@@ -9,6 +9,7 @@ import minirpg.inventory.*;
 
 // TODO: A lot of duplicate code w/ InventorySubscreen : maybe the Screens should be responsible for feeding String[] arrays;
 // TODO: Extend a common interface w/ WorldSubscreen
+
 public class InventoryGridSubscreen {
     
     private int width;
@@ -49,15 +50,30 @@ public class InventoryGridSubscreen {
         rows = height - 2*pad;
 
         updateLists();
-        maxScroll = (displayStrings.length + 2) / cols - 3;
     }
 
     public InventoryGridSubscreen (int width, int height) {
         this(width, height, 0, 0);
     }
 
-    public void setActive (boolean active) {
-        this.active = active;
+    /**
+     * Returns false if there are no entries in the grid
+     */
+    public boolean setActive (boolean active) {
+        if (active == false) {
+            this.active = active;
+            return true;
+        }
+
+        refresh();
+
+        if (displayStrings.length == 0) {
+            this.active = false;
+            return false;
+        } else {
+            this.active = active;
+            return true;
+        }
     }
 
     public ItemIndex getSelectedItem () {
@@ -67,7 +83,6 @@ public class InventoryGridSubscreen {
 
     public void refresh () {
         updateLists();
-        maxScroll = (displayStrings.length + 2) / cols - 3;
     }
 
 
@@ -147,6 +162,8 @@ public class InventoryGridSubscreen {
         for (int i=0; i<craftedItems.size(); i++) {
             displayStrings[i] = craftedItems.get(i) + " x" + inv.getQuantity(craftedItems.get(i));
         }
+
+        maxScroll = (displayStrings.length + 2) / cols - 3;
     }
 
     private ArrayList<ItemIndex> allCraftedItems () {

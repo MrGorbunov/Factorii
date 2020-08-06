@@ -12,8 +12,6 @@ import minirpg.subscreen.CraftingSubscreen;
 import minirpg.subscreen.InventorySubscreen;
 
 
-// TODO: When one screen is active, arrows & selection of the other should dissapear
-
 public class CraftScreen implements Screen {
     
     private int screenWidth;

@@ -69,7 +69,6 @@ public class CraftingSubscreen {
         this.active = active;
     }
 
-    // TODO: Right now, this is set to only show the started crafts
     public void drawSubscreen (AsciiPanel terminal) {
         updateAllLists();
         drawRecipesList(terminal);
