@@ -14,33 +14,83 @@ public class WorldBuilder {
         for (int i=0; i<6; i++)
             terrainMask = smoothMask(terrainMask, 3);
 
+        // Sand
+        /*
+        The outer edge is almost completely filled
+        The inner edge is ~50% sand
+        */
+        // outer edge
         boolean[][] landMask = terrainMask;
+        boolean[][] innerFill = erodeMask(landMask);
+        boolean[][] sandNoise = randomMaskPercent(0.94);
+        boolean[][] sandMask = masksXOR(terrainMask, innerFill);
+        sandMask = masksAND(sandNoise, sandMask);
+
+        innerFill = erodeMask(innerFill);
+        sandNoise = randomMaskPercent(0.5);
+        boolean[][] innerEdge = masksXOR(terrainMask, innerFill);
+        innerEdge = masksAND(sandNoise, innerEdge);
+        sandMask = masksOR(sandMask, innerEdge);
+
+        // Stone
+        boolean[][] stoneNoise = randomMaskPercent(0.5);
+        stoneNoise = smoothMask(stoneNoise, 3);
+
         boolean[][] stoneMask = randomMaskPercent(0.9);
         stoneMask = erodeMask(stoneMask);
         stoneMask = smoothMask(stoneMask, 1);
         stoneMask = masksAND(landMask, stoneMask);
+        stoneMask = masksAND(stoneNoise, stoneMask);
         
-        // The erosion keeps the trees away from the shore
+        // Ores
+        boolean[][] coalMask = generateOreMask(landMask);
+        boolean[][] copperMask = generateOreMask(landMask);
+        boolean[][] ironMask = generateOreMask(landMask);
+
+        // Trees
         landMask = erodeMask(landMask);
         landMask = erodeMask(landMask);
-        boolean[][] treeMask = randomMask();
+        boolean[][] treeMask = randomMaskPercent(0.4);
         treeMask = smoothMask(treeMask, 1);
+        treeMask = smoothMask(treeMask, 1);
+        boolean[][] treeNoise = randomMaskPercent(0.9);
+        treeMask = masksAND(treeNoise, treeMask);
         treeMask = masksAND(landMask, treeMask);
 
+
+
+        // Final conversions
         Tile[][] terrain = convertMask(terrainMask, Tile.DIRT, Tile.WATER);
-        Tile[][] interactables = convertMask(stoneMask, Tile.STONE, Tile.EMPTY);
-        interactables = addToLayer(interactables, treeMask, Tile.TREE, false);
+
+        Tile[][] resource = convertMask(treeMask, Tile.TREE, Tile.EMPTY);
+        resource = addToLayer(resource, coalMask, Tile.ORE_COAL, false);
+        resource = addToLayer(resource, copperMask, Tile.ORE_COPPER, false);
+        resource = addToLayer(resource, ironMask, Tile.ORE_IRON, false);
+        resource = addToLayer(resource, stoneMask, Tile.STONE, false);
+        resource = addToLayer(resource, sandMask, Tile.SAND, false);
 
         // Create a blank tile map for the factory (avoids nulls)
         Tile[][] factoryMap = convertMask(blankMask(), Tile.CHEST, Tile.EMPTY);
 
-        return new World(terrain, interactables, factoryMap);
+        return new World(terrain, resource, factoryMap);
+    }
+
+    private boolean[][] generateOreMask (boolean[][] landMask) {
+        boolean[][] oreMask = randomMaskPercent(0.38);
+        oreMask = smoothMask(oreMask, 1);
+        oreMask = smoothMask(oreMask, 2);
+        oreMask = smoothMask(oreMask, 2);
+        for (int i=0; i<3; i++)
+            oreMask = smoothMask(oreMask, 1);
+
+        oreMask = masksAND(landMask, oreMask);
+        return oreMask;
     }
 
 
 
     //
-    // Masks
+    // Mask Operations
     //
     /*
     Operations are done on boolean[][] masks, and then
@@ -118,6 +168,32 @@ public class WorldBuilder {
         for (int x=0; x<width; x++) {
             for (int y=0; y<height; y++) {
                 finalMask[x][y] = maskA[x][y] && maskB[x][y];
+            }
+        }
+    
+        return finalMask;
+    }
+
+    private boolean[][] masksOR (boolean[][] maskA, boolean[][] maskB) {
+        boolean[][] finalMask = new boolean[width][height];
+
+        for (int x=0; x<width; x++) {
+            for (int y=0; y<height; y++) {
+                finalMask[x][y] = maskA[x][y] || maskB[x][y];
+            }
+        }
+    
+        return finalMask;
+    }
+
+    private boolean[][] masksXOR (boolean[][] maskA, boolean[][] maskB) { 
+        boolean[][] finalMask = new boolean[width][height];
+
+        for (int x=0; x<width; x++) {
+            for (int y=0; y<height; y++) {
+                boolean a = maskA[x][y];
+                boolean b = maskB[x][y];
+                finalMask[x][y] = (a && !b) || (!a && b);
             }
         }
     

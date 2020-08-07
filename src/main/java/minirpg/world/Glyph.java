@@ -6,14 +6,14 @@ public enum Glyph {
     EMPTY  (' ', Convert.hex("#000000")),
     BOUNDS ('X', Convert.hex("#333333")),
 
-    DIRT   ('#', Convert.hex("#422E27")),
+    DIRT   ('#', Convert.hex("#302522")),
     WATER  ('#', Convert.hex("#080642")),
 
-    TREE   ('$', Convert.hex("#366923")),
+    TREE   ('$', Convert.hex("#44852C")),
     STONE  ('%', Convert.hex("#70605F")),
-    SAND   ('#', Convert.hex("#9D9C1C")),
+    SAND   ('#', Convert.hex("#4B4C29")),
 
-    ORE_COAL   ('%', Convert.hex("#2A2C36")),
+    ORE_COAL   ('%', Convert.hex("#3E4049")),
     ORE_COPPER ('%', Convert.hex("#B5542E")),
     ORE_IRON   ('%', Convert.hex("#4C4C7D")),
 

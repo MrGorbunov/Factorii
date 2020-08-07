@@ -20,6 +20,8 @@ On the bottom, it shows a preview of the current craft option
 
 */
 
+// TODO: [Bug] When changing tech level, new crafts do not become visible
+
 public class CraftingSubscreen {
     private int width;
     private int height;
