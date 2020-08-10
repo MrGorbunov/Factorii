@@ -155,7 +155,7 @@ public class InventoryGridSubscreen {
     //
 
     private void updateLists () {
-        Inventory inv = GameState.inventory;
+        Inventory inv = GameState.player.getInventory();
         ArrayList<ItemIndex> craftedItems = allCraftedItems();
         displayStrings = new String[craftedItems.size()];
 
@@ -167,7 +167,7 @@ public class InventoryGridSubscreen {
     }
 
     private ArrayList<ItemIndex> allCraftedItems () {
-        Inventory inv = GameState.inventory;
+        Inventory inv = GameState.player.getInventory();
         ArrayList<ItemIndex> craftedItems = new ArrayList<ItemIndex> ();
 
         for (ItemIndex item : ItemIndex.values()) {

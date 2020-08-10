@@ -67,8 +67,8 @@ public class WorldPlacementSubscreen {
      */
     public boolean placeItem () {
         World world = GameState.world;
-        int worldX = xCord - (width / 2) + world.getPlayerX();
-        int worldY = yCord - (height / 2) + world.getPlayerY();
+        int worldX = xCord - (width / 2) + GameState.player.getX();
+        int worldY = yCord - (height / 2) + GameState.player.getY();
 
         return world.placeFactoryTile(placementTile, worldX, worldY);
     }
@@ -118,8 +118,8 @@ public class WorldPlacementSubscreen {
         }
 
         World world = GameState.world;
-        int worldX = xCord - (width / 2) + world.getPlayerX();
-        int worldY = yCord - (height / 2) + world.getPlayerY();
+        int worldX = xCord - (width / 2) + GameState.player.getX();
+        int worldY = yCord - (height / 2) + GameState.player.getY();
         Color displayColor = world.canPlaceAt(worldX, worldY) ? Color.GREEN : Color.RED;
 		terminal.write(Glyph.tileToGlyph(placementTile).getChar(), xCord + xOff, yCord + yOff, displayColor);
     }
@@ -138,8 +138,8 @@ public class WorldPlacementSubscreen {
         worldTiles = new Tile[width][height];
         worldSlice = new Glyph[width][height];
 
-        int startX = world.getPlayerX() - (width / 2);
-        int startY = world.getPlayerY() - (height / 2);
+        int startX = GameState.player.getX() - (width / 2);
+        int startY = GameState.player.getY() - (height / 2);
 
         for (int x=0; x<width; x++) {
             for (int y=0; y<height; y++) {

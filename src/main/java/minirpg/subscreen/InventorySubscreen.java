@@ -167,7 +167,7 @@ public class InventorySubscreen {
     }
 
     private void updateResourceList () {
-        Inventory inv = GameState.inventory;
+        Inventory inv = GameState.player.getInventory();
         resources = new ArrayList<String>();
 
         resources.add("Wood: " + inv.getQuantity(ItemIndex.WOOD));
@@ -198,7 +198,7 @@ public class InventorySubscreen {
     private void updateCraftedList () {
         ArrayList<ItemIndex> items = getCraftedItems();
         craftedItems = new ArrayList<String> ();
-        Inventory inv = GameState.inventory;
+        Inventory inv = GameState.player.getInventory();
 
         for (ItemIndex item : items) {
             craftedItems.add(item.toString() + " x" + inv.getQuantity(item));
@@ -207,7 +207,7 @@ public class InventorySubscreen {
 
     private ArrayList<ItemIndex> getCraftedItems () {
         ArrayList<ItemIndex> items = new ArrayList<ItemIndex> ();
-        Inventory inv = GameState.inventory;
+        Inventory inv = GameState.player.getInventory();
 
         for (ItemIndex in : ItemIndex.values()) {
             if (!in.isPlacable() ||

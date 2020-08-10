@@ -7,8 +7,7 @@ import minirpg.inventory.ItemIndex;
 public class World {
     private Tile[][] terrain;    
     private Tile[][] resources;
-    private Tile[][] factory;
-    private PlayerTile player;
+    private Tile[][] factory; // Gotten from a different class (Factory Layer)
 
     // Used in order to be efficient
     private Tile[][] worldBuffer;
@@ -19,16 +18,12 @@ public class World {
     public int getWidth () { return width; }
     public int getHeight () { return height; }
 
-    public int getPlayerX () { return player.getX(); }
-    public int getPlayerY () { return player.getY(); }
-
     public Tile[][] getWorld () { return worldBuffer; }
 
     public World (Tile[][] terrain, Tile[][] interactables, Tile[][] factory, int playerX, int playerY) {
         this.terrain = terrain;
         this.resources = interactables;
         this.factory = factory;
-        player = new PlayerTile(playerX, playerY);
 
         width = terrain.length;
         height = terrain[0].length;
@@ -64,8 +59,20 @@ public class World {
         for (int i=0; i<width; i++)
             worldBuffer[i] = staticsBuffer[i].clone();
         
-        worldBuffer[player.getX()][player.getY()] = player.getTile();
+        worldBuffer[GameState.player.getX()][GameState.player.getY()] = Tile.PLAYER;
     }
+
+    public void refresh () {
+        updateStatics();
+        updateActives();
+    }
+
+
+
+
+    //
+    // Preliminary Player Stuff
+    //
 
     /**
      * Checks what crafting location the player is at.
@@ -76,7 +83,9 @@ public class World {
     public CraftingLocation getCraftingLocation () {
         // If standing on a craftin surface -> use that
         // else look around & harvest trees first, then ore
-        Tile standingOver = factory[getPlayerX()][getPlayerY()];
+        int playerX = GameState.player.getX();
+        int playerY = GameState.player.getY();
+        Tile standingOver = factory[playerX][playerY];
         CraftingLocation testLocation = checkTileCrafting(standingOver);
         if (testLocation != null) {
             return testLocation;
@@ -88,11 +97,11 @@ public class World {
             for (int dy=-1; dy<=1; dy++) {
                 if (dx == 0 && dy == 0) continue;
 
-                int testX = getPlayerX() + dx;
-                int testY = getPlayerY() + dy;
+                int testX = playerX + dx;
+                int testY = playerY + dy;
                 if (testX < 0 || testX >= width || testY < 0 || testY >= height) continue;
 
-                Tile testTile = factory[getPlayerX()+dx][getPlayerY()+dy];
+                Tile testTile = factory[testX][testY];
                 testLocation = checkTileCrafting(testTile);
                 if (testLocation == null) continue;
 
@@ -129,65 +138,33 @@ public class World {
 
 
     //
-    // Input handling
+    // Player stuff
     //
-    // TODO: Get this out of here?
 
-	public void moveUp () {
-		int newY = player.getY() - 1;
-		Tile testTile = worldBuffer[player.getX()][newY];
-		if (newY < 0 ||
-			testTile == Tile.BOUNDS || testTile == Tile.TREE) { 
-				return; 
-		}
+    public boolean canStandOn (int x, int y) {
+        if (x < 0 || x >= width || y < 0 || y >= height)
+            return false;
 
-		player.setY(newY);
-		updateActives();
-	}
-	
-	public void moveDown () {
-		int newY = player.getY() + 1;
-		Tile testTile = worldBuffer[player.getX()][newY];
-		if (newY >= height ||
-			testTile == Tile.BOUNDS || testTile == Tile.TREE) { 
-				return; 
-		}
+        Tile terrainTile = terrain[x][y];
+        Tile resourceTile = resources[x][y];
+        Tile factoryTile = factory[x][y];
 
-		player.setY(newY);
-		updateActives();
-	}
+        // if (terrainTile == Tile.WATER) return false;
+        if (resourceTile == Tile.TREE) return false;
+        // TODO: Figure out if you can walk on the factory
 
-	public void moveLeft () {
-		int newX = player.getX() - 1;
-		Tile testTile = worldBuffer[newX][player.getY()];
-		if (newX < 0 ||
-			testTile == Tile.BOUNDS || testTile == Tile.TREE) { 
-				return; 
-		}
-
-		player.setX(newX);
-		updateActives();
-	}
-
-	public void moveRight () {
-		int newX = player.getX() + 1;
-		Tile testTile = worldBuffer[newX][player.getY()];
-		if (newX >= width ||
-			testTile == Tile.BOUNDS || testTile == Tile.TREE) { 
-				return; 
-		}
-
-		player.setX(newX);
-		updateActives();
-	}
+        return true;
+    }
 
     public void harvestAdjacent () {
         // If standing on something -> harvest
         // else look around & harvest trees first, then ore
-        Tile standingOver = resources[getPlayerX()][getPlayerY()];
+        int playerX = GameState.player.getX();
+        int playerY = GameState.player.getY();
+        Tile standingOver = resources[playerX][playerY];
         if (standingOver == Tile.STONE) {
-            GameState.inventory.addItem(ItemIndex.STONE);
-            resources[getPlayerX()][getPlayerY()] = Tile.EMPTY;
+            GameState.player.getInventory().addItem(ItemIndex.STONE);
+            resources[playerX][playerY] = Tile.EMPTY;
             updateStatics();
             return;
         }
@@ -200,11 +177,11 @@ public class World {
             for (int dy=-1; dy<=1; dy++) {
                 if (dx == 0 && dy == 0) continue;
 
-                int testX = getPlayerX() + dx;
-                int testY = getPlayerY() + dy;
+                int testX = playerX + dx;
+                int testY = playerY + dy;
                 if (testX < 0 || testX >= width || testY < 0 || testY >= height) continue;
 
-                Tile testTile = resources[getPlayerX()+dx][getPlayerY()+dy];
+                Tile testTile = resources[testX][testY];
                 if (testTile == Tile.EMPTY) continue;
 
                 finalDx = dx;
@@ -222,9 +199,9 @@ public class World {
         if (finalDx == 0 && finalDy == 0) return;
 
         // Do updating
-        if (collectTile == Tile.STONE) { GameState.inventory.addItem(ItemIndex.STONE); }
-        else if (collectTile == Tile.TREE) { GameState.inventory.addItem(ItemIndex.WOOD); }
-        resources[getPlayerX()+finalDx][getPlayerY()+finalDy] = Tile.EMPTY;
+        if (collectTile == Tile.STONE) { GameState.player.getInventory().addItem(ItemIndex.STONE); }
+        else if (collectTile == Tile.TREE) { GameState.player.getInventory().addItem(ItemIndex.WOOD); }
+        resources[playerX + finalDx][playerY + finalDy] = Tile.EMPTY;
         updateStatics();
 		updateActives();
     }
@@ -244,7 +221,7 @@ public class World {
 
     public boolean canPlaceAt (int x, int y) {
         if (x < 0 || x >= width || y < 0 || y >= height ||
-            (x == getPlayerX() && y == getPlayerY()))
+            (x == GameState.player.getX() && y == GameState.player.getY()))
                 return false;
 
         if (terrain[x][y] == Tile.WATER ||

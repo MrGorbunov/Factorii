@@ -2,8 +2,7 @@ package minirpg;
 
 import minirpg.inventory.CraftingGlobals;
 import minirpg.inventory.Inventory;
-import minirpg.world.World;
-import minirpg.world.WorldBuilder;
+import minirpg.world.*;
 
 /*
 As the name implies, this bad boi stores gamestate.
@@ -14,7 +13,7 @@ All screens refer to it, and it is a singleton (everything's static)
 public class GameState {
 
     public static World world;
-    public static Inventory inventory;
+    public static Player player;
 
     public static CraftingGlobals craftingGlobals;
     public static TechLevel techLevel;
@@ -24,7 +23,7 @@ public class GameState {
 
     public static void initGameState (int worldWidth, int worldHeight) {
         worldBuilder = new WorldBuilder(worldWidth, worldHeight);
-        inventory = new Inventory();
+        player = new Player();
 
         techLevel = TechLevel.START;
         craftingGlobals = new CraftingGlobals();

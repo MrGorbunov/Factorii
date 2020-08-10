@@ -100,7 +100,7 @@ public class CraftingSubscreen {
     }
 
     private ArrayList<Boolean> recipesCraftable () {
-        Inventory inv = GameState.inventory;
+        Inventory inv = GameState.player.getInventory();
         ArrayList<Boolean> availabality = new ArrayList<Boolean> ();
 
         for (CraftingRecipe recipe : craftingRecipes) {
@@ -151,7 +151,7 @@ public class CraftingSubscreen {
 	public void craftSelection () {
 		CraftingRecipe selectedRecipe = recipes.get(selection);
 		// craftItem auto-checks for proper # ingredients
-		GameState.inventory.craftItem(selectedRecipe);
+		GameState.player.getInventory().craftItem(selectedRecipe);
 	}
 
 
@@ -179,7 +179,7 @@ public class CraftingSubscreen {
             ItemIndex ingredient = recipe.inputItems()[i];
             int amount = recipe.inputAmounts()[i];
 
-            boolean enoughOfIngredient = GameState.inventory.getQuantity(ingredient) >= amount;
+            boolean enoughOfIngredient = GameState.player.getInventory().getQuantity(ingredient) >= amount;
             Color textColor = enoughOfIngredient ? Color.WHITE : Color.LIGHT_GRAY;
 
             terminal.write(ingredient + " x" + amount, xOff, yCord, textColor);

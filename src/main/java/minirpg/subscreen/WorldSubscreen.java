@@ -57,8 +57,8 @@ public class WorldSubscreen {
         Tile[][] worldTiles = world.getWorld();
         Glyph[][] worldSlice = new Glyph[width][height];
 
-        int startX = world.getPlayerX() - (width / 2);
-        int startY = world.getPlayerY() - (height / 2);
+        int startX = GameState.player.getX() - (width / 2);
+        int startY = GameState.player.getY() - (height / 2);
 
         for (int x=0; x<width; x++) {
             for (int y=0; y<height; y++) {

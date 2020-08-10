@@ -75,19 +75,19 @@ public class WorldScreen implements Screen {
                 break;
 
             case KeyEvent.VK_UP:
-                GameState.world.moveUp();
+                GameState.player.moveUp();
                 break;
 
             case KeyEvent.VK_DOWN:
-                GameState.world.moveDown();
+                GameState.player.moveDown();
                 break;
             
             case KeyEvent.VK_LEFT:
-                GameState.world.moveLeft();
+                GameState.player.moveLeft();
                 break;
             
             case KeyEvent.VK_RIGHT:
-                GameState.world.moveRight();
+                GameState.player.moveRight();
                 break;
         }
 
@@ -159,7 +159,7 @@ public class WorldScreen implements Screen {
             case KeyEvent.VK_SPACE:
                 boolean placedSuccesfully = worldPlacementSubscreen.placeItem();
                 if (placedSuccesfully) {
-                    GameState.inventory.removeItem(inventoryGridSubscreen.getSelectedItem());
+                    GameState.player.getInventory().removeItem(inventoryGridSubscreen.getSelectedItem());
                     inventoryGridSubscreen.refresh();
                     state = ScreenState.TRAVERSAL;
                 }
@@ -196,8 +196,10 @@ public class WorldScreen implements Screen {
     public void displayOutput (AsciiPanel terminal) {
         if (state == ScreenState.PLACEMENT)
             worldPlacementSubscreen.drawSubscreen(terminal);
-        else
+        else {
+            GameState.world.refresh();
             worldSubscreen.drawSubscreen(terminal);
+        }
         
         inventoryGridSubscreen.drawSubscreen(terminal);
     }
