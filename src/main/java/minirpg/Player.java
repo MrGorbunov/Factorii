@@ -30,28 +30,28 @@ public class Player {
 
     public void moveUp () {
 		int newY = y - 1;
-        if (GameState.world.canStandOn(x, newY) == false)
+        if (GameState.world.canStandAt(x, newY) == false)
             return;
         y = newY;
     }
 
     public void moveDown () {
 		int newY = y + 1;
-        if (GameState.world.canStandOn(x, newY) == false)
+        if (GameState.world.canStandAt(x, newY) == false)
             return;
         y = newY;
     }
 
     public void moveLeft () {
 		int newX = x - 1;
-        if (GameState.world.canStandOn(newX, y) == false)
+        if (GameState.world.canStandAt(newX, y) == false)
             return;
         x = newX;
     }
 
     public void moveRight () {
 		int newX = x + 1;
-        if (GameState.world.canStandOn(newX, y) == false)
+        if (GameState.world.canStandAt(newX, y) == false)
             return;
         x = newX;
     }

@@ -6,7 +6,7 @@ public enum Glyph {
     EMPTY  (' ', Convert.hex("#000000")),
     BOUNDS ('X', Convert.hex("#333333")),
 
-    DIRT   ('#', Convert.hex("#302522")),
+    GROUND   ('#', Convert.hex("#302522")),
     WATER  ('#', Convert.hex("#080642")),
 
     TREE   ('$', Convert.hex("#44852C")),
@@ -59,7 +59,7 @@ public enum Glyph {
             case EMPTY:  return Glyph.EMPTY;
             case BOUNDS: return Glyph.BOUNDS;
 
-            case DIRT:  return Glyph.DIRT;
+            case GROUND:  return Glyph.GROUND;
             case WATER: return Glyph.WATER;
 
             case TREE:  return Glyph.TREE;

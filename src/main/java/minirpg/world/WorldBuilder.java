@@ -60,7 +60,7 @@ public class WorldBuilder {
 
 
         // Final conversions
-        Tile[][] terrain = convertMask(terrainMask, Tile.DIRT, Tile.WATER);
+        Tile[][] terrain = convertMask(terrainMask, Tile.GROUND, Tile.WATER);
 
         Tile[][] resource = convertMask(treeMask, Tile.TREE, Tile.EMPTY);
         resource = addToLayer(resource, coalMask, Tile.ORE_COAL, false);

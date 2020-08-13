@@ -18,9 +18,6 @@
   * [ ] New subscreen
   * [ ] Transfering / taking out
 
-- [ ] Switch to a constant fps game clock
-  * Update functions for movement
-
 - [ ] Funnels likely will need to be reworked
   * [ ] Directionality is hard to draw (& implement)
   * [ ] Maybe instead create networks
@@ -70,7 +67,7 @@
 - [x] Turn all screens into statemachines
   * Refactor input handling in the craft screen
 
-- [ ] Move tile methods into the tile enum
+- [x] Move tile methods into the tile enum
   * Static
   * Namely collisions
 
@@ -78,11 +75,15 @@
   * Will require a good amount of rewriting because
     the player cords are considered the center of the
     world and referenced a /lot/
+
 - [ ] Serializable gamestate
 
 
 
 ## v0.3 - Don't Know Yet
+
+- [ ] Switch to a constant fps game clock
+  * Update functions for movement
 
 
 

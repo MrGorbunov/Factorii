@@ -141,7 +141,7 @@ public class World {
     // Player stuff
     //
 
-    public boolean canStandOn (int x, int y) {
+    public boolean canStandAt (int x, int y) {
         if (x < 0 || x >= width || y < 0 || y >= height)
             return false;
 
@@ -149,11 +149,9 @@ public class World {
         Tile resourceTile = resources[x][y];
         Tile factoryTile = factory[x][y];
 
-        // if (terrainTile == Tile.WATER) return false;
-        if (resourceTile == Tile.TREE) return false;
-        // TODO: Figure out if you can walk on the factory
-
-        return true;
+        return Tile.canStandOn(terrainTile) &&
+               Tile.canStandOn(resourceTile) &&
+               Tile.canStandOn(factoryTile);
     }
 
     public void harvestAdjacent () {
@@ -161,19 +159,16 @@ public class World {
         // else look around & harvest trees first, then ore
         int playerX = GameState.player.getX();
         int playerY = GameState.player.getY();
-        Tile standingOver = resources[playerX][playerY];
-        if (standingOver == Tile.STONE) {
-            GameState.player.getInventory().addItem(ItemIndex.STONE);
+        Tile testTile = resources[playerX][playerY];
+
+        if (Tile.canHarvest(testTile)) {
+            GameState.player.getInventory().addItem(Tile.tileToItem(testTile));
             resources[playerX][playerY] = Tile.EMPTY;
             updateStatics();
             return;
         }
 
-        int finalDx = 0;
-        int finalDy = 0;
-        Tile collectTile = Tile.EMPTY;
-
-        outer : for (int dx=-1; dx<=1; dx++) {
+        for (int dx=-1; dx<=1; dx++) {
             for (int dy=-1; dy<=1; dy++) {
                 if (dx == 0 && dy == 0) continue;
 
@@ -181,29 +176,15 @@ public class World {
                 int testY = playerY + dy;
                 if (testX < 0 || testX >= width || testY < 0 || testY >= height) continue;
 
-                Tile testTile = resources[testX][testY];
-                if (testTile == Tile.EMPTY) continue;
-
-                finalDx = dx;
-                finalDy = dy;
-                collectTile = testTile;
-
-                // Trees always are always preffered
-                if (testTile == Tile.TREE) { 
-                    break outer;
+                testTile = resources[testX][testY];
+                if (Tile.canHarvest(testTile)) { 
+                    GameState.player.getInventory().addItem(Tile.tileToItem(testTile));
+                    resources[testX][testY] = Tile.EMPTY;
+                    updateStatics();
+                    return;
                 } 
             }
         }
-
-        // No resources found
-        if (finalDx == 0 && finalDy == 0) return;
-
-        // Do updating
-        if (collectTile == Tile.STONE) { GameState.player.getInventory().addItem(ItemIndex.STONE); }
-        else if (collectTile == Tile.TREE) { GameState.player.getInventory().addItem(ItemIndex.WOOD); }
-        resources[playerX + finalDx][playerY + finalDy] = Tile.EMPTY;
-        updateStatics();
-		updateActives();
     }
 
     /**
@@ -224,12 +205,13 @@ public class World {
             (x == GameState.player.getX() && y == GameState.player.getY()))
                 return false;
 
-        if (terrain[x][y] == Tile.WATER ||
-            resources[x][y] != Tile.EMPTY ||
-            factory[x][y] != Tile.EMPTY) // This will need changing when upgrading is implemented
-                return false;
-        
-        return true;
+        Tile terrainTile = terrain[x][y];
+        Tile resourceTile = resources[x][y];
+        Tile factoryTile = factory[x][y];
+
+        return Tile.canPlaceOn(terrainTile) &&
+               Tile.canPlaceOn(resourceTile) &&
+               Tile.canPlaceOn(factoryTile);
     }
 
 }
