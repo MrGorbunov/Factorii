@@ -67,7 +67,7 @@
 - [ ] Inheritence / interface for subscreen
   * Maybe also for handling input?
 
-- [ ] Turn all screens into statemachines
+- [x] Turn all screens into statemachines
   * Refactor input handling in the craft screen
 
 - [ ] Move tile methods into the tile enum

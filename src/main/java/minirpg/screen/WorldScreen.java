@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 
 import asciiPanel.AsciiPanel;
 
+
 public class WorldScreen implements Screen {
     private int screenWidth;
     private int screenHeight;
@@ -19,7 +20,7 @@ public class WorldScreen implements Screen {
     private WorldPlacementSubscreen worldPlacementSubscreen;
     private InventoryGridSubscreen inventoryGridSubscreen;
 
-    private ScreenState state;
+    private ScreenState screenState;
 
     public WorldScreen () {
         screenWidth = 80;
@@ -29,11 +30,15 @@ public class WorldScreen implements Screen {
         worldPlacementSubscreen = new WorldPlacementSubscreen(screenWidth, screenHeight - 5);
         inventoryGridSubscreen = new InventoryGridSubscreen(screenWidth, 5, 0, screenHeight - 5);
 
+        screenState = ScreenState.MOVING_IN_WORLD;
         inventoryGridSubscreen.setActive(false);
-
-        state = ScreenState.TRAVERSAL;
     }
 
+    enum ScreenState {
+        MOVING_IN_WORLD, 
+        SELECTING_FROM_INVENTORY, 
+        PLACING_IN_WORLD  
+    }
 
 
 
@@ -43,14 +48,14 @@ public class WorldScreen implements Screen {
     //
 
     public Screen handleInput (KeyEvent key) {
-        switch (state) {
-            case TRAVERSAL:
+        switch (screenState) {
+            case MOVING_IN_WORLD:
                 return traversalInput(key);
 
-            case SELECTION:
+            case SELECTING_FROM_INVENTORY:
                 return selectionInput(key);
 
-            case PLACEMENT:
+            case PLACING_IN_WORLD:
                 return placementInput(key);
         }
 
@@ -67,7 +72,7 @@ public class WorldScreen implements Screen {
             case KeyEvent.VK_Z:
                 boolean canTransition = inventoryGridSubscreen.setActive(true);
                 if (canTransition)
-                    state = ScreenState.SELECTION;
+                    screenState = ScreenState.SELECTING_FROM_INVENTORY;
                 break;
             
             case KeyEvent.VK_SPACE:
@@ -102,13 +107,13 @@ public class WorldScreen implements Screen {
 
             // Get out of selection
             case KeyEvent.VK_Z:
-                state = ScreenState.TRAVERSAL;
+                screenState = ScreenState.MOVING_IN_WORLD;
                 inventoryGridSubscreen.setActive(false);
                 break;
             
             // Go into placement mode
             case KeyEvent.VK_SPACE:
-                state = ScreenState.PLACEMENT;
+                screenState = ScreenState.PLACING_IN_WORLD;
 
                 ItemIndex selectedItem = inventoryGridSubscreen.getSelectedItem();
                 Tile activeTile = ItemIndex.itemToTile(selectedItem);
@@ -142,7 +147,7 @@ public class WorldScreen implements Screen {
         switch (key.getKeyCode()) {
             // Exit placement mode
             case KeyEvent.VK_C:
-                state = ScreenState.TRAVERSAL;
+                screenState = ScreenState.MOVING_IN_WORLD;
                 break;
 
             // Goto selection mode
@@ -150,9 +155,9 @@ public class WorldScreen implements Screen {
                 boolean canGotoInventorygrid = inventoryGridSubscreen.setActive(true);
 
                 if (canGotoInventorygrid)
-                    state = ScreenState.SELECTION;
+                    screenState = ScreenState.SELECTING_FROM_INVENTORY;
                 else
-                    state = ScreenState.TRAVERSAL;
+                    screenState = ScreenState.MOVING_IN_WORLD;
                 break;
             
             // Place down object
@@ -161,7 +166,7 @@ public class WorldScreen implements Screen {
                 if (placedSuccesfully) {
                     GameState.player.getInventory().removeItem(inventoryGridSubscreen.getSelectedItem());
                     inventoryGridSubscreen.refresh();
-                    state = ScreenState.TRAVERSAL;
+                    screenState = ScreenState.MOVING_IN_WORLD;
                 }
                 break;
 
@@ -194,7 +199,7 @@ public class WorldScreen implements Screen {
     //
 
     public void displayOutput (AsciiPanel terminal) {
-        if (state == ScreenState.PLACEMENT)
+        if (screenState == ScreenState.PLACING_IN_WORLD)
             worldPlacementSubscreen.drawSubscreen(terminal);
         else {
             GameState.world.refresh();
@@ -204,10 +209,4 @@ public class WorldScreen implements Screen {
         inventoryGridSubscreen.drawSubscreen(terminal);
     }
 
-}
-
-enum ScreenState {
-    TRAVERSAL, // When player is moving aroudn
-    SELECTION, // When player is selecting something to place
-    PLACEMENT  // When player is placing down something
 }
