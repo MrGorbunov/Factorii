@@ -71,7 +71,9 @@ public class Factory {
         
         switch (tile) {
             case WORKBENCH:
-                factory[x][y] = new FactoryStatic(Tile.WORKBENCH);
+            case KILN:
+            case FORGE:
+                factory[x][y] = new FactoryStatic(tile);
                 break;
             
             case CHEST:

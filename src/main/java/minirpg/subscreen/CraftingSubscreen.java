@@ -56,7 +56,7 @@ public class CraftingSubscreen {
         this(width, height, 0, 0);
     }
 
-    public void initRecipeLists () {
+    private void initRecipeLists () {
         CraftingLocation location = GameState.world.getCraftingLocation();
         craftingRecipes = GameState.craftingGlobals.getUnlockedRecieps(location);
     }
@@ -85,31 +85,15 @@ public class CraftingSubscreen {
     //
 
     private void updateAllLists () {
-        recipes = recipesUnlocked();
-        availability = recipesCraftable();
-    }
-
-    private ArrayList<CraftingRecipe> recipesUnlocked () {
-        ArrayList<CraftingRecipe> recipes = new ArrayList<CraftingRecipe> ();
+        Inventory inv = GameState.player.getInventory();
+        availability = new ArrayList<Boolean> ();
+        recipes = new ArrayList<CraftingRecipe>();
 
         for (CraftingRecipe recipe : craftingRecipes) {
             recipes.add(recipe);
+            availability.add(inv.canCraft(recipe));
         }
-
-        return recipes;
     }
-
-    private ArrayList<Boolean> recipesCraftable () {
-        Inventory inv = GameState.player.getInventory();
-        ArrayList<Boolean> availabality = new ArrayList<Boolean> ();
-
-        for (CraftingRecipe recipe : craftingRecipes) {
-            availabality.add(inv.canCraft(recipe));
-        }
-
-        return availabality;
-    }
-
 
 
 

@@ -18,6 +18,19 @@
   * [x] New subscreen
   * [x] Transfering / taking out
 
+- [ ] Mining drills
+  * [ ] Basic mining drill 
+   * *Maybe it just picks up what's below it?*
+  * [ ] Auto mining drill
+
+- [ ] Copper workbench created
+
+- [ ] Smelting works
+  * Smelt class (vs CraftingRecipe)?
+  * [ ] Kiln smelting
+  * [ ] Forge smelting
+- [ ] Smelters work with funnels
+
 - [ ] Funnels likely will need to be reworked
   * [ ] Directionality is hard to draw (& implement)
   * [ ] Maybe instead create networks
@@ -38,17 +51,6 @@
 > the actual tiles. This could actually be done pretty
 > realistically for just the factory layer.
 >
-
-- [ ] Mining drills
-  * [ ] Basic mining drill 
-   * *Maybe it just picks up what's below it?*
-  * [ ] Auto mining drill
-- [ ] Copper workbench created
-- [ ] Smelting works
-  * Smelt class (vs CraftingRecipe)?
-  * [ ] Kiln smelting
-  * [ ] Forge smelting
-- [ ] Smelters work with funnels
 
 - [ ] All tiers of funnels functional w/ chests
 - [ ] All tiers of floats work too

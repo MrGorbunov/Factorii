@@ -40,8 +40,8 @@ into progressions (direct upgrades) of their own.
 ### Improved Crafting
 - **Workstation**: Can craft more items
 - **Copper Workstation**: Can be set to automatically craft input items.
-- **Kiln**: Allows for copper processing
-- **Forge**: Allows for Iron & alloy processing. 
+- **Kiln**: Allows for copper & glass processing
+- **Forge**: Allows for iron & alloy processing. 
 
 ### Improved Mobility
 - **Boat**: Can now walk on water
@@ -54,6 +54,8 @@ into progressions (direct upgrades) of their own.
 - **Chest**: Holds upto 100 items. Funnels pull out & put items into chests
 	automatically. If next to an item-producing station (ex: Kiln) will
 	get filled up automatically.
+
+TODO: This system will likely need reworking because no way am I implementing this as is
 - **Wooden Funnel**: Transfers items along a direction. Items cannot be picked
 	up mid-transport. Cannot be above water.
 - **Copper Funnel**: Same as wooden, but moves items faster.
