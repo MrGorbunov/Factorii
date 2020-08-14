@@ -1,6 +1,7 @@
 package minirpg.world;
 
 import minirpg.GameState;
+import minirpg.factory.FactoryData;
 import minirpg.inventory.CraftingLocation;
 import minirpg.inventory.ItemIndex;
 
@@ -41,6 +42,7 @@ public class World {
         for (int i=0; i<width; i++)
             staticsBuffer[i] = terrain[i].clone();
         
+        factory = GameState.factory.getFactoryLayer();
         for (int x=0; x<width; x++) {
             for (int y=0; y<height; y++) {
                 Tile resource = resources[x][y];
@@ -71,8 +73,33 @@ public class World {
 
 
     //
-    // Preliminary Player Stuff
+    // Factory Stuff
     //
+
+    public FactoryData getAdjacentFactoryData () {
+        int playerX = GameState.player.getX();
+        int playerY = GameState.player.getY();
+        Tile standingOver = factory[playerX][playerY];
+        if (standingOver != Tile.EMPTY) {
+            return GameState.factory.getFactoryData(playerX, playerY);
+        }
+
+        for (int dx=-1; dx<=1; dx++) {
+            for (int dy=-1; dy<=1; dy++) {
+                if (dx == 0 && dy == 0) continue;
+
+                int testX = playerX + dx;
+                int testY = playerY + dy;
+                if (testX < 0 || testX >= width || testY < 0 || testY >= height) continue;
+
+                Tile testTile = factory[testX][testY];
+                if (testTile != Tile.EMPTY) 
+                    return GameState.factory.getFactoryData(testX, testY);
+            }
+        }
+
+        return null;
+    }
 
     /**
      * Checks what crafting location the player is at.
@@ -133,14 +160,6 @@ public class World {
         return null;
     }
 
-
-
-
-
-    //
-    // Player stuff
-    //
-
     public boolean canStandAt (int x, int y) {
         if (x < 0 || x >= width || y < 0 || y >= height)
             return false;
@@ -153,6 +172,14 @@ public class World {
                Tile.canStandOn(resourceTile) &&
                Tile.canStandOn(factoryTile);
     }
+
+
+
+
+
+    //
+    // Player Actions
+    //
 
     public void harvestAdjacent () {
         // If standing on something -> harvest
@@ -194,7 +221,7 @@ public class World {
         if (canPlaceAt(x, y) == false)
             return false;
 
-        factory[x][y] = factoryTile;
+        GameState.factory.placeFactoryTile(factoryTile, x, y);
         updateStatics();
         updateActives();
         return true;

@@ -1,6 +1,8 @@
 package minirpg.screen;
 
 import minirpg.GameState;
+import minirpg.factory.FactoryChest;
+import minirpg.factory.FactoryData;
 import minirpg.inventory.ItemIndex;
 import minirpg.subscreen.InventoryGridSubscreen;
 import minirpg.subscreen.WorldPlacementSubscreen;
@@ -64,9 +66,20 @@ public class WorldScreen implements Screen {
 
     private Screen traversalInput (KeyEvent key) {
         switch (key.getKeyCode()) {
-            // Goto crafting
+            // Open adjacent inventory / crafting thing
             case KeyEvent.VK_C:
-                return new CraftScreen();
+                FactoryData factoryData = GameState.world.getAdjacentFactoryData();
+                if (factoryData == null)
+                    return new CraftScreen();
+
+                Tile adjacentFactoryTile = factoryData.getTile();
+                if (adjacentFactoryTile == Tile.WORKBENCH ||
+                    adjacentFactoryTile == Tile.KILN ||
+                    adjacentFactoryTile == Tile.FORGE) 
+                        return new CraftScreen();
+                
+                if (adjacentFactoryTile == Tile.CHEST)
+                    return new ChestScreen((FactoryChest) factoryData);
             
             // Goto selection
             case KeyEvent.VK_Z:

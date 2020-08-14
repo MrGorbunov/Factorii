@@ -13,10 +13,10 @@
 
 #### New features
 
-- [ ] Functional chests
-  * [ ] Storing inventories
-  * [ ] New subscreen
-  * [ ] Transfering / taking out
+- [x] Functional chests
+  * [x] Storing inventories
+  * [x] New subscreen
+  * [x] Transfering / taking out
 
 - [ ] Funnels likely will need to be reworked
   * [ ] Directionality is hard to draw (& implement)
@@ -57,7 +57,7 @@
 
 
 #### Cleanup
-- [ ] Switch factory tiles to class-based
+- [x] Switch factory tiles to class-based
   * Still hold tiles?
   * Factory class would hold the entire thing
 
@@ -76,7 +76,6 @@
     the player cords are considered the center of the
     world and referenced a /lot/
 
-- [ ] Serializable gamestate
 
 
 
@@ -84,7 +83,14 @@
 
 - [ ] Switch to a constant fps game clock
   * Update functions for movement
+  * Input Buffer class
+    * Maybe use modifier keys (shift, ctrl, etc) for larger stack transfers (chest)
 
+- [ ] Refactor GUI to be more GUI and less state
+  - May be unnecessary when I get here
+
+- [ ] Place controls into globals
+- [ ] Place colors into globals
 
 
 ## v0.5 - Visuals

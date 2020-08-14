@@ -111,7 +111,7 @@ public class InventorySubscreen {
 
         int yCord = yOff + pad;
         int xCord = xOff + pad;
-        int maxY = height - pad;
+        int maxY = yOff + height - pad;
 
         if (scrollPosition != 0 && active) {
             terminal.write(upScrollArrows(), xCord, pad-1);

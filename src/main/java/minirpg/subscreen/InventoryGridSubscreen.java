@@ -7,9 +7,6 @@ import asciiPanel.AsciiPanel;
 import minirpg.*;
 import minirpg.inventory.*;
 
-// TODO: A lot of duplicate code w/ InventorySubscreen : maybe the Screens should be responsible for feeding String[] arrays;
-// TODO: Extend a common interface w/ WorldSubscreen
-
 public class InventoryGridSubscreen {
     
     private int width;
@@ -20,7 +17,7 @@ public class InventoryGridSubscreen {
 
     /*
     The selection is a 2D value so there are hella variables
-    Scrolling however is still only up / down so 1 var
+    Scrolling however is still only up & down so only 1 its pos
     */
     private int colWidth;
     private int cols;
@@ -31,8 +28,12 @@ public class InventoryGridSubscreen {
     private int pad;
     private int scrollPos;
     private int maxScroll;
-    private String[] displayStrings;
+    private ArrayList<ItemIndex> displayItems;
+    private ArrayList<String> displayStrings;
 
+    private Inventory inventory;
+    private boolean hideResource;
+    private String title;
     
     public InventoryGridSubscreen (int width, int height, int xOff, int yOff) {
         this.width = width;
@@ -48,6 +49,9 @@ public class InventoryGridSubscreen {
         colWidth = 25;
         cols = (width - 2*pad) / colWidth;
         rows = height - 2*pad;
+        inventory = GameState.player.getInventory();
+        hideResource = true;
+        title = "";
 
         updateLists();
     }
@@ -67,7 +71,7 @@ public class InventoryGridSubscreen {
 
         refresh();
 
-        if (displayStrings.length == 0) {
+        if (displayStrings.size() == 0) {
             this.active = false;
             return false;
         } else {
@@ -78,7 +82,44 @@ public class InventoryGridSubscreen {
 
     public ItemIndex getSelectedItem () {
         int index = (scrollPos + yPos) * cols + xPos;
-        return allCraftedItems().get(index);
+        return displayItems.get(index);
+    }
+
+
+
+
+    //
+    // Configurability
+    //
+
+    public void setPad (int pad) {
+        this.pad = pad;
+    }
+
+    public void setColumns (int columns) {
+        cols = columns;
+        rows = height - 2*pad;
+    }
+
+    public void setIgnoreResources (boolean ignoreResources) {
+        hideResource = ignoreResources;
+    }
+
+    /**
+     * Sets the title to display. If set to an empty string 
+     * (length == 1) no title is displayed.
+     */
+    public void setTitle (String title) {
+        this.title = title;
+
+        if (title.length() == 0)
+            rows = height - 2*pad;
+        else
+            rows = height - 2*pad - 1;
+    }
+
+    public void setInventory (Inventory inv) {
+        inventory = inv;
     }
 
     public void refresh () {
@@ -144,7 +185,7 @@ public class InventoryGridSubscreen {
     private boolean hoveringOverNothing () {
         int index = (scrollPos + yPos) * cols + xPos;
 
-        return index >= displayStrings.length;
+        return index >= displayStrings.size();
     }
 
 
@@ -155,28 +196,23 @@ public class InventoryGridSubscreen {
     //
 
     private void updateLists () {
-        Inventory inv = GameState.player.getInventory();
-        ArrayList<ItemIndex> craftedItems = allCraftedItems();
-        displayStrings = new String[craftedItems.size()];
-
-        for (int i=0; i<craftedItems.size(); i++) {
-            displayStrings[i] = craftedItems.get(i) + " x" + inv.getQuantity(craftedItems.get(i));
-        }
-
-        maxScroll = (displayStrings.length + 2) / cols - 3;
-    }
-
-    private ArrayList<ItemIndex> allCraftedItems () {
-        Inventory inv = GameState.player.getInventory();
-        ArrayList<ItemIndex> craftedItems = new ArrayList<ItemIndex> ();
+        displayItems = new ArrayList<ItemIndex>();
+        displayStrings = new ArrayList<String>();
 
         for (ItemIndex item : ItemIndex.values()) {
-            if (item.isPlacable() && inv.getQuantity(item) > 0)  {
-                craftedItems.add(item);
-            }
+            if (inventory.getQuantity(item) == 0 ||
+                (item.isResource() && hideResource) ||
+                item.isEquipable())
+                    continue;
+            
+            displayItems.add(item);
+            int quantity = inventory.getQuantity(item);
+            displayStrings.add(item.toString() + " x" + quantity);
         }
+    }
 
-        return craftedItems;
+    public Inventory getInventory () {
+        return inventory;
     }
 
 
@@ -188,22 +224,29 @@ public class InventoryGridSubscreen {
     //
 
     public void drawSubscreen (AsciiPanel terminal) {
-        drawArrows(terminal);
         drawItemGrid(terminal);
+        drawArrows(terminal);
     }
 
     private void drawItemGrid (AsciiPanel terminal) {
-        for (int y=0; y<rows; y++) { for (int x=0; x<cols; x++) {
+        int titleYOffset = 0;
+        if (title.length() != 0) {
+            terminal.write(title, xOff+pad, yOff+pad, Color.CYAN);
+            titleYOffset = 1;
+        }
+
+        for (int y=0; y<rows; y++) { 
+            for (int x=0; x<cols; x++) {
                 int index = (y + scrollPos) * cols + x;
-                if (index >= displayStrings.length)
+                if (index >= displayStrings.size())
                     return;
 
                 boolean highlightBG = x == xPos && y == yPos && active;
                 Color bgColor = highlightBG ? Color.GRAY : Color.BLACK;
 
                 int xCord = xOff + pad + x*colWidth;
-                int yCord = yOff + pad + y;
-                terminal.write(displayStrings[index], xCord, yCord, Color.LIGHT_GRAY, bgColor);
+                int yCord = yOff + pad + y + titleYOffset;
+                terminal.write(displayStrings.get(index), xCord, yCord, Color.LIGHT_GRAY, bgColor);
             }
         }
     }

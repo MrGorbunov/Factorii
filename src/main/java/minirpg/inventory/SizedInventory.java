@@ -3,12 +3,14 @@ package minirpg.inventory;
 import minirpg.GameState;
 import minirpg.TechLevel;
 
-public class Inventory {
+public class SizedInventory extends Inventory {
 
     private int[] itemAmounts;
+    private int maxSize;
 
-    public Inventory () {
+    public SizedInventory (int maxSize) {
         itemAmounts = new int[ItemIndex.values().length];
+        this.maxSize = maxSize;
     }
 
 
@@ -46,7 +48,8 @@ public class Inventory {
      */
     public void removeItem (ItemIndex item) {
         if (itemAmounts[item.ordinal()] == 0) {
-            throw new Error("Attempted to remove item which has 0 quantity");
+            System.out.println("ERROR: Attempted to remove item which has 0 quantity");
+            return;
         }
 
         itemAmounts[item.ordinal()]--;
@@ -119,7 +122,6 @@ public class Inventory {
     }
 
 
-    // TODO: If enough of these checks are needed, switch to observer pattern
     private void updateTechLevel (ItemIndex craftedItem) {
         TechLevel techLevel = GameState.techLevel;
 
