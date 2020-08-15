@@ -20,8 +20,6 @@ On the bottom, it shows a preview of the current craft option
 
 */
 
-// TODO: [Bug] When changing tech level, new crafts do not become visible
-
 public class CraftingSubscreen {
     private int width;
     private int height;
@@ -48,7 +46,6 @@ public class CraftingSubscreen {
         // TODO: This assumes that recipes have at most 3 unique ingredients
         descriptionY = yOff + height - pad - 5;
 
-        initRecipeLists();
         updateAllLists();
     }
 
@@ -56,7 +53,7 @@ public class CraftingSubscreen {
         this(width, height, 0, 0);
     }
 
-    private void initRecipeLists () {
+    private void refreshRecipeLists () {
         CraftingLocation location = GameState.world.getCraftingLocation();
         craftingRecipes = GameState.craftingGlobals.getUnlockedRecieps(location);
     }
@@ -85,6 +82,8 @@ public class CraftingSubscreen {
     //
 
     private void updateAllLists () {
+        refreshRecipeLists();
+
         Inventory inv = GameState.player.getInventory();
         availability = new ArrayList<Boolean> ();
         recipes = new ArrayList<CraftingRecipe>();
@@ -93,6 +92,9 @@ public class CraftingSubscreen {
             recipes.add(recipe);
             availability.add(inv.canCraft(recipe));
         }
+
+        if (selection >= recipes.size() && active)
+            selection = recipes.size() - 1;
     }
 
 

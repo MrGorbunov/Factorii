@@ -1,5 +1,6 @@
 package minirpg.world;
 
+import minirpg.GameState;
 import minirpg.inventory.ItemIndex;
 
 public enum Tile {
@@ -42,6 +43,15 @@ public enum Tile {
     }
 
     public static boolean canHarvest (Tile tile) {
+        // First 2 checks are for tiles that require equipment (shovel & pickaxe)
+        if (tile == Tile.ORE_COAL || 
+            tile == Tile.ORE_COPPER ||
+            tile == Tile.ORE_IRON)
+                return GameState.player.getInventory().getQuantity(ItemIndex.PICKAXE) > 0;
+        
+        else if (tile == Tile.SAND)
+            return GameState.player.getInventory().getQuantity(ItemIndex.SHOVEL) > 0;
+
         return tile == Tile.TREE ||
                tile == Tile.STONE;
     }

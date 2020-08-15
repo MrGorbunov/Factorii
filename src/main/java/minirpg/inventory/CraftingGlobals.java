@@ -12,7 +12,11 @@ public class CraftingGlobals {
 	public CraftingRecipe[] starterCrafts;
 	public CraftingRecipe[] workbenchCrafts;
 	public CraftingRecipe[] kilnCrafts;
-	public CraftingRecipe[] forgeCrafts;
+    public CraftingRecipe[] forgeCrafts;
+    
+    // Equipment is weird because they're unlocked but also 1-time crafts
+    public CraftingRecipe[] equipmentCrafts;
+    public TechLevel[] equipmentUnlocks;
 
 	// Probably need a new recipe class (CraftingSmelt)
 	// to take fuel into account
@@ -37,14 +41,23 @@ public class CraftingGlobals {
             for (CraftingRecipe recipe : workbenchCrafts)
                 recipes.add(recipe);
 
-            if (GameState.techLevel.ordinal() >= TechLevel.KILN.ordinal()) {
+            int currentTechOrdinal = GameState.techLevel.ordinal();
+            if (currentTechOrdinal >= TechLevel.KILN.ordinal()) {
                 for (CraftingRecipe recipe : kilnCrafts)
                     recipes.add(recipe);
             }
 
-            if (GameState.techLevel.ordinal() >= TechLevel.FORGE.ordinal()) {
+            if (currentTechOrdinal >= TechLevel.FORGE.ordinal()) {
                 for (CraftingRecipe recipe : forgeCrafts)
                     recipes.add(recipe);
+            }
+
+            for (int i=0; i<equipmentCrafts.length; i++) {
+                int requiredLevel = equipmentUnlocks[i].ordinal();
+                boolean alreadyCrafted = GameState.player.getInventory().getQuantity(equipmentCrafts[i].result()) > 0;
+                if (currentTechOrdinal >= requiredLevel &&
+                    alreadyCrafted == false)
+                        recipes.add(equipmentCrafts[i]);
             }
 
             // Conversion
@@ -82,12 +95,6 @@ public class CraftingGlobals {
 		workbenchCrafts = new CraftingRecipe[] {
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
-                new int[]       {3,             2},
-                ItemIndex.PICKAXE, "Pickaxe",
-                "Allows for harvesting coal and ores"),
-
-            new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
                 new int[]       {3,             1},
                 ItemIndex.CHEST, "Chest",
                 "Allows for storage of items & funnel interfacing"),
@@ -114,18 +121,6 @@ public class CraftingGlobals {
         //
         // These are made at the workbench, after having unlocked the kiln & forge
 		kilnCrafts = new CraftingRecipe[] {
-            new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
-                new int[]       {3,              2},
-                ItemIndex.BOAT, "Boat",
-                "Move across water to new islands"),
-
-            new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
-                new int[]       {2,              1},
-                ItemIndex.SHOVEL, "Shovel",
-                "Allows for sand collection"),
-
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
                 new int[]       {2,              1},
@@ -170,15 +165,45 @@ public class CraftingGlobals {
                 ItemIndex.FUNNEL_STEEL, "Steel Funnel",
                 "Perhaps unnecessary"),
 
+        };
+
+        
+
+        //
+        // Equipment is weird because it's a 1-time craft
+        equipmentCrafts = new CraftingRecipe[] {
+            new CraftingRecipe(
+                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
+                new int[]       {3,             2},
+                ItemIndex.PICKAXE, "Pickaxe",
+                "Allows for harvesting coal and ores"),
+
+            new CraftingRecipe(
+                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
+                new int[]       {3,              2},
+                ItemIndex.BOAT, "Boat",
+                "Move across water to new islands"),
+
+            new CraftingRecipe(
+                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
+                new int[]       {2,              1},
+                ItemIndex.SHOVEL, "Shovel",
+                "Allows for sand collection"),
+
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
                 new int[]       {2,              1},
                 ItemIndex.TALL_BOOTS, "Tall Boots",
                 "Improved mobility over factory components"),
-
         };
 
-
+        // Stores at what TechLevel each equipment is unlocked
+        equipmentUnlocks = new TechLevel[] {
+            TechLevel.WORKBENCH, // Pickaxe
+            TechLevel.KILN, // Boat
+            TechLevel.KILN, // Shovel
+            TechLevel.FORGE, // Tall Boots
+        };
 
         //
         // These are made at the Kiln & Forge
