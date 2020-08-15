@@ -11,7 +11,7 @@ import minirpg.inventory.CraftingRecipe;
 import minirpg.inventory.ItemIndex;
 import minirpg.subscreen.CraftingSubscreen;
 import minirpg.subscreen.InventoryGridSubscreen;
-import minirpg.subscreen.InventorySubscreen;
+import minirpg.subscreen.PlayerInventorySubscreen;
 
 
 public class ChestScreen implements Screen {
@@ -35,7 +35,7 @@ public class ChestScreen implements Screen {
         playerInventorySubscreen = new InventoryGridSubscreen(screenWidth / 2, screenHeight);
         chestInventorySubscreen = new InventoryGridSubscreen((screenWidth + 1) / 2, screenHeight - transferMenuHeight, (screenWidth+1) / 2, 0);
 
-        screenState = ScreenState.LOOKING_AT_CHEST_INVENTORY;
+        screenState = ScreenState.LOOKING_AT_PLAYER_INVENTORY;
 
         playerInventorySubscreen.setIgnoreResources(false);
         playerInventorySubscreen.setColumns(1);

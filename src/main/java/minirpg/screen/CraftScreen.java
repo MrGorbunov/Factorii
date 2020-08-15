@@ -9,7 +9,7 @@ import minirpg.GameState;
 import minirpg.inventory.CraftingRecipe;
 import minirpg.inventory.ItemIndex;
 import minirpg.subscreen.CraftingSubscreen;
-import minirpg.subscreen.InventorySubscreen;
+import minirpg.subscreen.PlayerInventorySubscreen;
 
 
 public class CraftScreen implements Screen {
@@ -17,7 +17,7 @@ public class CraftScreen implements Screen {
     private int screenWidth;
     private int screenHeight;
     
-    private InventorySubscreen inventorySubscreen;
+    private PlayerInventorySubscreen inventorySubscreen;
     private CraftingSubscreen craftingSubscreen;
 
     private ScreenState screenState;
@@ -29,7 +29,7 @@ public class CraftScreen implements Screen {
         screenWidth = 79;
         screenHeight = 24;
 
-        inventorySubscreen = new InventorySubscreen(screenWidth / 2, screenHeight);
+        inventorySubscreen = new PlayerInventorySubscreen(screenWidth / 2, screenHeight);
         craftingSubscreen = new CraftingSubscreen(screenWidth / 2, screenHeight, (screenWidth+1) / 2, 0);
 
         screenState = ScreenState.LOOKING_AT_CRAFTING_PANEL;

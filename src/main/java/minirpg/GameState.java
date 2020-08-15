@@ -39,6 +39,8 @@ public class GameState {
         player.getInventory().addItemMulti(ItemIndex.ORE_COAL, 100);
         player.getInventory().addItemMulti(ItemIndex.ORE_COPPER, 100);
         player.getInventory().addItemMulti(ItemIndex.ORE_IRON, 100);
+
+        techLevel = TechLevel.FORGE; // Also temporary
     }
 
     public static void makeNewWorld () {

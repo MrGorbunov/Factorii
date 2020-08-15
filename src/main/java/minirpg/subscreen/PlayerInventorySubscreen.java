@@ -8,7 +8,7 @@ import minirpg.*;
 import minirpg.inventory.*;
 
 // TODO: Extend a common interface w/ WorldSubscreen
-public class InventorySubscreen {
+public class PlayerInventorySubscreen {
     
     private int width;
     private int height;
@@ -18,11 +18,13 @@ public class InventorySubscreen {
 
     private int pad;
     private int scrollPosition;
+    private int totalLines;
     private ArrayList<String> resources;
-    private ArrayList<String> craftedItems;
+    private ArrayList<String> equipment;
+    private ArrayList<String> factoryComponents;
 
     
-    public InventorySubscreen (int width, int height, int xOff, int yOff) {
+    public PlayerInventorySubscreen (int width, int height, int xOff, int yOff) {
         this.width = width;
         this.height = height;
         this.xOff = xOff;
@@ -30,10 +32,11 @@ public class InventorySubscreen {
 
         pad = 2;
         scrollPosition = 0;
+        totalLines = 0; // Gets reset once drawn
         updateLists();
     }
 
-    public InventorySubscreen (int width, int height) {
+    public PlayerInventorySubscreen (int width, int height) {
         this(width, height, 0, 0);
     }
 
@@ -44,11 +47,6 @@ public class InventorySubscreen {
     //
     // Scrolling logic
     //
-
-    private int totalLines () {
-        // 2 lines for titles, 1 line for space
-        return 3 + resources.size() + craftedItems.size();
-    }
 
     public void scrollUp () {
         if (scrollPosition <= 0) { return; }
@@ -65,7 +63,7 @@ public class InventorySubscreen {
         height - 2*pad = how many lines of text can fit
         totalLines - (height - 2*pad) = how many excess lines don't fit & max scroll position
         */
-        if (scrollPosition >= totalLines() - height + 2*pad) { return; }
+        if (scrollPosition >= totalLines - height + 2*pad) { return; }
 
         scrollPosition++;
     }
@@ -85,29 +83,46 @@ public class InventorySubscreen {
     public void drawSubscreen (AsciiPanel terminal) {
         updateLists();
 
-        // Setup the lists
+        //
+        // Generate a list for text & one for colors
+
         ArrayList<String> inventoryText = new ArrayList<String>();
         ArrayList<Color> inventoryColor = new ArrayList<Color>();
+
         inventoryText.add("Resources");
         inventoryColor.add(Color.CYAN);
-
         for (String resource : resources) {
             inventoryText.add(resource);
             inventoryColor.add(Color.WHITE);
         }
-
         inventoryText.add("");
         inventoryColor.add(Color.WHITE);
 
-        inventoryText.add("Crafted Items");
-        inventoryColor.add(Color.CYAN);
-
-        for (String craftedItem : craftedItems) {
-            inventoryText.add(craftedItem);
+        if (equipment.size() > 0) {
+            inventoryText.add("Equipment");
+            inventoryColor.add(Color.CYAN);
+            for (String equip : equipment) {
+                inventoryText.add(equip);
+                inventoryColor.add(Color.WHITE);
+            }
+            inventoryText.add("");
             inventoryColor.add(Color.WHITE);
         }
 
+        if (factoryComponents.size() > 0) {
+            inventoryText.add("Factory Components");
+            inventoryColor.add(Color.CYAN);
+            for (String craftedItem : factoryComponents) {
+                inventoryText.add(craftedItem);
+                inventoryColor.add(Color.WHITE);
+            }
+        }
 
+        totalLines = inventoryText.size();
+
+
+        //
+        // Now write the created list to the console
 
         int yCord = yOff + pad;
         int xCord = xOff + pad;
@@ -163,7 +178,7 @@ public class InventorySubscreen {
 
     private void updateLists () {
         updateResourceList();
-        updateCraftedList();
+        updateEquipmentAndFactoryComponentsList();
     }
 
     private void updateResourceList () {
@@ -172,9 +187,9 @@ public class InventorySubscreen {
 
         resources.add("Wood: " + inv.getQuantity(ItemIndex.WOOD));
         resources.add("Stone: " + inv.getQuantity(ItemIndex.STONE));
-        resources.add("");
         
         if (GameState.techLevel.ordinal() >= TechLevel.WORKBENCH.ordinal()) {
+            resources.add("");
             resources.add("Coal: " + inv.getQuantity(ItemIndex.ORE_COAL));
             resources.add("Copper Ore: " + inv.getQuantity(ItemIndex.ORE_COPPER));
             resources.add("Iron Ore: " + inv.getQuantity(ItemIndex.ORE_IRON));
@@ -195,29 +210,20 @@ public class InventorySubscreen {
         }
     }
 
-    private void updateCraftedList () {
-        ArrayList<ItemIndex> items = getCraftedItems();
-        craftedItems = new ArrayList<String> ();
+    private void updateEquipmentAndFactoryComponentsList () {
+        equipment = new ArrayList<String> ();
+        factoryComponents = new ArrayList<String> ();
         Inventory inv = GameState.player.getInventory();
 
-        for (ItemIndex item : items) {
-            craftedItems.add(item.toString() + " x" + inv.getQuantity(item));
-        }
-    }
-
-    private ArrayList<ItemIndex> getCraftedItems () {
-        ArrayList<ItemIndex> items = new ArrayList<ItemIndex> ();
-        Inventory inv = GameState.player.getInventory();
-
-        for (ItemIndex in : ItemIndex.values()) {
-            if (!in.isPlacable() ||
-                inv.getQuantity(in) == 0)
+        for (ItemIndex possibleItem : ItemIndex.values()) {
+            if (possibleItem.isResource() ||
+                inv.getQuantity(possibleItem) == 0)
                     continue;
-            
-            items.add(in);
+
+            if (possibleItem.isPlacable())
+                factoryComponents.add(possibleItem.toString() + " x" + inv.getQuantity(possibleItem));
+            else if (possibleItem.isEquipable())
+                equipment.add(possibleItem.toString());
         }
-
-        return items;
     }
-
 }
