@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 import asciiPanel.AsciiPanel;
+import minirpg.Controls;
 import minirpg.GameState;
 import minirpg.inventory.CraftingRecipe;
 import minirpg.inventory.ItemIndex;
@@ -64,22 +65,22 @@ public class CraftScreen implements Screen {
 
     private Screen craftingInput (KeyEvent key) {
         switch (key.getKeyCode()) {
-            case KeyEvent.VK_C:
+            case Controls.INTERACT:
                 return new WorldScreen();
             
-            case KeyEvent.VK_UP:
+            case Controls.DIR_UP:
                 craftingSubscreen.selectionUp();
                 break;
             
-            case KeyEvent.VK_DOWN:
+            case Controls.DIR_DOWN:
                 craftingSubscreen.selectionDown();
                 break;
             
-            case KeyEvent.VK_SPACE:
+            case Controls.ACTION:
                 craftingSubscreen.craftSelection();
                 break;
 
-            case KeyEvent.VK_Z: // Switch active subscreen
+            case Controls.UI_CYCLE: // Switch active subscreen
                 inventorySubscreen.setActive(true);
                 craftingSubscreen.setActive(false);
                 screenState = ScreenState.LOOKING_AT_INVENTORY;
@@ -91,19 +92,19 @@ public class CraftScreen implements Screen {
 
     private Screen inventoryInput (KeyEvent key) {
         switch (key.getKeyCode()) {
-            case KeyEvent.VK_C:
+            case Controls.INTERACT:
                 return new WorldScreen();
 
             
-            case KeyEvent.VK_UP:
+            case Controls.DIR_UP:
                 inventorySubscreen.scrollUp();
                 break;
 
-            case KeyEvent.VK_DOWN:
+            case Controls.DIR_DOWN:
                 inventorySubscreen.scrollDown();
                 break;
 
-            case KeyEvent.VK_Z: // Swtich active subscreen
+            case Controls.UI_CYCLE: // Swtich active subscreen
                 craftingSubscreen.setActive(true);
                 inventorySubscreen.setActive(false);
                 screenState = ScreenState.LOOKING_AT_CRAFTING_PANEL;

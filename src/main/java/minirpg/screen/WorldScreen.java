@@ -1,5 +1,6 @@
 package minirpg.screen;
 
+import minirpg.Controls;
 import minirpg.GameState;
 import minirpg.factory.FactoryChest;
 import minirpg.factory.FactoryData;
@@ -67,7 +68,7 @@ public class WorldScreen implements Screen {
     private Screen traversalInput (KeyEvent key) {
         switch (key.getKeyCode()) {
             // Open adjacent inventory / crafting thing
-            case KeyEvent.VK_C:
+            case Controls.INTERACT:
                 FactoryData factoryData = GameState.world.getAdjacentFactoryData();
                 if (factoryData == null)
                     return new CraftScreen();
@@ -82,29 +83,29 @@ public class WorldScreen implements Screen {
                     return new ChestScreen((FactoryChest) factoryData);
             
             // Goto selection
-            case KeyEvent.VK_Z:
+            case Controls.UI_CYCLE:
                 boolean canTransition = inventoryGridSubscreen.setActive(true);
                 if (canTransition)
                     screenState = ScreenState.SELECTING_FROM_INVENTORY;
                 break;
             
-            case KeyEvent.VK_SPACE:
+            case Controls.ACTION:
                 GameState.world.harvestAdjacent();
                 break;
 
-            case KeyEvent.VK_UP:
+            case Controls.DIR_UP:
                 GameState.player.moveUp();
                 break;
 
-            case KeyEvent.VK_DOWN:
+            case Controls.DIR_DOWN:
                 GameState.player.moveDown();
                 break;
             
-            case KeyEvent.VK_LEFT:
+            case Controls.DIR_LEFT:
                 GameState.player.moveLeft();
                 break;
             
-            case KeyEvent.VK_RIGHT:
+            case Controls.DIR_RIGHT:
                 GameState.player.moveRight();
                 break;
         }
@@ -115,17 +116,17 @@ public class WorldScreen implements Screen {
     private Screen selectionInput (KeyEvent key) {
         switch (key.getKeyCode()) {
             // Goto crafting
-            case KeyEvent.VK_C:
+            case Controls.INTERACT:
                 return new CraftScreen();
 
             // Get out of selection
-            case KeyEvent.VK_Z:
+            case Controls.UI_CYCLE:
                 screenState = ScreenState.MOVING_IN_WORLD;
                 inventoryGridSubscreen.setActive(false);
                 break;
             
             // Go into placement mode
-            case KeyEvent.VK_SPACE:
+            case Controls.ACTION:
                 screenState = ScreenState.PLACING_IN_WORLD;
 
                 ItemIndex selectedItem = inventoryGridSubscreen.getSelectedItem();
@@ -136,19 +137,19 @@ public class WorldScreen implements Screen {
                 inventoryGridSubscreen.setActive(false);
                 break;
 
-            case KeyEvent.VK_UP:
+            case Controls.DIR_UP:
                 inventoryGridSubscreen.moveUp();
                 break;
 
-            case KeyEvent.VK_DOWN:
+            case Controls.DIR_DOWN:
                 inventoryGridSubscreen.moveDown();
                 break;
             
-            case KeyEvent.VK_LEFT:
+            case Controls.DIR_LEFT:
                 inventoryGridSubscreen.moveLeft();
                 break;
             
-            case KeyEvent.VK_RIGHT:
+            case Controls.DIR_RIGHT:
                 inventoryGridSubscreen.moveRight();
                 break;
         }
@@ -159,12 +160,12 @@ public class WorldScreen implements Screen {
     private Screen placementInput (KeyEvent key) {
         switch (key.getKeyCode()) {
             // Exit placement mode
-            case KeyEvent.VK_C:
+            case Controls.INTERACT:
                 screenState = ScreenState.MOVING_IN_WORLD;
                 break;
 
             // Goto selection mode
-            case KeyEvent.VK_Z:
+            case Controls.UI_CYCLE:
                 boolean canGotoInventorygrid = inventoryGridSubscreen.setActive(true);
 
                 if (canGotoInventorygrid)
@@ -174,7 +175,7 @@ public class WorldScreen implements Screen {
                 break;
             
             // Place down object
-            case KeyEvent.VK_SPACE:
+            case Controls.ACTION:
                 boolean placedSuccesfully = worldPlacementSubscreen.placeItem();
                 if (placedSuccesfully) {
                     GameState.player.getInventory().removeItem(inventoryGridSubscreen.getSelectedItem());
@@ -183,19 +184,19 @@ public class WorldScreen implements Screen {
                 }
                 break;
 
-            case KeyEvent.VK_UP:
+            case Controls.DIR_UP:
                 worldPlacementSubscreen.moveUp();
                 break;
 
-            case KeyEvent.VK_DOWN:
+            case Controls.DIR_DOWN:
                 worldPlacementSubscreen.moveDown();
                 break;
             
-            case KeyEvent.VK_LEFT:
+            case Controls.DIR_LEFT:
                 worldPlacementSubscreen.moveLeft();
                 break;
             
-            case KeyEvent.VK_RIGHT:
+            case Controls.DIR_RIGHT:
                 worldPlacementSubscreen.moveRight();
                 break;
         }
