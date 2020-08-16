@@ -120,7 +120,7 @@ public class WorldPlacementSubscreen {
         World world = GameState.world;
         int worldX = xCord - (width / 2) + GameState.player.getX();
         int worldY = yCord - (height / 2) + GameState.player.getY();
-        Color displayColor = world.canPlaceAt(worldX, worldY) ? Color.GREEN : Color.RED;
+        Color displayColor = world.canPlaceAt(placementTile, worldX, worldY) ? Color.GREEN : Color.RED;
 		terminal.write(Glyph.tileToGlyph(placementTile).getChar(), xCord + xOff, yCord + yOff, displayColor);
     }
 

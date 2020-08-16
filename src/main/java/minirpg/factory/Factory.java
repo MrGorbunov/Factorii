@@ -2,6 +2,7 @@ package minirpg.factory;
 
 import java.util.HashMap;
 
+import minirpg.GameState;
 import minirpg.inventory.Inventory;
 import minirpg.inventory.ItemIndex;
 import minirpg.world.Tile;
@@ -78,6 +79,11 @@ public class Factory {
             
             case CHEST:
                 factory[x][y] = new FactoryChest(Tile.CHEST);
+                break;
+            
+            case MINING_DRILL:
+                ItemIndex resource = GameState.world.harvestSpecific(x, y);
+                factory[x][y] = new FactoryMiningDrill(tile, resource);
                 break;
         }
     }

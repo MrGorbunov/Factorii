@@ -56,11 +56,6 @@ public enum Tile {
                tile == Tile.STONE;
     }
 
-    public static boolean canPlaceOn (Tile tile) {
-        return tile == Tile.EMPTY ||
-               tile == Tile.GROUND;
-    }
-
     public static ItemIndex tileToItem (Tile tile) {
         switch (tile) {
             case TREE:

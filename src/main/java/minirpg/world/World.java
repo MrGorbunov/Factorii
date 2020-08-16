@@ -2,6 +2,7 @@ package minirpg.world;
 
 import minirpg.GameState;
 import minirpg.factory.FactoryData;
+import minirpg.factory.FactoryMiningDrill;
 import minirpg.inventory.CraftingLocation;
 import minirpg.inventory.ItemIndex;
 
@@ -114,7 +115,7 @@ public class World {
         int playerY = GameState.player.getY();
         Tile standingOver = factory[playerX][playerY];
         CraftingLocation testLocation = checkTileCrafting(standingOver);
-        if (testLocation != null) {
+        if (testLocation != CraftingLocation.PLAYER) {
             return testLocation;
         }
 
@@ -130,7 +131,7 @@ public class World {
 
                 Tile testTile = factory[testX][testY];
                 testLocation = checkTileCrafting(testTile);
-                if (testLocation == null) continue;
+                if (testLocation == CraftingLocation.PLAYER) continue;
 
                 if (testLocation.ordinal() > highestLocation.ordinal()) {
                         highestLocation = testLocation;
@@ -148,7 +149,7 @@ public class World {
      * WORKBENCH, KILN, FORGE.
      */
     private CraftingLocation checkTileCrafting (Tile testTile) {
-        if (testTile == Tile.WORKBENCH || testTile == Tile.COPPER_WORKBENCH)
+        if (testTile == Tile.WORKBENCH)
             return CraftingLocation.WORKBENCH;
         
         if (testTile == Tile.KILN)
@@ -157,7 +158,7 @@ public class World {
         if (testTile == Tile.FORGE)
             return CraftingLocation.FORGE;
         
-        return null;
+        return CraftingLocation.PLAYER;
     }
 
     public boolean canStandAt (int x, int y) {
@@ -173,6 +174,11 @@ public class World {
                Tile.canStandOn(factoryTile);
     }
 
+    public ItemIndex harvestSpecific (int x, int y) {
+        ItemIndex resource = Tile.tileToItem(resources[x][y]);
+        resources[x][y] = Tile.EMPTY;
+        return resource;
+    }
 
 
 
@@ -186,14 +192,23 @@ public class World {
         // else look around & harvest trees first, then ore
         int playerX = GameState.player.getX();
         int playerY = GameState.player.getY();
-        Tile testTile = resources[playerX][playerY];
+        Tile testResource = resources[playerX][playerY];
+        Tile testFactory = factory[playerX][playerY];
 
-        if (Tile.canHarvest(testTile)) {
-            GameState.player.getInventory().addItem(Tile.tileToItem(testTile));
+        if (Tile.canHarvest(testResource)) {
+            GameState.player.getInventory().addItem(Tile.tileToItem(testResource));
             resources[playerX][playerY] = Tile.EMPTY;
             updateStatics();
             return;
+
+        } else if (testFactory == Tile.MINING_DRILL) {
+            FactoryMiningDrill drill = (FactoryMiningDrill) GameState.factory.getFactoryData(playerX, playerY);
+            ItemIndex extractedResource = drill.getResource();
+            GameState.player.getInventory().addItem(extractedResource);
+            // Doesn't change map so no need to update anything
+            return;
         }
+
 
         for (int dx=-1; dx<=1; dx++) {
             for (int dy=-1; dy<=1; dy++) {
@@ -203,13 +218,21 @@ public class World {
                 int testY = playerY + dy;
                 if (testX < 0 || testX >= width || testY < 0 || testY >= height) continue;
 
-                testTile = resources[testX][testY];
-                if (Tile.canHarvest(testTile)) { 
-                    GameState.player.getInventory().addItem(Tile.tileToItem(testTile));
+                testResource = resources[testX][testY];
+                testFactory = factory[testX][testY];
+
+                if (Tile.canHarvest(testResource)) { 
+                    GameState.player.getInventory().addItem(Tile.tileToItem(testResource));
                     resources[testX][testY] = Tile.EMPTY;
                     updateStatics();
                     return;
-                } 
+
+                } else if (testFactory == Tile.MINING_DRILL) {
+                    FactoryMiningDrill drill = (FactoryMiningDrill) GameState.factory.getFactoryData(playerX, playerY);
+                    ItemIndex extractedResource = drill.getResource();
+                    GameState.player.getInventory().addItem(extractedResource);
+                    return;
+                }
             }
         }
     }
@@ -218,27 +241,43 @@ public class World {
      * Returns true if successfully was able to place the tile
      */
     public boolean placeFactoryTile (Tile factoryTile, int x, int y) {
-        if (canPlaceAt(x, y) == false)
+        if (canPlaceAt(factoryTile, x, y) == false)
             return false;
 
         GameState.factory.placeFactoryTile(factoryTile, x, y);
+
         updateStatics();
         updateActives();
         return true;
     }
 
-    public boolean canPlaceAt (int x, int y) {
+    public boolean canPlaceAt (Tile factoryTile, int x, int y) {
         if (x < 0 || x >= width || y < 0 || y >= height ||
             (x == GameState.player.getX() && y == GameState.player.getY()))
                 return false;
 
-        Tile terrainTile = terrain[x][y];
-        Tile resourceTile = resources[x][y];
-        Tile factoryTile = factory[x][y];
+        Tile testTerrainTile = terrain[x][y];
+        Tile testResourceTile = resources[x][y];
+        Tile testFactoryTile = factory[x][y];
 
-        return Tile.canPlaceOn(terrainTile) &&
-               Tile.canPlaceOn(resourceTile) &&
-               Tile.canPlaceOn(factoryTile);
+        switch (factoryTile) {
+            case MINING_DRILL:
+                return testTerrainTile == Tile.GROUND &&
+                       // Trees are not renewable
+                       testResourceTile != Tile.EMPTY && testResourceTile != Tile.TREE &&
+                       testFactoryTile == Tile.EMPTY;
+
+            case BRONZE_FLOAT:
+            case WOODEN_FLOAT:
+                return testTerrainTile == Tile.WATER &&
+                       testResourceTile == Tile.EMPTY &&
+                       testFactoryTile == Tile.EMPTY;
+
+            default:
+                return testTerrainTile == Tile.GROUND &&
+                       testResourceTile == Tile.EMPTY &&
+                       testFactoryTile == Tile.EMPTY;
+        }
     }
 
 }

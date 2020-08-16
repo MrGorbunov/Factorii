@@ -72,15 +72,12 @@ public class WorldScreen implements Screen {
                 FactoryData factoryData = GameState.world.getAdjacentFactoryData();
                 if (factoryData == null)
                     return new CraftScreen();
-
-                Tile adjacentFactoryTile = factoryData.getTile();
-                if (adjacentFactoryTile == Tile.WORKBENCH ||
-                    adjacentFactoryTile == Tile.KILN ||
-                    adjacentFactoryTile == Tile.FORGE) 
-                        return new CraftScreen();
                 
-                if (adjacentFactoryTile == Tile.CHEST)
+                Tile factoryTile = factoryData.getTile();
+                if (factoryTile == Tile.CHEST)
                     return new ChestScreen((FactoryChest) factoryData);
+
+                return new CraftScreen();
             
             // Goto selection
             case Controls.UI_CYCLE:
