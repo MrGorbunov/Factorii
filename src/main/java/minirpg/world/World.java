@@ -228,7 +228,7 @@ public class World {
                     return;
 
                 } else if (testFactory == Tile.MINING_DRILL) {
-                    FactoryMiningDrill drill = (FactoryMiningDrill) GameState.factory.getFactoryData(playerX, playerY);
+                    FactoryMiningDrill drill = (FactoryMiningDrill) GameState.factory.getFactoryData(testX, testY);
                     ItemIndex extractedResource = drill.getResource();
                     GameState.player.getInventory().addItem(extractedResource);
                     return;
