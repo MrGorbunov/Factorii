@@ -25,16 +25,28 @@ Interact
 
 // TODO: Start using this you bumbo
 
-public class Controls {
-    public static final int DIR_UP = KeyEvent.VK_UP;
-    public static final int DIR_DOWN = KeyEvent.VK_DOWN;
-    public static final int DIR_LEFT = KeyEvent.VK_LEFT;
-    public static final int DIR_RIGHT = KeyEvent.VK_RIGHT;
-    
-    public static final int UI_CYCLE = KeyEvent.VK_Z;
-    public static final int ACTION = KeyEvent.VK_SPACE;
-    public static final int INTERACT = KeyEvent.VK_C;
+public enum Controls {
+    DIR_UP    (KeyEvent.VK_UP),
+    DIR_DOWN  (KeyEvent.VK_DOWN),
+    DIR_LEFT  (KeyEvent.VK_LEFT),
+    DIR_RIGHT (KeyEvent.VK_RIGHT),
 
-    // Private constructor ensures static use
-    private Controls () {}
+    UI_CYCLE (KeyEvent.VK_Z),
+    ACTION   (KeyEvent.VK_SPACE),
+    INTERACT (KeyEvent.VK_C);
+
+    // public static final int DIR_UP = KeyEvent.VK_UP;
+    // public static final int DIR_DOWN = KeyEvent.VK_DOWN;
+    // public static final int DIR_LEFT = KeyEvent.VK_LEFT;
+    // public static final int DIR_RIGHT = KeyEvent.VK_RIGHT;
+    
+    // public static final int UI_CYCLE = KeyEvent.VK_Z;
+    // public static final int ACTION = KeyEvent.VK_SPACE;
+    // public static final int INTERACT = KeyEvent.VK_C;
+
+
+    private int keyCode;
+
+    Controls (int keyCode) { this.keyCode = keyCode; }
+    public int getKeyCode () { return keyCode; }
 }

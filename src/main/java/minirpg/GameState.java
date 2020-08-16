@@ -21,7 +21,9 @@ public class GameState {
     public static CraftingGlobals craftingGlobals;
     public static TechLevel techLevel;
 
+    // TODO: Get these guys out of here
     private static WorldBuilder worldBuilder;
+    public static InputBuffer inputBuffer;
 
 
     public static void initGameState (int worldWidth, int worldHeight) {
@@ -39,6 +41,10 @@ public class GameState {
         player.getInventory().addItemMulti(ItemIndex.ORE_COAL, 100);
         player.getInventory().addItemMulti(ItemIndex.ORE_COPPER, 100);
         player.getInventory().addItemMulti(ItemIndex.ORE_IRON, 100);
+    }
+
+    public static void setInputBuffer (InputBuffer inputBuffer) {
+        GameState.inputBuffer = inputBuffer;
     }
 
     public static void makeNewWorld () {

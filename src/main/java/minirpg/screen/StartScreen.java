@@ -13,7 +13,7 @@ public class StartScreen implements Screen {
     }
 
     public Screen handleInput (KeyEvent key) {
-        if (key.getKeyCode() == Controls.ACTION)
+        if (key.getKeyCode() == KeyEvent.VK_C)
             return new WorldScreen();
         else
             return this;

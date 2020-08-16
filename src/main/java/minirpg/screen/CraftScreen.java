@@ -65,22 +65,22 @@ public class CraftScreen implements Screen {
 
     private Screen craftingInput (KeyEvent key) {
         switch (key.getKeyCode()) {
-            case Controls.INTERACT:
+            case KeyEvent.VK_SPACE:
                 return new WorldScreen();
             
-            case Controls.DIR_UP:
+            case KeyEvent.VK_UP:
                 craftingSubscreen.selectionUp();
                 break;
             
-            case Controls.DIR_DOWN:
+            case KeyEvent.VK_DOWN:
                 craftingSubscreen.selectionDown();
                 break;
             
-            case Controls.ACTION:
+            case KeyEvent.VK_C:
                 craftingSubscreen.craftSelection();
                 break;
 
-            case Controls.UI_CYCLE: // Switch active subscreen
+            case KeyEvent.VK_Z: // Switch active subscreen
                 inventorySubscreen.setActive(true);
                 craftingSubscreen.setActive(false);
                 screenState = ScreenState.LOOKING_AT_INVENTORY;
@@ -92,19 +92,19 @@ public class CraftScreen implements Screen {
 
     private Screen inventoryInput (KeyEvent key) {
         switch (key.getKeyCode()) {
-            case Controls.INTERACT:
+            case KeyEvent.VK_SPACE:
                 return new WorldScreen();
 
             
-            case Controls.DIR_UP:
+            case KeyEvent.VK_UP:
                 inventorySubscreen.scrollUp();
                 break;
 
-            case Controls.DIR_DOWN:
+            case KeyEvent.VK_DOWN:
                 inventorySubscreen.scrollDown();
                 break;
 
-            case Controls.UI_CYCLE: // Swtich active subscreen
+            case KeyEvent.VK_Z: // Swtich active subscreen
                 craftingSubscreen.setActive(true);
                 inventorySubscreen.setActive(false);
                 screenState = ScreenState.LOOKING_AT_CRAFTING_PANEL;
