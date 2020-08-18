@@ -27,7 +27,6 @@ public class ApplicationMain extends JFrame {
 
     private Screen screen;
     private AsciiPanel terminal;
-    private InputBuffer inputBuffer;
 
     public ApplicationMain () {
         super();
@@ -37,7 +36,7 @@ public class ApplicationMain extends JFrame {
 
         // screen = new StartScreen();
         screen = new StartScreen();
-        inputBuffer = new InputBuffer();
+        InputBuffer inputBuffer = new InputBuffer();
 
         GameState.initGameState(200, 170);
         GameState.makeNewWorld();
@@ -55,7 +54,12 @@ public class ApplicationMain extends JFrame {
         while (true) {
             previousTime = System.currentTimeMillis();
 
+            // WARNING: Order is pretty important here
+            //      be careful what you mess with
+
             // Update
+            // Player & Factory updates are handled
+            // by the screen
             screen = screen.update();
 
             // Draw
@@ -64,7 +68,7 @@ public class ApplicationMain extends JFrame {
             super.repaint();
 
             // Updating input buffer happens at end
-            inputBuffer.update();
+            GameState.inputBuffer.update();
 
             // Wait
             long currentTime = System.currentTimeMillis();

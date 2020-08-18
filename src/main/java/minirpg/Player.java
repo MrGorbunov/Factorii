@@ -4,17 +4,23 @@ import minirpg.inventory.Inventory;
 
 public class Player {
 
-    private int x;
-    private int y;
+    private int updateTicks;
+    private final int TICKS_PER_MOVE;
+
+    private int xCord;
+    private int yCord;
     private Inventory playerInventory;
 
-    public int getX () { return x; }
-    public int getY () { return y; }
+    public int getX () { return xCord; }
+    public int getY () { return yCord; }
     public Inventory getInventory () { return playerInventory; }
 
     public Player (int x, int y) {
-        this.x = x;
-        this.y = y;
+        TICKS_PER_MOVE = 3; // Basically speed, but lower = faster
+        updateTicks = 0;
+
+        xCord = x;
+        yCord = y;
         playerInventory = new Inventory();
     }
 
@@ -22,38 +28,28 @@ public class Player {
         this(0, 0);
     }
 
-
-
-    //
-    // Movement Logic
-    //
-
-    public void moveUp () {
-		int newY = y - 1;
-        if (GameState.world.canStandAt(x, newY) == false)
+    public void update () {
+        if (updateTicks < TICKS_PER_MOVE) {
+            updateTicks++;
             return;
-        y = newY;
+        }
+
+        InputBuffer inputBuffer = GameState.inputBuffer;
+
+        if (inputBuffer.xInput() != 0 || inputBuffer.yInput() != 0) {
+            int newX = xCord + inputBuffer.xInput();
+            int newY = yCord + inputBuffer.yInput();
+
+            if (GameState.world.canStandAt(newX, yCord))
+                xCord = newX;
+            if (GameState.world.canStandAt(xCord, newY))
+                yCord = newY;
+
+            updateTicks = 0;
+        }
+
     }
 
-    public void moveDown () {
-		int newY = y + 1;
-        if (GameState.world.canStandAt(x, newY) == false)
-            return;
-        y = newY;
-    }
 
-    public void moveLeft () {
-		int newX = x - 1;
-        if (GameState.world.canStandAt(newX, y) == false)
-            return;
-        x = newX;
-    }
-
-    public void moveRight () {
-		int newX = x + 1;
-        if (GameState.world.canStandAt(newX, y) == false)
-            return;
-        x = newX;
-    }
 
 }

@@ -95,17 +95,8 @@ public class WorldScreen implements Screen {
             return this;
         } 
         
-        // Input is handled seperately because of diagnol movement
-        if (inputBuffer.yInput() < 0)
-            GameState.player.moveUp();
-        else if (inputBuffer.yInput() > 0)
-            GameState.player.moveDown();
-        
-        if (inputBuffer.xInput() < 0)
-            GameState.player.moveLeft();
-        else if (inputBuffer.xInput() > 0)
-            GameState.player.moveRight();
-
+        // Input is handled by the player 
+        GameState.player.update();
         return this;
     }
 
