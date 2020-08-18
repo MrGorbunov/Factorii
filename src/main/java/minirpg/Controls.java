@@ -31,9 +31,9 @@ public enum Controls {
     DIR_LEFT  (KeyEvent.VK_LEFT),
     DIR_RIGHT (KeyEvent.VK_RIGHT),
 
-    UI_CYCLE (KeyEvent.VK_Z),
-    ACTION   (KeyEvent.VK_SPACE),
-    INTERACT (KeyEvent.VK_C);
+    SWITCH_SUBSCREEN (KeyEvent.VK_Z),
+    ACTION           (KeyEvent.VK_SPACE),
+    OPEN_SCREEN      (KeyEvent.VK_C);
 
     // public static final int DIR_UP = KeyEvent.VK_UP;
     // public static final int DIR_DOWN = KeyEvent.VK_DOWN;

@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import asciiPanel.AsciiPanel;
 import minirpg.Controls;
 import minirpg.GameState;
+import minirpg.InputBuffer;
+import minirpg.PressState;
 import minirpg.factory.FactoryChest;
 import minirpg.inventory.CraftingRecipe;
 import minirpg.inventory.ItemIndex;
@@ -67,77 +69,75 @@ public class ChestScreen implements Screen {
     // Input handling
     //
 
-    public Screen handleInput (KeyEvent key) {
+    public Screen update () {
         switch (screenState) {
             case LOOKING_AT_CHEST_INVENTORY:
-                return chestInput(key);
+                return chestInput();
 
             case LOOKING_AT_PLAYER_INVENTORY:
-                return inventoryInput(key);
+                return inventoryInput();
         }
 
         return this;
     }
 
-    private Screen chestInput (KeyEvent key) {
-        switch (key.getKeyCode()) {
-            case KeyEvent.VK_SPACE:
-                return new WorldScreen();
-            
-            case KeyEvent.VK_UP:
-                chestInventorySubscreen.moveUp();
-                break;
-            
-            case KeyEvent.VK_DOWN:
-                chestInventorySubscreen.moveDown();
-                break;
-            
-            case KeyEvent.VK_C: // Transfer item from chest to player
-                ItemIndex transferItem = chestInventorySubscreen.getSelectedItem();
-                playerInventorySubscreen.getInventory().addItem(transferItem);
-                chestInventorySubscreen.getInventory().removeItem(transferItem);
-                chestInventorySubscreen.refresh();
-                playerInventorySubscreen.refresh();
-                break;
+    private Screen chestInput () {
+        InputBuffer inputBuffer = GameState.inputBuffer;
 
-            case KeyEvent.VK_Z: // Switch active subscreen
-                playerInventorySubscreen.setActive(true);
-                chestInventorySubscreen.setActive(false);
-                screenState = ScreenState.LOOKING_AT_PLAYER_INVENTORY;
-                break;
-        }
+        // Exit back to world
+        if (inputBuffer.pressState(Controls.OPEN_SCREEN) == PressState.JUST_PRESSED)
+            return new WorldScreen();
+
+        // Go to inventory subscreen
+        else if (inputBuffer.pressState(Controls.SWITCH_SUBSCREEN) == PressState.JUST_PRESSED) {
+            playerInventorySubscreen.setActive(true);
+            chestInventorySubscreen.setActive(false);
+            screenState = ScreenState.LOOKING_AT_PLAYER_INVENTORY;
+
+        // Transfer from chest to player
+        } else if (inputBuffer.pressState(Controls.ACTION) == PressState.JUST_PRESSED) {
+            ItemIndex transferItem = chestInventorySubscreen.getSelectedItem();
+            playerInventorySubscreen.getInventory().addItem(transferItem);
+            chestInventorySubscreen.getInventory().removeItem(transferItem);
+            chestInventorySubscreen.refresh();
+            playerInventorySubscreen.refresh();
+        
+        // Scrolling
+        } else if (inputBuffer.pressState(Controls.DIR_UP) == PressState.JUST_PRESSED)
+            chestInventorySubscreen.moveUp();
+        else if (inputBuffer.pressState(Controls.DIR_DOWN) == PressState.JUST_PRESSED)
+            chestInventorySubscreen.moveDown();
 
         return this;
     }
 
-    private Screen inventoryInput (KeyEvent key) {
-        switch (key.getKeyCode()) {
-            case KeyEvent.VK_SPACE:
-                return new WorldScreen();
+    private Screen inventoryInput () {
+        InputBuffer inputBuffer = GameState.inputBuffer;
 
-            case KeyEvent.VK_UP:
-                playerInventorySubscreen.moveUp();
-                break;
+        // Exit back to world
+        if (inputBuffer.pressState(Controls.OPEN_SCREEN) == PressState.JUST_PRESSED)
+            return new WorldScreen();
 
-            case KeyEvent.VK_DOWN:
-                playerInventorySubscreen.moveDown();
-                break;
-            
-            case KeyEvent.VK_C: // Transfer item from player to chest
-                // TODO: Limit how much can be transfered
-                ItemIndex transferItem = playerInventorySubscreen.getSelectedItem();
-                chestInventorySubscreen.getInventory().addItem(transferItem);
-                playerInventorySubscreen.getInventory().removeItem(transferItem);
-                playerInventorySubscreen.refresh();
-                chestInventorySubscreen.refresh();
-                break;
+        // Go to chest subscreen
+        else if (inputBuffer.pressState(Controls.SWITCH_SUBSCREEN) == PressState.JUST_PRESSED) {
+            chestInventorySubscreen.setActive(true);
+            playerInventorySubscreen.setActive(false);
+            screenState = ScreenState.LOOKING_AT_CHEST_INVENTORY;
 
-            case KeyEvent.VK_Z: // Swtich active subscreen
-                chestInventorySubscreen.setActive(true);
-                playerInventorySubscreen.setActive(false);
-                screenState = ScreenState.LOOKING_AT_CHEST_INVENTORY;
-                break;
-        }
+        // Transfer from player to chest
+        } else if (inputBuffer.pressState(Controls.ACTION) == PressState.JUST_PRESSED) {
+            // TODO: Limit chest capacity
+            ItemIndex transferItem = playerInventorySubscreen.getSelectedItem();
+            chestInventorySubscreen.getInventory().addItem(transferItem);
+            playerInventorySubscreen.getInventory().removeItem(transferItem);
+            playerInventorySubscreen.refresh();
+            chestInventorySubscreen.refresh();
+        
+        // Scrolling
+        } else if (inputBuffer.pressState(Controls.DIR_UP) == PressState.JUST_PRESSED)
+            playerInventorySubscreen.moveUp();
+        else if (inputBuffer.pressState(Controls.DIR_DOWN) == PressState.JUST_PRESSED)
+            playerInventorySubscreen.moveDown();
 
         return this;
     }

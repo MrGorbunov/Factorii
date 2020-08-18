@@ -16,27 +16,17 @@ public class InputTestScreen implements Screen {
     public InputTestScreen () { }
 
     public void displayOutput (AsciiPanel terminal) {
+        InputBuffer buffer = GameState.inputBuffer;
         int xCord = 2;
         int yCord = 2;
 
-        InputBuffer buffer = GameState.inputBuffer;
-
-            // if        (buffer.pressState(Controls.INTERACT) == PressState.PRESSED) {
-
-            // } else if (buffer.pressState(Controls.UI_CYCLE) == PressState.PRESSED) {
-
-            // } else if (buffer.pressState(KeyEvent.VK_C) == PressState.PRESSED) {
-
-            // } else if (buffer.pressState(Controls.DIR_UP) == PressState.HELD) {
-
-            // }
         terminal.write("Action: " + buffer.pressState(Controls.ACTION), xCord, yCord);
         yCord++;
 
-        terminal.write("Interact: " + buffer.pressState(Controls.INTERACT), xCord, yCord);
+        terminal.write("Interact: " + buffer.pressState(Controls.OPEN_SCREEN), xCord, yCord);
         yCord++;
 
-        terminal.write("UI Cycle: " + buffer.pressState(Controls.UI_CYCLE), xCord, yCord);
+        terminal.write("UI Cycle: " + buffer.pressState(Controls.SWITCH_SUBSCREEN), xCord, yCord);
         yCord++;
         yCord++;
 
@@ -51,6 +41,10 @@ public class InputTestScreen implements Screen {
 
         terminal.write("Dir Right: " + buffer.pressState(Controls.DIR_RIGHT), xCord, yCord);
         yCord++;
+    }
+
+    public Screen update () {
+        return this;
     }
 
     public Screen handleInput (KeyEvent key) {

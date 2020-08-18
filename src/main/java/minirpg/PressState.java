@@ -8,5 +8,5 @@ Up       = not down
 */
 
 public enum PressState {
-    PRESSED, HELD, RELEASED, UP
+    JUST_PRESSED, PRESSED, JUST_RELEASED, RELEASED
 }

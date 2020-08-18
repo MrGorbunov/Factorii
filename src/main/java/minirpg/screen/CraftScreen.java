@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import asciiPanel.AsciiPanel;
 import minirpg.Controls;
 import minirpg.GameState;
+import minirpg.InputBuffer;
+import minirpg.PressState;
 import minirpg.inventory.CraftingRecipe;
 import minirpg.inventory.ItemIndex;
 import minirpg.subscreen.CraftingSubscreen;
@@ -51,65 +53,62 @@ public class CraftScreen implements Screen {
     // Input handling
     //
 
-    public Screen handleInput (KeyEvent key) {
+    public Screen update () {
         switch (screenState) {
             case LOOKING_AT_CRAFTING_PANEL:
-                return craftingInput(key);
+                return craftingInput();
 
             case LOOKING_AT_INVENTORY:
-                return inventoryInput(key);
+                return inventoryInput();
         }
 
         return this;
     }
 
-    private Screen craftingInput (KeyEvent key) {
-        switch (key.getKeyCode()) {
-            case KeyEvent.VK_SPACE:
-                return new WorldScreen();
-            
-            case KeyEvent.VK_UP:
-                craftingSubscreen.selectionUp();
-                break;
-            
-            case KeyEvent.VK_DOWN:
-                craftingSubscreen.selectionDown();
-                break;
-            
-            case KeyEvent.VK_C:
-                craftingSubscreen.craftSelection();
-                break;
+    private Screen craftingInput () {
+        InputBuffer inputBuffer = GameState.inputBuffer;
 
-            case KeyEvent.VK_Z: // Switch active subscreen
-                inventorySubscreen.setActive(true);
-                craftingSubscreen.setActive(false);
-                screenState = ScreenState.LOOKING_AT_INVENTORY;
-                break;
-        }
+        // Exit back to world
+        if (inputBuffer.pressState(Controls.OPEN_SCREEN) == PressState.JUST_PRESSED)
+            return new WorldScreen();
+
+        // Go to inventory subscreen
+        else if (inputBuffer.pressState(Controls.SWITCH_SUBSCREEN) == PressState.JUST_PRESSED) {
+            inventorySubscreen.setActive(true);
+            craftingSubscreen.setActive(false);
+            screenState = ScreenState.LOOKING_AT_INVENTORY;
+
+        // Craft Something
+        } else if (inputBuffer.pressState(Controls.ACTION) == PressState.JUST_PRESSED)
+            craftingSubscreen.craftSelection();
+        
+        // Scrolling
+        else if (inputBuffer.pressState(Controls.DIR_UP) == PressState.JUST_PRESSED)
+            craftingSubscreen.selectionUp();
+        else if (inputBuffer.pressState(Controls.DIR_DOWN) == PressState.JUST_PRESSED)
+            craftingSubscreen.selectionDown();
 
         return this;
     }
 
-    private Screen inventoryInput (KeyEvent key) {
-        switch (key.getKeyCode()) {
-            case KeyEvent.VK_SPACE:
-                return new WorldScreen();
+    private Screen inventoryInput () {
+        InputBuffer inputBuffer = GameState.inputBuffer;
 
-            
-            case KeyEvent.VK_UP:
-                inventorySubscreen.scrollUp();
-                break;
+        // Exit back to world
+        if (inputBuffer.pressState(Controls.OPEN_SCREEN) == PressState.JUST_PRESSED)
+            return new WorldScreen();
 
-            case KeyEvent.VK_DOWN:
-                inventorySubscreen.scrollDown();
-                break;
+        // Go to inventory subscreen
+        else if (inputBuffer.pressState(Controls.SWITCH_SUBSCREEN) == PressState.JUST_PRESSED) {
+            craftingSubscreen.setActive(true);
+            inventorySubscreen.setActive(false);
+            screenState = ScreenState.LOOKING_AT_CRAFTING_PANEL;
 
-            case KeyEvent.VK_Z: // Swtich active subscreen
-                craftingSubscreen.setActive(true);
-                inventorySubscreen.setActive(false);
-                screenState = ScreenState.LOOKING_AT_CRAFTING_PANEL;
-                break;
-        }
+        // Scrolling
+        } else if (inputBuffer.pressState(Controls.DIR_UP) == PressState.JUST_PRESSED)
+            inventorySubscreen.scrollUp();
+        else if (inputBuffer.pressState(Controls.DIR_DOWN) == PressState.JUST_PRESSED)
+            inventorySubscreen.scrollDown();
 
         return this;
     }

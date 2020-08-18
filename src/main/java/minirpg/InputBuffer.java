@@ -20,8 +20,6 @@ if        (buffer.pressState(Controls.INTERACT) == PressState.PRESSED) {
 
 public class InputBuffer implements KeyListener {
     
-    // TODO: Create inputX() and inputY()
-
     // Like with inventory, the enum's ordinal = the array index
     PressState[] buffer;
 
@@ -29,13 +27,64 @@ public class InputBuffer implements KeyListener {
         buffer = new PressState[Controls.values().length];
 
         for (int i=0; i<buffer.length; i++) {
-            buffer[i] = PressState.UP;
+            buffer[i] = PressState.RELEASED;
         }
     }
+
+
+
+    //
+    // Getting info
+    //
 
     public PressState pressState (Controls control) {
         return buffer[control.ordinal()];
     }
+
+    /**
+     * Returns an int, either -1, 0, or 1
+     * -1 = left
+     * 0 = neutral
+     * 1 = right
+     */
+    public int xInput () {
+        int input = 0;
+        if (buffer[Controls.DIR_LEFT.ordinal()] == PressState.JUST_PRESSED ||
+            buffer[Controls.DIR_LEFT.ordinal()] == PressState.PRESSED)
+                input--;
+
+        if (buffer[Controls.DIR_RIGHT.ordinal()] == PressState.JUST_PRESSED ||
+            buffer[Controls.DIR_RIGHT.ordinal()] == PressState.PRESSED)
+                input++;
+
+        return input;
+    }
+
+    /**
+     * Returns an int, either -1, 0, or 1
+     * -1 = up
+     * 0 = neutral
+     * 1 = down
+     */
+    public int yInput () {
+        int input = 0;
+        if (buffer[Controls.DIR_UP.ordinal()] == PressState.JUST_PRESSED ||
+            buffer[Controls.DIR_UP.ordinal()] == PressState.PRESSED)
+                input--;
+
+        if (buffer[Controls.DIR_DOWN.ordinal()] == PressState.JUST_PRESSED ||
+            buffer[Controls.DIR_DOWN.ordinal()] == PressState.PRESSED)
+                input++;
+
+        return input;
+    }
+
+
+
+
+    //
+    // Buffer logic
+    //
 
     /**
      * IMPORTANT: This should be one of the last things 
@@ -47,11 +96,11 @@ public class InputBuffer implements KeyListener {
      */
     public void update () {
         for (int i=0; i<buffer.length; i++) {
-            if (buffer[i] == PressState.PRESSED) {
-                buffer[i] = PressState.HELD;
+            if (buffer[i] == PressState.JUST_PRESSED) {
+                buffer[i] = PressState.PRESSED;
 
-            } else if (buffer[i] == PressState.RELEASED) {
-                buffer[i] = PressState.UP;
+            } else if (buffer[i] == PressState.JUST_RELEASED) {
+                buffer[i] = PressState.RELEASED;
 
             }
         }
@@ -60,10 +109,10 @@ public class InputBuffer implements KeyListener {
     public void keyPressed (KeyEvent e) { 
         for (Controls control : Controls.values()) {
             if (control.getKeyCode() == e.getKeyCode()) {
-                if (buffer[control.ordinal()] == PressState.HELD)
+                if (buffer[control.ordinal()] == PressState.PRESSED)
                     continue;
 
-                buffer[control.ordinal()] = PressState.PRESSED;
+                buffer[control.ordinal()] = PressState.JUST_PRESSED;
                 return;
             }
         }
@@ -72,7 +121,7 @@ public class InputBuffer implements KeyListener {
     public void keyReleased (KeyEvent e) { 
         for (Controls control : Controls.values()) {
             if (control.getKeyCode() == e.getKeyCode()) {
-                buffer[control.ordinal()] = PressState.RELEASED;
+                buffer[control.ordinal()] = PressState.JUST_RELEASED;
                 return;
             }
         }

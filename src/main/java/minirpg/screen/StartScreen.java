@@ -3,6 +3,8 @@ package minirpg.screen;
 import java.awt.event.KeyEvent;
 import asciiPanel.AsciiPanel;
 import minirpg.Controls;
+import minirpg.GameState;
+import minirpg.PressState;
 
 public class StartScreen implements Screen {
     
@@ -12,8 +14,8 @@ public class StartScreen implements Screen {
 
     }
 
-    public Screen handleInput (KeyEvent key) {
-        if (key.getKeyCode() == KeyEvent.VK_C)
+    public Screen update () {
+        if (GameState.inputBuffer.pressState(Controls.ACTION) == PressState.JUST_PRESSED) 
             return new WorldScreen();
         else
             return this;

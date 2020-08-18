@@ -6,5 +6,5 @@ import asciiPanel.AsciiPanel;
 public interface Screen {
     public void displayOutput (AsciiPanel terminal);
 
-    public Screen handleInput (KeyEvent key);
+    public Screen update ();
 }

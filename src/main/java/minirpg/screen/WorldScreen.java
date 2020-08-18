@@ -2,6 +2,8 @@ package minirpg.screen;
 
 import minirpg.Controls;
 import minirpg.GameState;
+import minirpg.InputBuffer;
+import minirpg.PressState;
 import minirpg.factory.FactoryChest;
 import minirpg.factory.FactoryData;
 import minirpg.inventory.ItemIndex;
@@ -50,175 +52,142 @@ public class WorldScreen implements Screen {
     // Input handling
     //
 
-    public Screen handleInput (KeyEvent key) {
+    public Screen update () {
         switch (screenState) {
             case MOVING_IN_WORLD:
-                return traversalInput(key);
+                return traversalInput();
 
             case SELECTING_FROM_INVENTORY:
-                return selectionInput(key);
+                return selectionInput();
 
             case PLACING_IN_WORLD:
-                return placementInput(key);
-        }
-
-        return this;
-    } 
-
-    private Screen traversalInput (KeyEvent key) {
-        /*
-        if        (buffer.pressState(KeyEvent.VK_SPACE) == PressState.PRESSED) {
-
-
-        } else if (buffer.pressState(KeyEvent.VK_Z) == PressState.PRESSED) {
-
-
-        } else if (buffer.pressState(KeyEvent.VK_C) == PressState.PRESSED) {
-
-
-        } else if (buffer.pressState(KeyEvent.VK_UP) == PressState.HELD) {
-
-
-        }
-
-        ...
-
-
-
-
-
-        */
-
-        switch (key.getKeyCode()) {
-            // Open adjacent inventory / crafting thing
-            case KeyEvent.VK_SPACE:
-                FactoryData factoryData = GameState.world.getAdjacentFactoryData();
-                if (factoryData == null)
-                    return new CraftScreen();
-                
-                Tile factoryTile = factoryData.getTile();
-                if (factoryTile == Tile.CHEST)
-                    return new ChestScreen((FactoryChest) factoryData);
-
-                return new CraftScreen();
-            
-            // Goto selection
-            case KeyEvent.VK_Z:
-                boolean canTransition = inventoryGridSubscreen.setActive(true);
-                if (canTransition)
-                    screenState = ScreenState.SELECTING_FROM_INVENTORY;
-                break;
-            
-            case KeyEvent.VK_C:
-                GameState.world.harvestAdjacent();
-                break;
-
-            case KeyEvent.VK_UP:
-                GameState.player.moveUp();
-                break;
-
-            case KeyEvent.VK_DOWN:
-                GameState.player.moveDown();
-                break;
-            
-            case KeyEvent.VK_LEFT:
-                GameState.player.moveLeft();
-                break;
-            
-            case KeyEvent.VK_RIGHT:
-                GameState.player.moveRight();
-                break;
+                return placementInput();
         }
 
         return this;
     }
 
-    private Screen selectionInput (KeyEvent key) {
-        switch (key.getKeyCode()) {
-            // Goto crafting
-            case KeyEvent.VK_SPACE:
+    private Screen traversalInput () {
+        InputBuffer inputBuffer = GameState.inputBuffer;
+
+        // Open adjacent inventory / crafting thing
+        if (inputBuffer.pressState(Controls.OPEN_SCREEN) == PressState.JUST_PRESSED) {
+            FactoryData factoryData = GameState.world.getAdjacentFactoryData();
+            if (factoryData == null)
                 return new CraftScreen();
-
-            // Get out of selection
-            case KeyEvent.VK_Z:
-                screenState = ScreenState.MOVING_IN_WORLD;
-                inventoryGridSubscreen.setActive(false);
-                break;
             
-            // Go into placement mode
-            case KeyEvent.VK_C:
-                screenState = ScreenState.PLACING_IN_WORLD;
+            Tile factoryTile = factoryData.getTile();
+            if (factoryTile == Tile.CHEST)
+                return new ChestScreen((FactoryChest) factoryData);
 
-                ItemIndex selectedItem = inventoryGridSubscreen.getSelectedItem();
-                Tile activeTile = ItemIndex.itemToTile(selectedItem);
-                worldPlacementSubscreen.setActiveTile(activeTile);
-                worldPlacementSubscreen.refresh();
+            return new CraftScreen();
+        
+        // Goto selection subscreen
+        } else if (inputBuffer.pressState(Controls.SWITCH_SUBSCREEN) == PressState.JUST_PRESSED) {
+            boolean canTransition = inventoryGridSubscreen.setActive(true);
+            if (canTransition)
+                screenState = ScreenState.SELECTING_FROM_INVENTORY;
+            return this;
+        
+        // Harvest adjacent
+        } else if (inputBuffer.pressState(Controls.ACTION) == PressState.JUST_PRESSED) {
+            GameState.world.harvestAdjacent();
+            return this;
+        } 
+        
+        // Input is handled seperately because of diagnol movement
+        if (inputBuffer.yInput() < 0)
+            GameState.player.moveUp();
+        else if (inputBuffer.yInput() > 0)
+            GameState.player.moveDown();
+        
+        if (inputBuffer.xInput() < 0)
+            GameState.player.moveLeft();
+        else if (inputBuffer.xInput() > 0)
+            GameState.player.moveRight();
 
-                inventoryGridSubscreen.setActive(false);
-                break;
+        return this;
+    }
 
-            case KeyEvent.VK_UP:
-                inventoryGridSubscreen.moveUp();
-                break;
+    private Screen selectionInput () {
+        InputBuffer inputBuffer = GameState.inputBuffer;
 
-            case KeyEvent.VK_DOWN:
-                inventoryGridSubscreen.moveDown();
-                break;
-            
-            case KeyEvent.VK_LEFT:
-                inventoryGridSubscreen.moveLeft();
-                break;
-            
-            case KeyEvent.VK_RIGHT:
-                inventoryGridSubscreen.moveRight();
-                break;
+        // Goto crafting
+        if (inputBuffer.pressState(Controls.OPEN_SCREEN) == PressState.JUST_PRESSED) {
+            return new CraftScreen();
+        
+        // Get out of selection
+        } else if (inputBuffer.pressState(Controls.SWITCH_SUBSCREEN) == PressState.JUST_PRESSED) {
+            screenState = ScreenState.MOVING_IN_WORLD;
+            inventoryGridSubscreen.setActive(false);
+        
+        // Go to placement mode
+        } else if (inputBuffer.pressState(Controls.ACTION) == PressState.JUST_PRESSED) {
+            screenState = ScreenState.PLACING_IN_WORLD;
+
+            ItemIndex selectedItem = inventoryGridSubscreen.getSelectedItem();
+            Tile activeTile = ItemIndex.itemToTile(selectedItem);
+            worldPlacementSubscreen.setActiveTile(activeTile);
+            worldPlacementSubscreen.refresh();
+
+            inventoryGridSubscreen.setActive(false);
+
+        // I don't use the xInput() and yInput() because these are taps and it's not character movement
+        } else if (inputBuffer.pressState(Controls.DIR_UP) == PressState.JUST_PRESSED) {
+            inventoryGridSubscreen.moveUp();
+
+        } else if (inputBuffer.pressState(Controls.DIR_DOWN) == PressState.JUST_PRESSED) {
+            inventoryGridSubscreen.moveDown();
+
+        } else if (inputBuffer.pressState(Controls.DIR_LEFT) == PressState.JUST_PRESSED) {
+            inventoryGridSubscreen.moveLeft();
+
+        } else if (inputBuffer.pressState(Controls.DIR_RIGHT) == PressState.JUST_PRESSED) {
+            inventoryGridSubscreen.moveRight();
+
         }
 
         return this;
     }
 
-    private Screen placementInput (KeyEvent key) {
-        switch (key.getKeyCode()) {
-            // Exit placement mode
-            case KeyEvent.VK_SPACE:
+    private Screen placementInput () {
+        InputBuffer inputBuffer = GameState.inputBuffer;
+
+        // Exit placement mode
+        if (inputBuffer.pressState(Controls.OPEN_SCREEN) == PressState.JUST_PRESSED) {
+            screenState = ScreenState.MOVING_IN_WORLD;
+        
+        // Go back to selection mode
+        } else if (inputBuffer.pressState(Controls.SWITCH_SUBSCREEN) == PressState.JUST_PRESSED) {
+            boolean canGotoInventorygrid = inventoryGridSubscreen.setActive(true);
+
+            if (canGotoInventorygrid)
+                screenState = ScreenState.SELECTING_FROM_INVENTORY;
+            else
                 screenState = ScreenState.MOVING_IN_WORLD;
-                break;
+        
+        // Attempt to place down 
+        } else if (inputBuffer.pressState(Controls.ACTION) == PressState.JUST_PRESSED) {
+            boolean placedSuccesfully = worldPlacementSubscreen.placeItem();
+            if (placedSuccesfully) {
+                GameState.player.getInventory().removeItem(inventoryGridSubscreen.getSelectedItem());
+                inventoryGridSubscreen.refresh();
+                screenState = ScreenState.MOVING_IN_WORLD;
+            }
 
-            // Goto selection mode
-            case KeyEvent.VK_Z:
-                boolean canGotoInventorygrid = inventoryGridSubscreen.setActive(true);
-
-                if (canGotoInventorygrid)
-                    screenState = ScreenState.SELECTING_FROM_INVENTORY;
-                else
-                    screenState = ScreenState.MOVING_IN_WORLD;
-                break;
-            
-            // Place down object
-            case KeyEvent.VK_C:
-                boolean placedSuccesfully = worldPlacementSubscreen.placeItem();
-                if (placedSuccesfully) {
-                    GameState.player.getInventory().removeItem(inventoryGridSubscreen.getSelectedItem());
-                    inventoryGridSubscreen.refresh();
-                    screenState = ScreenState.MOVING_IN_WORLD;
-                }
-                break;
-
-            case KeyEvent.VK_UP:
+        // I don't use the xInput() and yInput() because these are taps and it's not character movement
+        } else if (inputBuffer.pressState(Controls.DIR_UP) == PressState.JUST_PRESSED) {
                 worldPlacementSubscreen.moveUp();
-                break;
 
-            case KeyEvent.VK_DOWN:
-                worldPlacementSubscreen.moveDown();
-                break;
-            
-            case KeyEvent.VK_LEFT:
-                worldPlacementSubscreen.moveLeft();
-                break;
-            
-            case KeyEvent.VK_RIGHT:
-                worldPlacementSubscreen.moveRight();
-                break;
+        } else if (inputBuffer.pressState(Controls.DIR_DOWN) == PressState.JUST_PRESSED) {
+            worldPlacementSubscreen.moveDown();
+
+        } else if (inputBuffer.pressState(Controls.DIR_LEFT) == PressState.JUST_PRESSED) {
+            worldPlacementSubscreen.moveLeft();
+
+        } else if (inputBuffer.pressState(Controls.DIR_RIGHT) == PressState.JUST_PRESSED) {
+            worldPlacementSubscreen.moveRight();
+
         }
 
         return this;

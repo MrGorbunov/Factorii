@@ -35,23 +35,16 @@ public class ApplicationMain extends JFrame {
         add(terminal);
         pack();
 
-        // GameState.makeNewWorld();
         // screen = new StartScreen();
-        screen = new InputTestScreen();
+        screen = new StartScreen();
         inputBuffer = new InputBuffer();
 
         GameState.initGameState(200, 170);
+        GameState.makeNewWorld();
         GameState.setInputBuffer(inputBuffer);
 
         addKeyListener(inputBuffer);
         repaint();
-    }
-
-    public void repaint () {
-        terminal.clear();
-        screen.displayOutput(terminal);
-
-        super.repaint();
     }
 
     public void mainLoop () {
@@ -63,13 +56,14 @@ public class ApplicationMain extends JFrame {
             previousTime = System.currentTimeMillis();
 
             // Update
+            screen = screen.update();
 
             // Draw
             terminal.clear();
             screen.displayOutput(terminal);
             super.repaint();
 
-            // Updating input buffer specifically happens at end
+            // Updating input buffer happens at end
             inputBuffer.update();
 
             // Wait
