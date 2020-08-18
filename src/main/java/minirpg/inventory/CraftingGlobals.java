@@ -85,7 +85,7 @@ public class CraftingGlobals {
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
                 new int[]       {5,             3},
-                ItemIndex.WORKBENCH, "Workbench",
+                ItemIndex.WORKBENCH,
                 "Unlocks more crafting options"),
 
 		};
@@ -96,25 +96,25 @@ public class CraftingGlobals {
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
                 new int[]       {3,             1},
-                ItemIndex.CHEST, "Chest",
+                ItemIndex.CHEST,
                 "Allows for storage of items & funnel interfacing"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD}, 
                 new int[]       {2},
-                ItemIndex.FUNNEL_WOOD, "Wooden Funnel",
+                ItemIndex.TRANSPORT_TUBE_GLASS,
                 "Transports items between inventories"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD}, 
                 new int[]       {4},
-                ItemIndex.WOODEN_FLOAT, "Wooden Float",
+                ItemIndex.WOODEN_FLOAT,
                 "The player can walk over water without a boat"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
                 new int[]       {2,             5},
-                ItemIndex.KILN, "Kiln",
+                ItemIndex.KILN,
                 "Process copper ore & sand to produce resources"),
 		};
 
@@ -124,19 +124,19 @@ public class CraftingGlobals {
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
                 new int[]       {2,              1},
-                ItemIndex.COPPER_WORKBENCH, "Copper Workbench",
+                ItemIndex.COPPER_WORKBENCH,
                 "Will automatically craft when a recipe is selected and items are pumped in"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
                 new int[]       {2,              1},
-                ItemIndex.MINING_DRILL, "Mining Drill",
+                ItemIndex.MINING_DRILL,
                 "Will drill up the resource it is placed on infinitely"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
                 new int[]       {2,              1},
-                ItemIndex.FORGE, "Forge",
+                ItemIndex.FORGE,
                 "Can smelt iron and produce alloys"),
         };
         
@@ -144,26 +144,14 @@ public class CraftingGlobals {
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
                 new int[]       {3,              2},
-                ItemIndex.BRONZE_FLOAT, "Bronze Float",
+                ItemIndex.BRONZE_FLOAT,
                 "Can support the weight of a funnel"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
                 new int[]       {2,              1},
-                ItemIndex.AUTO_MINING_UPGRADE, "Auto Mining Upgrade",
+                ItemIndex.AUTO_MINING_UPGRADE,
                 "Placed onto a mining drill, will automatically collect resources"),
-
-            new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
-                new int[]       {2,              1},
-                ItemIndex.FUNNEL_IRON, "Iron Funnel",
-                "Perhaps unnecessary"),
-
-            new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
-                new int[]       {2,              1},
-                ItemIndex.FUNNEL_STEEL, "Steel Funnel",
-                "Perhaps unnecessary"),
 
         };
 
@@ -175,25 +163,25 @@ public class CraftingGlobals {
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
                 new int[]       {3,             2},
-                ItemIndex.PICKAXE, "Pickaxe",
+                ItemIndex.PICKAXE,
                 "Allows for harvesting coal and ores"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
                 new int[]       {3,              2},
-                ItemIndex.BOAT, "Boat",
+                ItemIndex.BOAT,
                 "Move across water to new islands"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
                 new int[]       {2,              1},
-                ItemIndex.SHOVEL, "Shovel",
+                ItemIndex.SHOVEL,
                 "Allows for sand collection"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
                 new int[]       {2,              1},
-                ItemIndex.TALL_BOOTS, "Tall Boots",
+                ItemIndex.TALL_BOOTS,
                 "Improved mobility over factory components"),
         };
 
@@ -211,13 +199,13 @@ public class CraftingGlobals {
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.ORE_COPPER, ItemIndex.ORE_COAL}, 
                 new int[]       {2,             1},
-                ItemIndex.BAR_COPPER, "Copper Bar",
+                ItemIndex.BAR_COPPER,
                 "Can be used to craft more items"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.SAND, ItemIndex.ORE_COAL}, 
                 new int[]       {3,             1},
-                ItemIndex.GLASS, "Glass",
+                ItemIndex.GLASS,
                 "Can be used to craft more items"),
         };
 
@@ -225,19 +213,19 @@ public class CraftingGlobals {
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.ORE_IRON, ItemIndex.ORE_COAL}, 
                 new int[]       {2,             1},
-                ItemIndex.BAR_IRON, "Iron Bar",
+                ItemIndex.BAR_IRON,
                 "Can be used to craft more items"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.BAR_COPPER, ItemIndex.BAR_IRON, ItemIndex.ORE_COAL}, 
                 new int[]       {1,                   2,                  1},
-                ItemIndex.ALLOY_BRONZE, "Bronze Alloy",
+                ItemIndex.ALLOY_BRONZE,
                 "Can be used to craft more items"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.BAR_IRON, ItemIndex.ORE_COAL}, 
                 new int[]       {3,                  2},
-                ItemIndex.ALLOY_STEEL, "Steel Alloy",
+                ItemIndex.ALLOY_STEEL,
                 "Can be used to craft more items"),
         };
 	}

@@ -28,19 +28,6 @@ public class Factory {
         this.height = height;
         factory = new FactoryData[width][height];
 
-        // Testing chest inventories
-        // Inventory inv1 = new Inventory();
-        // inv1.addItemMulti(ItemIndex.BAR_COPPER, 10);
-        // inv1.addItem(ItemIndex.KILN);
-
-        // Inventory inv2 = new Inventory();
-        // inv2.addItem(ItemIndex.FORGE);
-
-        // FactoryChest chest1 = new FactoryChest(Tile.CHEST, inv1);
-        // FactoryChest chest2 = new FactoryChest(Tile.CHEST, inv2);
-
-        // factory[10][10] = chest1;
-        // factory[11][10] = chest2;
     }
 
     public Tile[][] getFactoryLayer () {

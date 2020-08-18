@@ -25,7 +25,7 @@ public enum ItemIndex {
 	PICKAXE, SHOVEL, MINING_DRILL, AUTO_MINING_UPGRADE,
 	WORKBENCH, COPPER_WORKBENCH, KILN, FORGE,
 	BOAT, TALL_BOOTS, WOODEN_FLOAT, BRONZE_FLOAT,
-	CHEST, FUNNEL_WOOD, FUNNEL_COPPER, FUNNEL_IRON, FUNNEL_STEEL;
+	CHEST, TRANSPORT_TUBE_GLASS, TRANSPORT_TUBE_STONE;
 
 	public boolean isResource () {
 		return this.ordinal() <= ItemIndex.ALLOY_STEEL.ordinal();
@@ -66,10 +66,8 @@ public enum ItemIndex {
             case BRONZE_FLOAT: return Tile.BRONZE_FLOAT;
 
             case CHEST:         return Tile.CHEST;
-            case FUNNEL_WOOD:   return Tile.FUNNEL_WOOD;
-            case FUNNEL_COPPER: return Tile.FUNNEL_COPPER;
-            case FUNNEL_IRON:   return Tile.FUNNEL_IRON;
-            case FUNNEL_STEEL:  return Tile.FUNNEL_STEEL;
+            case TRANSPORT_TUBE_GLASS:   return Tile.TRANSPORT_TUBE_GLASS;
+            case TRANSPORT_TUBE_STONE: return Tile.TRNASPORT_TUBE_STONE;
         }
 
         return Tile.EMPTY;
@@ -125,14 +123,10 @@ public enum ItemIndex {
 			
 			case CHEST:
 				return "Chest";
-			case FUNNEL_WOOD:
-				return "Wooden Funnel";
-			case FUNNEL_COPPER:
-				return "Copper Funnel";
-			case FUNNEL_IRON:
-				return "Iron Funnel";
-			case FUNNEL_STEEL:
-				return "Steel Funnel";
+			case TRANSPORT_TUBE_GLASS:
+				return "Glass Transport Tube";
+			case TRANSPORT_TUBE_STONE:
+				return "Stone Transport Tube";
 
 			case KILN:
 				return "Kiln";

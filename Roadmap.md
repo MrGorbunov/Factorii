@@ -81,7 +81,7 @@
 
 
 
-## v0.3 - Don't Know Yet
+## v0.3 - Don't know yet
 
 - [ ] Switch to a constant fps game clock
   * Update functions for movement
@@ -93,6 +93,11 @@
 
 - [ ] Place controls into globals
 - [ ] Place colors into globals
+#### Cleanup
+
+- [ ] Go to update mode w/ constant fps
+- [ ] Rename project to be factorii instead of minirpg
+- [ ] Create consistency in file names
 
 
 ## v0.5 - Visuals
@@ -107,6 +112,10 @@
 
 
 ## v0.6 - Dont Know Yet
+- [ ] Add Submarine 
+  - [ ] Placeable
+  - [ ] You win by entering it
+  - [ ] Multi-character image
 
 
 

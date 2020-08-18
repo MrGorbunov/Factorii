@@ -34,10 +34,8 @@ public enum Glyph {
     // Boats, Tall Boots, Shovel, etc.
 
     CHEST         ('?', Convert.hex("#9F8C74")),
-    FUNNEL_WOOD   ('+', Convert.hex("#8D6C54")),
-    FUNNEL_COPPER ('+', Convert.hex("#BD8349")),
-    FUNNEL_IRON   ('+', Convert.hex("#77939C")),
-    FUNNEL_STEEL  ('+', Convert.hex("#ADD6DC"));
+    TRANSPORT_TUBE_GLASS   ('+', Convert.hex("#D0E0FF")),
+    TRANSPORT_TUBE_STONE ('+', Convert.hex("#A0908F"));
     
 
 
@@ -84,10 +82,8 @@ public enum Glyph {
             case BRONZE_FLOAT: return Glyph.BRONZE_FLOAT;
 
             case CHEST:         return Glyph.CHEST;
-            case FUNNEL_WOOD:   return Glyph.FUNNEL_WOOD;
-            case FUNNEL_COPPER: return Glyph.FUNNEL_COPPER;
-            case FUNNEL_IRON:   return Glyph.FUNNEL_IRON;
-            case FUNNEL_STEEL:  return Glyph.FUNNEL_STEEL;
+            case TRANSPORT_TUBE_GLASS:   return Glyph.TRANSPORT_TUBE_GLASS;
+            case TRNASPORT_TUBE_STONE: return Glyph.TRANSPORT_TUBE_STONE;
         }
 
         return Glyph.EMPTY;

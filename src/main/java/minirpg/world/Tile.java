@@ -23,7 +23,7 @@ public enum Tile {
     MINING_DRILL, AUTO_MINING_UPGRADE, 
     WORKBENCH, COPPER_WORKBENCH, KILN, FORGE,
 	WOODEN_FLOAT, BRONZE_FLOAT,
-    CHEST, FUNNEL_WOOD, FUNNEL_COPPER, FUNNEL_IRON, FUNNEL_STEEL;
+    CHEST, TRANSPORT_TUBE_GLASS, TRNASPORT_TUBE_STONE;
     
 
 
@@ -92,14 +92,10 @@ public enum Tile {
 
             case CHEST:
                 return ItemIndex.CHEST;
-            case FUNNEL_WOOD:
-                return ItemIndex.FUNNEL_WOOD;
-            case FUNNEL_COPPER:
-                return ItemIndex.FUNNEL_COPPER;
-            case FUNNEL_IRON:
-                return ItemIndex.FUNNEL_IRON;
-            case FUNNEL_STEEL:
-                return ItemIndex.FUNNEL_STEEL;
+            case TRANSPORT_TUBE_GLASS:
+                return ItemIndex.TRANSPORT_TUBE_GLASS;
+            case TRNASPORT_TUBE_STONE:
+                return ItemIndex.TRANSPORT_TUBE_STONE;
         }
 
         System.out.println("WARNING: Undefined Tile to Item conversion");
