@@ -19,44 +19,25 @@
   * [x] Transfering / taking out
 
 - [ ] Mining drills
-  * [ ] Basic mining drill 
+  * [x] Basic mining drill 
    * *Maybe it just picks up what's below it?*
   * [ ] Auto mining drill
 
 - [ ] Copper workbench created
 
-- [ ] Smelting works
+- [x] Smelting works
   * Smelt class (vs CraftingRecipe)?
-  * [ ] Kiln smelting
-  * [ ] Forge smelting
+  * [x] Kiln smelting
+  * [x] Forge smelting
 - [ ] Smelters work with funnels
 
-- [ ] Funnels likely will need to be reworked
-  * [ ] Directionality is hard to draw (& implement)
-  * [ ] Maybe instead create networks
-  * [ ] Wooden has a limit, but of speed or something else?
+- [ ] Item Tubes
+  * [x] Glass pulls from inventories
+  * [x] Stone just moves things along
+    * [ ] Prefer moving items in the same direction they came from
+  * [ ] All tiers of funnels functional w/ chests
 
-> 
-> Instead of funnels, it'll be tubing
-> Moves items from 1 inventory to another and only one other
-> 
-> **Implementation:**
-> Every group of funnels acts as an entire being, and it's not
-> clear how they'd be keyed.
-> 
-> These guys might not be keyed (hashmap), and instead a
-> recursive search can be used every time?
-> 
-> The alternative would require storing information in
-> the actual tiles. This could actually be done pretty
-> realistically for just the factory layer.
->
-
-- [ ] All tiers of funnels functional w/ chests
 - [ ] All tiers of floats work too
-
-- Don't care about crafting rn
-
 
 #### Cleanup
 - [x] Switch factory tiles to class-based
@@ -64,7 +45,7 @@
   * Factory class would hold the entire thing
 
 - [ ] Inheritence / interface for subscreen
-  * Maybe also for handling input?
+  * ~~Maybe also for handling input?~~
 
 - [x] Turn all screens into statemachines
   * Refactor input handling in the craft screen
@@ -73,40 +54,35 @@
   * Static
   * Namely collisions
 
-- [ ] Move player out of the World class
-  * Will require a good amount of rewriting because
-    the player cords are considered the center of the
-    world and referenced a /lot/
+- [x] Move player out of the World class
+
+- [x] Switch to a constant fps game clock
+  * Update functions for movement
+  * Input Buffer class
+    * Maybe use modifier keys (shift, ctrl, etc) for larger stack transfers (chest)
 
 
 
 
 ## v0.3 - Don't know yet
 
-- [ ] Switch to a constant fps game clock
-  * Update functions for movement
-  * Input Buffer class
-    * Maybe use modifier keys (shift, ctrl, etc) for larger stack transfers (chest)
-
 - [ ] Refactor GUI to be more GUI and less state
   - May be unnecessary when I get here
 
-- [ ] Place controls into globals
+- [x] Place controls into globals
 - [ ] Place colors into globals
+- [ ] Allow for picking up of factory parts
+
 #### Cleanup
 
-- [ ] Go to update mode w/ constant fps
+- [x] Go to update mode w/ constant fps
 - [ ] Rename project to be factorii instead of minirpg
-- [ ] Create consistency in file names
+- [x] Create consistency in file names
 
 
 ## v0.5 - Visuals
 
 #### New features
-
-- Inventory displays 1-time crafts / player improvements
-- Drawing is now done onto 3x3 cells (maybe 2x2)
-  * Try to bring an artist on board now
 - Create start screen
 
 
