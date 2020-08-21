@@ -3,18 +3,18 @@ package minirpg.factory;
 import minirpg.inventory.Inventory;
 import minirpg.world.Tile;
 
-public class FactoryChest implements FactoryData {
+public class FactoryChest implements FacData, FacInventory {
 
     private Inventory inventory;
-    private Tile tile;
+    private final Tile tile;
 
-    public FactoryChest (Tile tile) {
-        this.tile = tile;
+    public FactoryChest () {
+        tile = Tile.CHEST;
         inventory = new Inventory();
     }
 
-    public FactoryChest (Tile tile, Inventory startingInventory) {
-        this.tile = tile;
+    public FactoryChest (Inventory startingInventory) {
+        tile = Tile.CHEST;
         inventory = startingInventory;
     }
 

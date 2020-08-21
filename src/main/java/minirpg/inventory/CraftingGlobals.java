@@ -97,13 +97,19 @@ public class CraftingGlobals {
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
                 new int[]       {3,             1},
                 ItemIndex.CHEST,
-                "Allows for storage of items & funnel interfacing"),
+                "Allows for storage of items"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD}, 
                 new int[]       {2},
-                ItemIndex.TRANSPORT_TUBE_GLASS,
-                "Transports items between inventories"),
+                ItemIndex.ITEM_TUBE_STONE,
+                "Transports items between tubes & inserts into inventories"),
+
+            new CraftingRecipe(
+                new ItemIndex[] {ItemIndex.WOOD}, 
+                new int[]       {2},
+                ItemIndex.ITEM_TUBE_GLASS,
+                "Pulls items out of inventories"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD}, 
@@ -145,7 +151,7 @@ public class CraftingGlobals {
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
                 new int[]       {3,              2},
                 ItemIndex.BRONZE_FLOAT,
-                "Can support the weight of a funnel"),
+                "Can support the weight of an item tube"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 

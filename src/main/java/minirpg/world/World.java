@@ -1,7 +1,7 @@
 package minirpg.world;
 
 import minirpg.GameState;
-import minirpg.factory.FactoryData;
+import minirpg.factory.FacData;
 import minirpg.factory.FactoryMiningDrill;
 import minirpg.inventory.CraftingLocation;
 import minirpg.inventory.ItemIndex;
@@ -77,12 +77,12 @@ public class World {
     // Factory Stuff
     //
 
-    public FactoryData getAdjacentFactoryData () {
+    public FacData getAdjacentFactoryData () {
         int playerX = GameState.player.getX();
         int playerY = GameState.player.getY();
         Tile standingOver = factory[playerX][playerY];
         if (standingOver != Tile.EMPTY) {
-            return GameState.factory.getFactoryData(playerX, playerY);
+            return GameState.factory.getFacData(playerX, playerY);
         }
 
         for (int dx=-1; dx<=1; dx++) {
@@ -95,7 +95,7 @@ public class World {
 
                 Tile testTile = factory[testX][testY];
                 if (testTile != Tile.EMPTY) 
-                    return GameState.factory.getFactoryData(testX, testY);
+                    return GameState.factory.getFacData(testX, testY);
             }
         }
 
@@ -202,7 +202,7 @@ public class World {
             return;
 
         } else if (testFactory == Tile.MINING_DRILL) {
-            FactoryMiningDrill drill = (FactoryMiningDrill) GameState.factory.getFactoryData(playerX, playerY);
+            FactoryMiningDrill drill = (FactoryMiningDrill) GameState.factory.getFacData(playerX, playerY);
             ItemIndex extractedResource = drill.getResource();
             GameState.player.getInventory().addItem(extractedResource);
             // Doesn't change map so no need to update anything
@@ -228,7 +228,7 @@ public class World {
                     return;
 
                 } else if (testFactory == Tile.MINING_DRILL) {
-                    FactoryMiningDrill drill = (FactoryMiningDrill) GameState.factory.getFactoryData(testX, testY);
+                    FactoryMiningDrill drill = (FactoryMiningDrill) GameState.factory.getFacData(testX, testY);
                     ItemIndex extractedResource = drill.getResource();
                     GameState.player.getInventory().addItem(extractedResource);
                     return;

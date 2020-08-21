@@ -5,7 +5,7 @@ import minirpg.GameState;
 import minirpg.InputBuffer;
 import minirpg.PressState;
 import minirpg.factory.FactoryChest;
-import minirpg.factory.FactoryData;
+import minirpg.factory.FacData;
 import minirpg.inventory.ItemIndex;
 import minirpg.subscreen.InventoryGridSubscreen;
 import minirpg.subscreen.WorldPlacementSubscreen;
@@ -55,6 +55,9 @@ public class WorldScreen implements Screen {
     public Screen update () {
         switch (screenState) {
             case MOVING_IN_WORLD:
+                // Input is handled by the player 
+                GameState.player.update();
+                GameState.factory.update();
                 return traversalInput();
 
             case SELECTING_FROM_INVENTORY:
@@ -72,7 +75,7 @@ public class WorldScreen implements Screen {
 
         // Open adjacent inventory / crafting thing
         if (inputBuffer.pressState(Controls.OPEN_SCREEN) == PressState.JUST_PRESSED) {
-            FactoryData factoryData = GameState.world.getAdjacentFactoryData();
+            FacData factoryData = GameState.world.getAdjacentFactoryData();
             if (factoryData == null)
                 return new CraftScreen();
             
@@ -95,8 +98,6 @@ public class WorldScreen implements Screen {
             return this;
         } 
         
-        // Input is handled by the player 
-        GameState.player.update();
         return this;
     }
 

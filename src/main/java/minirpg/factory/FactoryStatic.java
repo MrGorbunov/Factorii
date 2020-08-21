@@ -2,7 +2,7 @@ package minirpg.factory;
 
 import minirpg.world.Tile;
 
-public class FactoryStatic implements FactoryData {
+public class FactoryStatic implements FacData {
 
     private Tile tile;
 

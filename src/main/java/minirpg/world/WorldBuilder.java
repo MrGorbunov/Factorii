@@ -9,6 +9,17 @@ public class WorldBuilder {
         this.height = height;
     }
 
+    /**
+     * Endless dirt
+     */
+    public World generateDirtWorld () {
+        Tile[][] terrain = convertMask(blankMask(), Tile.GROUND, Tile.GROUND);
+        Tile[][] resources = convertMask(blankMask(), Tile.EMPTY, Tile.EMPTY);
+        Tile[][] factory = convertMask(blankMask(), Tile.EMPTY, Tile.EMPTY);
+        
+        return new World(terrain, resources, factory);
+    }
+
     public World generateDefaultWorld () {
         boolean[][] terrainMask = randomMask();
         for (int i=0; i<6; i++)

@@ -3,13 +3,13 @@ package minirpg.factory;
 import minirpg.inventory.ItemIndex;
 import minirpg.world.Tile;
 
-public class FactoryMiningDrill implements FactoryData {
+public class FactoryMiningDrill implements FacData {
 
     private Tile tile;
     private ItemIndex resourceCollected;
 
-    public FactoryMiningDrill (Tile tile, ItemIndex resourceCollected) {
-        this.tile = tile;
+    public FactoryMiningDrill (ItemIndex resourceCollected) {
+        tile = Tile.MINING_DRILL;
         this.resourceCollected = resourceCollected;
     }
 

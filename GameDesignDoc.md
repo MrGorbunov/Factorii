@@ -55,17 +55,8 @@ into progressions (direct upgrades) of their own.
 	automatically. If next to an item-producing station (ex: Kiln) will
 	get filled up automatically.
 
-- **Glass Transport Tube**: Automatically pulls items out of inventories
-- **Stone Transport Tube**: Transports items around, with random movement
-<!-- 
-
-Old system, still kept in comments because of functionality
-
-- **Wooden Funnel**: Transfers items along a direction. Items cannot be picked
-	up mid-transport. Cannot be above water.
-- **Copper Funnel**: Same as wooden, but moves items faster.
-- **Iron Funnel**: Same as Copper but allows for merging funnels together.
-- **Steel Funnel**: Same as Copper but allows for spliting (sorting). -->
+- **Glass Item Tube**: Automatically pulls items out of inventories
+- **Stone tem Tube**: Transports items around, with random movement
 
 ### Submarine
 The end goal for the game is to produce a submarine. The submarine itself requires creating the following parts, and then crafting them all together:

@@ -2,7 +2,7 @@ package minirpg.factory;
 
 import minirpg.world.Tile;
 
-public interface FactoryData {
+public interface FacData {
 
     public Tile getTile ();
 

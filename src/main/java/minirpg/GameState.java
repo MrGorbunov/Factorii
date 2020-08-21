@@ -41,6 +41,8 @@ public class GameState {
         player.getInventory().addItemMulti(ItemIndex.ORE_COAL, 100);
         player.getInventory().addItemMulti(ItemIndex.ORE_COPPER, 100);
         player.getInventory().addItemMulti(ItemIndex.ORE_IRON, 100);
+        player.getInventory().addItemMulti(ItemIndex.BAR_COPPER, 100);
+        player.getInventory().addItemMulti(ItemIndex.BAR_IRON, 100);
     }
 
     public static void setInputBuffer (InputBuffer inputBuffer) {
@@ -48,7 +50,7 @@ public class GameState {
     }
 
     public static void makeNewWorld () {
-        world = worldBuilder.generateDefaultWorld();
+        world = worldBuilder.generateDirtWorld();
     }
 
 }

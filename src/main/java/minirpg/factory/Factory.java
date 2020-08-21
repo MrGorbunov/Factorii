@@ -20,14 +20,18 @@ public class Factory {
     
     private int width;
     private int height;
+    private final int UPDATES_PER_TICK;
+    private int currentUpdates;
 
-    private FactoryData[][] factory;
+    private FacData[][] factory;
 
     public Factory (int width, int height) {
         this.width = width;
         this.height = height;
-        factory = new FactoryData[width][height];
+        factory = new FacData[width][height];
 
+        UPDATES_PER_TICK = 4;
+        currentUpdates = 0;
     }
 
     public Tile[][] getFactoryLayer () {
@@ -44,12 +48,41 @@ public class Factory {
         return factoryTiles;
     }
 
-    public FactoryData getFactoryData (int x, int y) {
+    public FacData getFacData (int x, int y) {
         return factory[x][y];
     }
 
+    public void update () {
+
+        // Checking to make sure processing only happens every n update calls
+        currentUpdates++;
+        if (currentUpdates < UPDATES_PER_TICK)
+            return;
+        currentUpdates = 0;
+
+        //
+        // Actual Factory Update
+        for (int x=0; x<width; x++) {
+            for (int y=0; y<height; y++) {
+                if (factory[x][y] instanceof FacItemTube) {
+                    ((FacItemTube) factory[x][y]).movementTick();
+                }
+            }
+        }
+
+        for (int x=0; x<width; x++) {
+            for (int y=0; y<height; y++) {
+                if (factory[x][y] instanceof FacItemTube) {
+                    ((FacItemTube) factory[x][y]).bufferTick();
+                }
+            }
+        }
+    }
+
+
+
     /**
-     * Will create a FactoryData at the coordinates specified of 
+     * Will create a FacData at the coordinates specified of 
      * the type corresponding to the tile. Assumes that the placement
      * is legal.
      */
@@ -64,14 +97,45 @@ public class Factory {
                 factory[x][y] = new FactoryStatic(tile);
                 break;
             
-            case CHEST:
-                factory[x][y] = new FactoryChest(Tile.CHEST);
-                break;
-            
             case MINING_DRILL:
                 ItemIndex resource = GameState.world.harvestSpecific(x, y);
-                factory[x][y] = new FactoryMiningDrill(tile, resource);
+                factory[x][y] = new FactoryMiningDrill(resource);
                 break;
+
+            case CHEST:
+                factory[x][y] = new FactoryChest();
+                refreshAdjacent(x, y);
+                break;
+            
+            case ITEM_TUBE_STONE:
+                FactoryItemTubeStone stoneTube = new FactoryItemTubeStone(factory, x, y);
+                factory[x][y] = stoneTube;
+                stoneTube.refresh(factory, x, y);
+                refreshAdjacent(x, y);
+                break;
+            
+            case ITEM_TUBE_GLASS:
+                FactoryItemTubeGlass glassTube = new FactoryItemTubeGlass(factory, x, y);
+                factory[x][y] = glassTube;
+                glassTube.refresh(factory, x, y);
+                refreshAdjacent(x, y);
+                break;
+                
+        }
+    }
+
+    private void refreshAdjacent (int x, int y) {
+        int[][] cardinalDirs = new int[][] { {0,1}, {0,-1}, {1,0}, {-1,0} };
+        for (int[] offset : cardinalDirs) {
+            int testX = x + offset[0];
+            int testY = y + offset[1];
+
+            if (testX < 0 || testX >= width || testY < 0 || testY >= height)
+                continue;
+            
+            FacData testData = factory[testX][testY];
+            if (testData instanceof FacItemTube)
+                ((FacItemTube) testData).refresh(factory, testX, testY);
         }
     }
 

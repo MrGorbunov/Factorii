@@ -31,6 +31,17 @@ public class Inventory {
         return itemAmounts[item.ordinal()];
     }
 
+    /**
+     * Attempts to remove an item. If not possible, debugs a warning
+     */
+    public void removeItem (ItemIndex item) {
+        if (itemAmounts[item.ordinal()] == 0) {
+            throw new Error("Attempted to remove item which has 0 quantity");
+        }
+
+        itemAmounts[item.ordinal()]--;
+    }
+
     public int getTotalSize () {
         int total = 0;
 
@@ -41,15 +52,13 @@ public class Inventory {
         return total;
     }
 
-    /**
-     * Attempts to remove an item. If not possible, debugs a warning
-     */
-    public void removeItem (ItemIndex item) {
-        if (itemAmounts[item.ordinal()] == 0) {
-            throw new Error("Attempted to remove item which has 0 quantity");
+    public ItemIndex getFirstItem () {
+        for (ItemIndex item : ItemIndex.values()) {
+            if (itemAmounts[item.ordinal()] != 0)
+                return item;
         }
 
-        itemAmounts[item.ordinal()]--;
+        throw new Error("Attempted to get first item without checking if totalSize = 0");
     }
 
 
