@@ -7,6 +7,10 @@ import asciiPanel.AsciiPanel;
 import minirpg.*;
 import minirpg.inventory.*;
 
+//
+// TODO: Fix this (scrolling in a grid doesn't work)
+//
+
 public class InventoryGridSubscreen {
     
     private int width;
@@ -60,9 +64,6 @@ public class InventoryGridSubscreen {
         this(width, height, 0, 0);
     }
 
-    /**
-     * Returns false if there are no entries in the grid
-     */
     public boolean setActive (boolean active) {
         if (active == false) {
             this.active = active;
@@ -80,9 +81,48 @@ public class InventoryGridSubscreen {
         }
     }
 
+    /**
+     * Returns the selected item. If no item is selected (ex: 
+     * empty inventory) it will return null.
+     */
     public ItemIndex getSelectedItem () {
         int index = (scrollPos + yPos) * cols + xPos;
+        if (index >= displayItems.size() || index < 0)
+            return null;
+
         return displayItems.get(index);
+    }
+
+    private void updateLists () {
+        displayItems = new ArrayList<ItemIndex>();
+        displayStrings = new ArrayList<String>();
+
+        for (ItemIndex item : ItemIndex.values()) {
+            if (inventory.getQuantity(item) == 0 ||
+                (item.isResource() && hideResource) ||
+                item.isEquipable())
+                    continue;
+            
+            displayItems.add(item);
+            int quantity = inventory.getQuantity(item);
+            displayStrings.add(item.toString() + " x" + quantity);
+        }
+
+        maxScroll = (int) Math.ceil((double) displayStrings.size() / cols) - rows;
+        maxScroll = Math.max(maxScroll, 0);
+
+        // Avoids out-of bounds
+        if (scrollPos > maxScroll)
+            scrollPos = maxScroll;
+        if (hoveringOverNothing()) {
+            moveLeft();
+            if (hoveringOverNothing())
+                moveUp();
+        }
+    }
+
+    public Inventory getInventory () {
+        return inventory;
     }
 
 
@@ -175,7 +215,6 @@ public class InventoryGridSubscreen {
     private void scrollDown () {
         scrollPos++;
 
-        // Only possible if not @ bottom
         if (scrollPos > maxScroll) { scrollPos = maxScroll; }
     }
 
@@ -191,31 +230,6 @@ public class InventoryGridSubscreen {
 
 
 
-    //
-    // List Updating
-    //
-
-    private void updateLists () {
-        displayItems = new ArrayList<ItemIndex>();
-        displayStrings = new ArrayList<String>();
-
-        for (ItemIndex item : ItemIndex.values()) {
-            if (inventory.getQuantity(item) == 0 ||
-                (item.isResource() && hideResource) ||
-                item.isEquipable())
-                    continue;
-            
-            displayItems.add(item);
-            int quantity = inventory.getQuantity(item);
-            displayStrings.add(item.toString() + " x" + quantity);
-        }
-    }
-
-    public Inventory getInventory () {
-        return inventory;
-    }
-
-
 
 
 
@@ -229,10 +243,20 @@ public class InventoryGridSubscreen {
     }
 
     private void drawItemGrid (AsciiPanel terminal) {
-        int titleYOffset = 0;
+        int yCord = yOff + pad;
+        int xCord = xOff + pad;
+
         if (title.length() != 0) {
-            terminal.write(title, xOff+pad, yOff+pad, Color.CYAN);
-            titleYOffset = 1;
+            terminal.write(title, xOff+pad, yCord, Color.CYAN);
+            yCord++;
+        }
+
+        if (displayStrings.size() == 0) {
+            Color bgColor = active ? Color.GRAY : Color.BLACK;
+            String noItemText = "No Items";
+            int middleX = width / 2 + xOff - noItemText.length() / 2;
+            terminal.write(noItemText, middleX, yCord, Color.LIGHT_GRAY, bgColor);
+            return;
         }
 
         for (int y=0; y<rows; y++) { 
@@ -244,10 +268,13 @@ public class InventoryGridSubscreen {
                 boolean highlightBG = x == xPos && y == yPos && active;
                 Color bgColor = highlightBG ? Color.GRAY : Color.BLACK;
 
-                int xCord = xOff + pad + x*colWidth;
-                int yCord = yOff + pad + y + titleYOffset;
                 terminal.write(displayStrings.get(index), xCord, yCord, Color.LIGHT_GRAY, bgColor);
+
+                xCord += colWidth;
             }
+
+            yCord++;
+            xCord = xOff + pad;
         }
     }
 
