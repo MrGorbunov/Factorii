@@ -19,7 +19,7 @@ public class FactoryItemTubeGlass implements FacData, FacItemTube {
     private final Tile tile;
 
     private FacItemTube[] adjacentTubes;
-    private Inventory[] adjacentInventories;
+    private FacInventory[] adjacentFacInventories;
 
     private final int TICKS_PER_PULL; // Glass only pulls an item out every n ticks
     private int currentTicks;
@@ -46,7 +46,9 @@ public class FactoryItemTubeGlass implements FacData, FacItemTube {
      */
     public void refresh (FacData[][] factory, int x, int y) {
         adjacentTubes = new FacItemTube[4];
-        adjacentInventories = new Inventory[4];
+        // Because this pulls items out of inventories, we need to be more delicate
+        // and so look at the FacData
+        adjacentFacInventories = new FacInventory[4]; 
 
         final int[][] cardinalDirections = new int[][] { {0, 1}, {0, -1}, {1, 0}, {-1, 0} };
         int width = factory.length;
@@ -65,7 +67,7 @@ public class FactoryItemTubeGlass implements FacData, FacItemTube {
                 adjacentTubes[i] = adjTube;
 
             } else if (testData instanceof FacInventory) {
-                adjacentInventories[i] = ((FacInventory) testData).getInventory();
+                adjacentFacInventories[i] = (FacInventory) testData;
             }
         }
     }
@@ -106,18 +108,33 @@ public class FactoryItemTubeGlass implements FacData, FacItemTube {
 
                 for (int i=0; i<4; i++) {
                     // No tubes, so now try to pull from inventory
-                    if (adjacentInventories[i] == null)
-                            continue;
-                    
-                    Inventory adjInventory = adjacentInventories[i];
-
-                    // Pull from inventory if possible
-                    if (adjInventory.getTotalSize() == 0)
+                    if (adjacentFacInventories[i] == null)
                         continue;
                     
-                    bufferTransportingItem = adjInventory.getFirstItem();
-                    adjInventory.removeItem(bufferTransportingItem);
-                    bufferPreviousTube = null;
+                    
+                    FacInventory adjFacInventory = adjacentFacInventories[i];
+
+                    if (adjFacInventory instanceof FactoryChest) {
+                        Inventory adjInventory = adjFacInventory.getInventory();
+
+                        // Pull from inventory if possible
+                        if (adjInventory.getTotalSize() == 0)
+                            continue;
+                        
+                        bufferTransportingItem = adjInventory.getFirstItem();
+                        adjInventory.removeItem(bufferTransportingItem);
+                        bufferPreviousTube = null;
+
+                    } else if (adjFacInventory instanceof FactoryAutoCrafter) {
+                        FactoryAutoCrafter autoCrafter = (FactoryAutoCrafter) adjFacInventory;
+                        if (autoCrafter.canTakeProduct() == false)
+                            continue;
+                        
+                        bufferTransportingItem = autoCrafter.takeProduct();
+                        bufferPreviousTube = null;
+                    }
+
+
                     return;
                 }
 
