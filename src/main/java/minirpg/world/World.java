@@ -149,8 +149,9 @@ public class World {
      * WORKBENCH, KILN, FORGE.
      */
     private CraftingLocation checkTileCrafting (Tile testTile) {
-        if (testTile == Tile.WORKBENCH)
-            return CraftingLocation.WORKBENCH;
+        if (testTile == Tile.WORKBENCH ||
+            testTile == Tile.COPPER_WORKBENCH)
+                return CraftingLocation.WORKBENCH;
         
         if (testTile == Tile.KILN)
             return CraftingLocation.KILN;

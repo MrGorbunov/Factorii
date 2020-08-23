@@ -36,7 +36,7 @@ public class FactoryItemTubeGlass implements FacData, FacItemTube {
         tile = Tile.ITEM_TUBE_GLASS;
         transportingItem = null;
 
-        TICKS_PER_PULL = 3;
+        TICKS_PER_PULL = 4;
         currentTicks = 0;
     }
 

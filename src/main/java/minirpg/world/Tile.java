@@ -98,7 +98,6 @@ public enum Tile {
                 return ItemIndex.ITEM_TUBE_STONE;
         }
 
-        System.out.println("WARNING: Undefined Tile to Item conversion");
-        return ItemIndex.GLASS;
+        throw new Error ("Attempted to do Tile -> Item conversion which does not exist");
     }
 }

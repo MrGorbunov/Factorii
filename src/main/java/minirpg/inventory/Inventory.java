@@ -58,7 +58,7 @@ public class Inventory {
                 return item;
         }
 
-        throw new Error("Attempted to get first item without checking if totalSize = 0");
+        throw new Error("Attempted to get first item without checking if totalSize == 0");
     }
 
 

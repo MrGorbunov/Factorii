@@ -97,6 +97,9 @@ public class ChestScreen implements Screen {
         // Transfer from chest to player
         } else if (inputBuffer.pressState(Controls.ACTION) == PressState.JUST_PRESSED) {
             ItemIndex transferItem = chestInventorySubscreen.getSelectedItem();
+            if (transferItem == null)
+                return this;
+
             playerInventorySubscreen.getInventory().addItem(transferItem);
             chestInventorySubscreen.getInventory().removeItem(transferItem);
             chestInventorySubscreen.refresh();
@@ -128,8 +131,10 @@ public class ChestScreen implements Screen {
         } else if (inputBuffer.pressState(Controls.ACTION) == PressState.JUST_PRESSED) {
             // TODO: Limit chest capacity
             ItemIndex transferItem = playerInventorySubscreen.getSelectedItem();
-            chestInventorySubscreen.getInventory().addItem(transferItem);
-            playerInventorySubscreen.getInventory().removeItem(transferItem);
+            if (transferItem == null)
+                return this;
+
+            chestInventorySubscreen.getInventory().addItem(transferItem); playerInventorySubscreen.getInventory().removeItem(transferItem);
             playerInventorySubscreen.refresh();
             chestInventorySubscreen.refresh();
         

@@ -3,6 +3,7 @@ package minirpg.factory;
 import java.util.HashMap;
 
 import minirpg.GameState;
+import minirpg.inventory.CraftingGlobals;
 import minirpg.inventory.Inventory;
 import minirpg.inventory.ItemIndex;
 import minirpg.world.Tile;
@@ -60,8 +61,21 @@ public class Factory {
             return;
         currentUpdates = 0;
 
+
         //
         // Actual Factory Update
+
+        // First production happens
+        for (int x=0; x<width; x++) {
+            for (int y=0; y<height; y++) {
+                if (factory[x][y] instanceof FacProducer) {
+                    ((FacProducer) factory[x][y]).update();
+                }
+            }
+        }
+
+        // For item tubes, we essentially have a distributed double buffer
+        // hence two for loops
         for (int x=0; x<width; x++) {
             for (int y=0; y<height; y++) {
                 if (factory[x][y] instanceof FacItemTube) {
@@ -95,6 +109,10 @@ public class Factory {
             case KILN:
             case FORGE:
                 factory[x][y] = new FactoryStatic(tile);
+                break;
+            
+            case COPPER_WORKBENCH:
+                factory[x][y] = new FactoryAutoCrafter(GameState.craftingGlobals.starterCrafts[0]);
                 break;
             
             case MINING_DRILL:

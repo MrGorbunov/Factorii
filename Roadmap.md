@@ -61,6 +61,8 @@
   * Input Buffer class
     * Maybe use modifier keys (shift, ctrl, etc) for larger stack transfers (chest)
 
+- [ ] Instead of crafting location, have workbench
+  FacData classes to provide the available crafts.
 
 
 

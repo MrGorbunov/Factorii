@@ -23,8 +23,6 @@ Interact
 
 */
 
-// TODO: Start using this you bumbo
-
 public enum Controls {
     DIR_UP    (KeyEvent.VK_UP),
     DIR_DOWN  (KeyEvent.VK_DOWN),

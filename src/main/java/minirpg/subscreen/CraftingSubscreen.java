@@ -27,6 +27,10 @@ public class CraftingSubscreen {
     private int yOff;
     private boolean active;
 
+    private boolean drawDescription;
+    private CraftingRecipe setRecipe; // Used to set a certain recipe as the goto
+    private boolean changeColorIfAvailable;
+
     private int pad;
     private int descriptionY;
     private int selection;
@@ -43,8 +47,10 @@ public class CraftingSubscreen {
         pad = 2;
         selection = 0;
 
-        // TODO: This assumes that recipes have at most 3 unique ingredients
-        descriptionY = yOff + height - pad - 5;
+        // Defaults
+        drawDescription = true;
+        setRecipe = null;
+        changeColorIfAvailable = true;
 
         updateAllLists();
     }
@@ -60,6 +66,37 @@ public class CraftingSubscreen {
 
 
 
+
+
+    //
+    // Configurability
+    //
+
+    public void setDrawDescription (boolean drawDescription) {
+        this.drawDescription = drawDescription;
+    }
+
+    /**
+     * Sets a new recipe to be the "setRecipe", i.e.
+     * the recipe that will be auto-crafted if resources
+     * provide.
+     */
+    public void setSetRecipe (CraftingRecipe setRecipe) {
+        this.setRecipe = setRecipe;
+    }
+
+    public void setChangeColorIfAvailable (boolean changeColorIfAvailable) {
+        this.changeColorIfAvailable = changeColorIfAvailable;
+    }
+
+    public void refresh () {
+        updateAllLists();
+    }
+
+
+
+
+
     //
     // Small things
     //
@@ -71,7 +108,9 @@ public class CraftingSubscreen {
     public void drawSubscreen (AsciiPanel terminal) {
         updateAllLists();
         drawRecipesList(terminal);
-        drawDescription(terminal);
+
+        if (drawDescription)
+            drawDescription(terminal);
     }
 
  
@@ -95,6 +134,9 @@ public class CraftingSubscreen {
 
         if (selection >= recipes.size() && active)
             selection = recipes.size() - 1;
+
+        // TODO: This assumes that recipes have at most 3 unique ingredients
+        descriptionY = yOff + height - pad - 5;
     }
 
 
@@ -107,8 +149,12 @@ public class CraftingSubscreen {
     private void drawRecipesList (AsciiPanel terminal) {
         for (int i=0; i<recipes.size(); i++) {
             CraftingRecipe recipe = recipes.get(i);
-            Color textColor = availability.get(i) ? Color.WHITE : Color.LIGHT_GRAY;
+            Color textColor = availability.get(i) && changeColorIfAvailable ? Color.WHITE : Color.LIGHT_GRAY;
             Color bgColor = selection == i && active ? Color.GRAY : Color.BLACK;
+
+            if (setRecipe != null &&
+                setRecipe.equals(recipe))
+                    terminal.write("*", xOff + width - pad - 1, yOff+pad+i, Color.WHITE);
 
             terminal.write(recipe.resultName(), xOff+pad, yOff+pad+i, textColor, bgColor);
         }
@@ -138,7 +184,11 @@ public class CraftingSubscreen {
 		CraftingRecipe selectedRecipe = recipes.get(selection);
 		// craftItem auto-checks for proper # ingredients
 		GameState.player.getInventory().craftItem(selectedRecipe);
-	}
+    }
+    
+    public CraftingRecipe getSelectedRecipe () {
+        return recipes.get(selection);
+    }
 
 
 
