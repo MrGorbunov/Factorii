@@ -19,9 +19,6 @@ import minirpg.subscreen.PlayerInventorySubscreen;
 
 public class AutoCraftingScreen implements Screen {
     
-    private int screenWidth;
-    private int screenHeight;
-
     private InventoryGridSubscreen playerInventorySubscreen;
     private CraftingSubscreen workbenchCraftsSubscreen;
     private InventoryGridSubscreen workbenchInventorySubscreen;
@@ -31,12 +28,8 @@ public class AutoCraftingScreen implements Screen {
 
 
     public AutoCraftingScreen (FactoryAutoCrafter autoCrafter) {
-        // TODO: Put these constants into gameState or settings
-        //          (since this isn't really relevant to gamestate)
-
-        screenWidth = 79;
-        screenHeight = 24;
-
+        int screenWidth = GameState.windowWidth;
+        int screenHeight = GameState.windowHeight;
         int inventoryHeight = 8;
         int workbenchSubscreensX = (screenWidth + 1) / 2;
 

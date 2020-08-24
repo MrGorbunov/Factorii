@@ -17,9 +17,6 @@ import asciiPanel.AsciiPanel;
 
 
 public class WorldScreen implements Screen {
-    private int screenWidth;
-    private int screenHeight;
-
     private WorldSubscreen worldSubscreen;
     private WorldPlacementSubscreen worldPlacementSubscreen;
     private InventoryGridSubscreen inventoryGridSubscreen;
@@ -27,12 +24,14 @@ public class WorldScreen implements Screen {
     private ScreenState screenState;
 
     public WorldScreen () {
-        screenWidth = 80;
-        screenHeight = 24;
+        int width = GameState.windowWidth;
+        int height = GameState.windowHeight;
 
-        worldSubscreen = new WorldSubscreen(screenWidth, screenHeight - 5);
-        worldPlacementSubscreen = new WorldPlacementSubscreen(screenWidth, screenHeight - 5);
-        inventoryGridSubscreen = new InventoryGridSubscreen(screenWidth, 5, 0, screenHeight - 5);
+        int inventoryGridHeight = 5;
+
+        worldSubscreen = new WorldSubscreen(width, height - inventoryGridHeight, 0, 0);
+        worldPlacementSubscreen = new WorldPlacementSubscreen(width, height - inventoryGridHeight, 0, 0);
+        inventoryGridSubscreen = new InventoryGridSubscreen(width, inventoryGridHeight, 0, height - inventoryGridHeight);
 
         screenState = ScreenState.MOVING_IN_WORLD;
         inventoryGridSubscreen.setActive(false);

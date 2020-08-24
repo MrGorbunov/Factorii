@@ -17,20 +17,14 @@ import minirpg.subscreen.PlayerInventorySubscreen;
 
 public class CraftScreen implements Screen {
     
-    private int screenWidth;
-    private int screenHeight;
-    
     private PlayerInventorySubscreen inventorySubscreen;
     private CraftingSubscreen craftingSubscreen;
 
     private ScreenState screenState;
 
     public CraftScreen () {
-        // TODO: Put these constants into gameState or settings
-        //          (since this isn't really relevant to gamestate)
-
-        screenWidth = 79;
-        screenHeight = 24;
+        int screenWidth = GameState.windowWidth;
+        int screenHeight = GameState.windowHeight;
 
         inventorySubscreen = new PlayerInventorySubscreen(screenWidth / 2, screenHeight);
         craftingSubscreen = new CraftingSubscreen(screenWidth / 2, screenHeight, (screenWidth+1) / 2, 0);

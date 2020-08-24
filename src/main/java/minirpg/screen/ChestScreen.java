@@ -19,20 +19,14 @@ import minirpg.subscreen.PlayerInventorySubscreen;
 
 public class ChestScreen implements Screen {
     
-    private int screenWidth;
-    private int screenHeight;
-    
     private InventoryGridSubscreen playerInventorySubscreen;
     private InventoryGridSubscreen chestInventorySubscreen;
 
     private ScreenState screenState;
 
     public ChestScreen (FactoryChest chest) {
-        // TODO: Put these constants into gameState or settings
-        //          (since this isn't really relevant to gamestate)
-
-        screenWidth = 79;
-        screenHeight = 24;
+        int screenWidth = GameState.windowWidth;
+        int screenHeight = GameState.windowHeight;
         int transferMenuHeight = 5;
 
         playerInventorySubscreen = new InventoryGridSubscreen(screenWidth / 2, screenHeight);

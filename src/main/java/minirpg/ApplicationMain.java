@@ -30,7 +30,12 @@ public class ApplicationMain extends JFrame {
 
     public ApplicationMain () {
         super();
-        terminal = new AsciiPanel();
+
+        int screenWidth = 120;
+        int screenHeight = 40;
+        GameState.setWindowDimensions(screenWidth, screenHeight);
+
+        terminal = new AsciiPanel(screenWidth, screenHeight);
         add(terminal);
         pack();
 
@@ -52,14 +57,10 @@ public class ApplicationMain extends JFrame {
         long previousTime;
 
         while (true) {
-            previousTime = System.currentTimeMillis();
-
             // WARNING: Order is pretty important here
             //      be careful what you mess with
+            previousTime = System.currentTimeMillis();
 
-            // Update
-            // Player & Factory updates are handled
-            // by the screen
             screen = screen.update();
 
             // Draw
@@ -67,7 +68,6 @@ public class ApplicationMain extends JFrame {
             screen.displayOutput(terminal);
             super.repaint();
 
-            // Updating input buffer happens at end
             GameState.inputBuffer.update();
 
             // Wait
@@ -82,6 +82,7 @@ public class ApplicationMain extends JFrame {
 
     public static void main(String[] args) {
         ApplicationMain main = new ApplicationMain();
+        main.setResizable(false);
         main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         main.setVisible(true);
 

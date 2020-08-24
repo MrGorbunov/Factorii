@@ -7,10 +7,6 @@ import asciiPanel.AsciiPanel;
 import minirpg.*;
 import minirpg.inventory.*;
 
-//
-// TODO: Fix this (scrolling in a grid doesn't work)
-//
-
 public class InventoryGridSubscreen {
     
     private int width;

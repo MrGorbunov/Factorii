@@ -25,6 +25,13 @@ public class GameState {
     private static WorldBuilder worldBuilder;
     public static InputBuffer inputBuffer;
 
+    public static int windowHeight;
+    public static int windowWidth;
+
+    public static void setWindowDimensions (int width, int height) {
+        windowWidth = width;
+        windowHeight = height;
+    }
 
     public static void initGameState (int worldWidth, int worldHeight) {
         worldBuilder = new WorldBuilder(worldWidth, worldHeight);

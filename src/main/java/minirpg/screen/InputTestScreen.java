@@ -10,9 +10,6 @@ import java.util.HashMap;
 
 public class InputTestScreen implements Screen {
     
-    private int screenWidth = 79;
-    private int screenHeight = 24;
-
     public InputTestScreen () { }
 
     public void displayOutput (AsciiPanel terminal) {
