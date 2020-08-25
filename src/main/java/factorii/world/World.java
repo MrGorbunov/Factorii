@@ -3,7 +3,6 @@ package factorii.world;
 import factorii.GameState;
 import factorii.factory.FacData;
 import factorii.factory.FactoryMiningDrill;
-import factorii.inventory.CraftingLocation;
 import factorii.inventory.ItemIndex;
 
 public class World {
@@ -100,66 +99,6 @@ public class World {
         }
 
         return null;
-    }
-
-    /**
-     * Checks what crafting location the player is at.
-     * First checks if standing over anything. Then checks
-     * for directly adjacent crafting places, prioritizing
-     * the highest level ((Copper) WorkBench < Kiln < Forge).
-     */
-    public CraftingLocation getCraftingLocation () {
-        // If standing on a craftin surface -> use that
-        // else look around & harvest trees first, then ore
-        int playerX = GameState.player.getX();
-        int playerY = GameState.player.getY();
-        Tile standingOver = factory[playerX][playerY];
-        CraftingLocation testLocation = checkTileCrafting(standingOver);
-        if (testLocation != CraftingLocation.PLAYER) {
-            return testLocation;
-        }
-
-        CraftingLocation highestLocation = CraftingLocation.PLAYER;
-
-        for (int dx=-1; dx<=1; dx++) {
-            for (int dy=-1; dy<=1; dy++) {
-                if (dx == 0 && dy == 0) continue;
-
-                int testX = playerX + dx;
-                int testY = playerY + dy;
-                if (testX < 0 || testX >= width || testY < 0 || testY >= height) continue;
-
-                Tile testTile = factory[testX][testY];
-                testLocation = checkTileCrafting(testTile);
-                if (testLocation == CraftingLocation.PLAYER) continue;
-
-                if (testLocation.ordinal() > highestLocation.ordinal()) {
-                        highestLocation = testLocation;
-                }
-            }
-        }
-
-        // Defaults to player if nothing found
-        return highestLocation;
-    }
-
-    /**
-     * Checks if the input tiles is a crafting location, returns
-     * null otherwise. Does NOT return player type; only
-     * WORKBENCH, KILN, FORGE.
-     */
-    private CraftingLocation checkTileCrafting (Tile testTile) {
-        if (testTile == Tile.WORKBENCH ||
-            testTile == Tile.COPPER_WORKBENCH)
-                return CraftingLocation.WORKBENCH;
-        
-        if (testTile == Tile.KILN)
-            return CraftingLocation.KILN;
-
-        if (testTile == Tile.FORGE)
-            return CraftingLocation.FORGE;
-        
-        return CraftingLocation.PLAYER;
     }
 
     public boolean canStandAt (int x, int y) {

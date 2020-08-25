@@ -9,6 +9,7 @@ import factorii.Controls;
 import factorii.GameState;
 import factorii.InputBuffer;
 import factorii.PressState;
+import factorii.factory.FacData;
 import factorii.inventory.CraftingRecipe;
 import factorii.inventory.ItemIndex;
 import factorii.subscreen.CraftingSubscreen;
@@ -22,12 +23,12 @@ public class CraftScreen implements Screen {
 
     private ScreenState screenState;
 
-    public CraftScreen () {
+    public CraftScreen (FacData adjacentCrafting) {
         int screenWidth = GameState.windowWidth;
         int screenHeight = GameState.windowHeight;
 
         inventorySubscreen = new PlayerInventorySubscreen(screenWidth / 2, screenHeight);
-        craftingSubscreen = new CraftingSubscreen(screenWidth / 2, screenHeight, (screenWidth+1) / 2, 0);
+        craftingSubscreen = new CraftingSubscreen(screenWidth / 2, screenHeight, (screenWidth+1) / 2, 0, adjacentCrafting);
 
         screenState = ScreenState.LOOKING_AT_CRAFTING_PANEL;
         inventorySubscreen.setActive(false);

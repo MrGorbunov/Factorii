@@ -5,7 +5,10 @@ import java.awt.Color;
 
 import asciiPanel.AsciiPanel;
 import factorii.GameState;
-import factorii.inventory.CraftingLocation;
+import factorii.factory.FacCrafter;
+import factorii.factory.FacData;
+import factorii.factory.FactoryAutoCrafter;
+import factorii.factory.FactoryCrafter;
 import factorii.inventory.CraftingRecipe;
 import factorii.inventory.Inventory;
 import factorii.inventory.ItemIndex;
@@ -27,6 +30,7 @@ public class CraftingSubscreen {
     private int yOff;
     private boolean active;
 
+    private FacData adjacentCrafter;
     private boolean drawDescription;
     private CraftingRecipe setRecipe; // Used to set a certain recipe as the goto
     private boolean changeColorIfAvailable;
@@ -39,13 +43,14 @@ public class CraftingSubscreen {
 
     private CraftingRecipe[] craftingRecipes;
 
-    public CraftingSubscreen (int width, int height, int xOff, int yOff) {
+    public CraftingSubscreen (int width, int height, int xOff, int yOff, FacData adjacentCrafter) {
         this.width = width;
         this.height = height;
         this.xOff = xOff;
         this.yOff = yOff;
         pad = 2;
         selection = 0;
+        this.adjacentCrafter = adjacentCrafter;
 
         // Defaults
         drawDescription = true;
@@ -55,13 +60,20 @@ public class CraftingSubscreen {
         updateAllLists();
     }
 
-    public CraftingSubscreen (int width, int height) {
-        this(width, height, 0, 0);
+    public CraftingSubscreen (int width, int height, FacData adjacentCrafter) {
+        this(width, height, 0, 0, adjacentCrafter);
     }
 
     private void refreshRecipeLists () {
-        CraftingLocation location = GameState.world.getCraftingLocation();
-        craftingRecipes = GameState.craftingGlobals.getUnlockedRecieps(location);
+        if (adjacentCrafter instanceof FactoryCrafter) {
+            craftingRecipes = ((FactoryCrafter) adjacentCrafter).getRecipes();
+
+        } else if (adjacentCrafter instanceof FactoryAutoCrafter) {
+            craftingRecipes = ((FactoryAutoCrafter) adjacentCrafter).getRecipes();
+
+        } else {
+            craftingRecipes = GameState.craftingGlobals.getPlayerCrafts();
+        }
     }
 
 

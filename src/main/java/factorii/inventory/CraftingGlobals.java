@@ -9,76 +9,81 @@ import factorii.inventory.*;
 public class CraftingGlobals {
 
 	// What you can make a workbench given tech level
-	public CraftingRecipe[] starterCrafts;
-	public CraftingRecipe[] workbenchCrafts;
-	public CraftingRecipe[] kilnCrafts;
-    public CraftingRecipe[] forgeCrafts;
+	private CraftingRecipe[] starterCrafts;
+	private CraftingRecipe[] workbenchCrafts;
+	private CraftingRecipe[] kilnCrafts;
+    private CraftingRecipe[] forgeCrafts;
     
     // Equipment is weird because they're unlocked but also 1-time crafts
-    public CraftingRecipe[] equipmentCrafts;
-    public TechLevel[] equipmentUnlocks;
+    private CraftingRecipe[] equipmentCrafts;
+    private TechLevel[] equipmentUnlocks;
 
 	// Probably need a new recipe class (CraftingSmelt)
 	// to take fuel into account
-	public CraftingRecipe[] kilnSmelts;
-	public CraftingRecipe[] forgeSmelts;
+	private CraftingRecipe[] kilnSmelts;
+	private CraftingRecipe[] forgeSmelts;
 
     public CraftingGlobals () {
         initializeRecipes();
     }
 
-    public CraftingRecipe[] getUnlockedRecieps (CraftingLocation location) {
-        if (location == CraftingLocation.PLAYER) 
-            return starterCrafts;
+    public CraftingRecipe[] getWorkbenchCrafts () {
+        ArrayList<CraftingRecipe> recipes = new ArrayList<CraftingRecipe>();
 
-        else if (location == CraftingLocation.WORKBENCH) {
-            ArrayList<CraftingRecipe> recipes = new ArrayList<CraftingRecipe>();
+        for (CraftingRecipe recipe : starterCrafts)
+            recipes.add(recipe);
 
-            for (CraftingRecipe recipe : starterCrafts)
+        // By being at a workbench, it's guaranteed that tech level is at least WORKBENCH
+        for (CraftingRecipe recipe : workbenchCrafts)
+            recipes.add(recipe);
+
+        int currentTechOrdinal = GameState.techLevel.ordinal();
+        if (currentTechOrdinal >= TechLevel.KILN.ordinal()) {
+            for (CraftingRecipe recipe : kilnCrafts)
                 recipes.add(recipe);
-
-            // By being at a workbench, it's guaranteed that tech level is at least WORKBENCH
-            for (CraftingRecipe recipe : workbenchCrafts)
-                recipes.add(recipe);
-
-            int currentTechOrdinal = GameState.techLevel.ordinal();
-            if (currentTechOrdinal >= TechLevel.KILN.ordinal()) {
-                for (CraftingRecipe recipe : kilnCrafts)
-                    recipes.add(recipe);
-            }
-
-            if (currentTechOrdinal >= TechLevel.FORGE.ordinal()) {
-                for (CraftingRecipe recipe : forgeCrafts)
-                    recipes.add(recipe);
-            }
-
-            for (int i=0; i<equipmentCrafts.length; i++) {
-                int requiredLevel = equipmentUnlocks[i].ordinal();
-                boolean alreadyCrafted = GameState.player.getInventory().getQuantity(equipmentCrafts[i].result()) > 0;
-                if (currentTechOrdinal >= requiredLevel &&
-                    alreadyCrafted == false)
-                        recipes.add(equipmentCrafts[i]);
-            }
-
-            // Conversion
-            CraftingRecipe[] returnRecipes = new CraftingRecipe[recipes.size()];
-            for (int i=0; i<returnRecipes.length; i++) {
-                returnRecipes[i] = recipes.get(i);
-            }
-
-            return returnRecipes;
-        
-        
-        } else if (location == CraftingLocation.KILN) {
-            return kilnSmelts;
-        
-        
-        } else if (location == CraftingLocation.FORGE) {
-            return forgeSmelts;
         }
 
-        throw new Error("Kiln & Forge recipes not yet implemented");
+        if (currentTechOrdinal >= TechLevel.FORGE.ordinal()) {
+            for (CraftingRecipe recipe : forgeCrafts)
+                recipes.add(recipe);
+        }
+
+        for (int i=0; i<equipmentCrafts.length; i++) {
+            int requiredLevel = equipmentUnlocks[i].ordinal();
+            boolean alreadyCrafted = GameState.player.getInventory().getQuantity(equipmentCrafts[i].result()) > 0;
+            if (currentTechOrdinal >= requiredLevel &&
+                alreadyCrafted == false)
+                    recipes.add(equipmentCrafts[i]);
+        }
+
+        // Conversion
+        CraftingRecipe[] returnRecipes = new CraftingRecipe[recipes.size()];
+        for (int i=0; i<returnRecipes.length; i++) {
+            returnRecipes[i] = recipes.get(i);
+        }
+
+        return returnRecipes;
     }
+
+    public CraftingRecipe[] getPlayerCrafts () {
+        return starterCrafts;
+    }
+
+    public CraftingRecipe[] getKilnCrafts () {
+        return kilnSmelts;
+    }
+
+    public CraftingRecipe[] getForgeCrafts () {
+        return forgeSmelts;
+    }
+
+
+
+
+
+    //
+    // Recipe decleration
+    //
 
 	private void initializeRecipes () {
         starterCrafts = new CraftingRecipe[] {
@@ -89,8 +94,6 @@ public class CraftingGlobals {
                 "Unlocks more crafting options"),
 
 		};
-
-
 
 		workbenchCrafts = new CraftingRecipe[] {
             new CraftingRecipe(
@@ -198,6 +201,8 @@ public class CraftingGlobals {
             TechLevel.KILN, // Shovel
             TechLevel.FORGE, // Tall Boots
         };
+
+
 
         //
         // These are made at the Kiln & Forge

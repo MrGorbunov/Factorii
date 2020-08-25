@@ -34,7 +34,7 @@ public class AutoCraftingScreen implements Screen {
         int workbenchSubscreensX = (screenWidth + 1) / 2;
 
         playerInventorySubscreen = new InventoryGridSubscreen(screenWidth / 2, screenHeight);
-        workbenchCraftsSubscreen = new CraftingSubscreen(workbenchSubscreensX, screenHeight - inventoryHeight, workbenchSubscreensX, 0);
+        workbenchCraftsSubscreen = new CraftingSubscreen(workbenchSubscreensX, screenHeight - inventoryHeight, workbenchSubscreensX, 0, autoCrafter);
         workbenchInventorySubscreen = new InventoryGridSubscreen(workbenchSubscreensX, inventoryHeight, workbenchSubscreensX, screenHeight - inventoryHeight);
 
         screenState = ScreenState.LOOKING_AT_PLAYER_INVENTORY;

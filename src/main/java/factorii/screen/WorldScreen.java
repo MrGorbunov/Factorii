@@ -5,6 +5,8 @@ import factorii.GameState;
 import factorii.InputBuffer;
 import factorii.PressState;
 import factorii.factory.FactoryChest;
+import factorii.factory.FactoryCrafter;
+import factorii.factory.FactoryStatic;
 import factorii.factory.FacData;
 import factorii.factory.FactoryAutoCrafter;
 import factorii.inventory.ItemIndex;
@@ -179,15 +181,18 @@ public class WorldScreen implements Screen {
 
     private Screen gotoFactoryScreen () {
         FacData factoryData = GameState.world.getAdjacentFactoryData();
-        if (factoryData == null)
-            return new CraftScreen();
-        
-        if (factoryData instanceof FactoryChest)
-            return new ChestScreen((FactoryChest) factoryData);
-        else if (factoryData instanceof FactoryAutoCrafter)
-            return new AutoCraftingScreen((FactoryAutoCrafter) factoryData);
+        if (factoryData != null) {
+            if (factoryData instanceof FactoryCrafter)
+                return new CraftScreen(factoryData);
 
-        return new CraftScreen();
+            else if (factoryData instanceof FactoryChest)
+                return new ChestScreen((FactoryChest) factoryData);
+
+            else if (factoryData instanceof FactoryAutoCrafter)
+                return new AutoCraftingScreen((FactoryAutoCrafter) factoryData);
+        }
+
+        return new CraftScreen(new FactoryStatic(Tile.EMPTY));
     }
 
 

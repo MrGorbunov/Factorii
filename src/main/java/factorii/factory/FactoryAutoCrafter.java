@@ -1,25 +1,51 @@
 package factorii.factory;
+import factorii.GameState;
 import factorii.inventory.CraftingRecipe;
 import factorii.inventory.Inventory;
 import factorii.inventory.ItemIndex;
 import factorii.world.Tile;
 
-public class FactoryAutoCrafter implements FacData, FacInventory, FacProducer {
+public class FactoryAutoCrafter implements FacData, FacInventory, FacProducer, FacCrafter {
     
     private final Tile tile;
 
     private Inventory inventory;
     private CraftingRecipe selectedRecipe;
 
-    public FactoryAutoCrafter (CraftingRecipe recipe) {
+    public FactoryAutoCrafter (Tile tile) {
         inventory = new Inventory(); 
-        tile = Tile.COPPER_WORKBENCH;
-        setRecipe(recipe);
+
+        switch (tile) {
+            case WORKBENCH:
+            case COPPER_WORKBENCH:
+                this.tile = Tile.COPPER_WORKBENCH;
+                selectedRecipe = GameState.craftingGlobals.getWorkbenchCrafts()[0];
+                return;
+        }
+
+        this.tile = Tile.COPPER_WORKBENCH;
+        selectedRecipe = GameState.craftingGlobals.getWorkbenchCrafts()[0];
     }
 
     public Tile getTile () { return tile; }
     public Inventory getInventory () { return inventory; }
     public CraftingRecipe getSelectedRecipe () { return selectedRecipe; }
+
+    public CraftingRecipe[] getRecipes () {
+        switch (tile) {
+            case WORKBENCH:
+            case COPPER_WORKBENCH:
+                return GameState.craftingGlobals.getWorkbenchCrafts();
+            
+            case KILN:
+                return GameState.craftingGlobals.getKilnCrafts();
+
+            case FORGE:
+                return GameState.craftingGlobals.getForgeCrafts();
+        }
+
+        return GameState.craftingGlobals.getPlayerCrafts();
+    }
 
     public void setRecipe (CraftingRecipe newRecipe) {
         selectedRecipe = newRecipe;

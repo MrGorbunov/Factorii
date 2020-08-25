@@ -108,11 +108,11 @@ public class Factory {
             case WORKBENCH:
             case KILN:
             case FORGE:
-                factory[x][y] = new FactoryStatic(tile);
+                factory[x][y] = new FactoryCrafter(tile);
                 break;
             
             case COPPER_WORKBENCH:
-                factory[x][y] = new FactoryAutoCrafter(GameState.craftingGlobals.starterCrafts[0]);
+                factory[x][y] = new FactoryAutoCrafter(Tile.WORKBENCH);
                 break;
             
             case MINING_DRILL:
