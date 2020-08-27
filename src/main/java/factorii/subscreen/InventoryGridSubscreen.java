@@ -279,12 +279,12 @@ public class InventoryGridSubscreen {
 
         // Top arrows
         if (scrollPos > 0 && maxScroll != 0) {
-            terminal.write(upScrollArrows(), xOff, yOff + pad - 1);
+            terminal.write(upScrollArrows(), xOff+pad, yOff + pad - 1);
         }
 
         // Bottom arrows
         if (scrollPos < maxScroll && maxScroll != 0) {
-            terminal.write(downScrollArrows(), xOff, yOff + height - pad);
+            terminal.write(downScrollArrows(), xOff+pad, yOff + height - pad);
         }
 
     }
@@ -292,7 +292,7 @@ public class InventoryGridSubscreen {
     private String downScrollArrows () {
         StringBuilder res = new StringBuilder();
 
-        for (int i=0; i<width/3; i++) {
+        for (int i=0; i<(width - 2*pad)/3; i++) {
             res.append("\\/ ");
         }
 
@@ -302,7 +302,7 @@ public class InventoryGridSubscreen {
     private String upScrollArrows () {
         StringBuilder res = new StringBuilder();
 
-        for (int i=0; i<width/3; i++) {
+        for (int i=0; i<(width - 2*pad)/3; i++) {
             res.append("/\\ ");
         }
 
