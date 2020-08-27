@@ -18,23 +18,26 @@
   * [x] New subscreen
   * [x] Transfering / taking out
 
-- [ ] Mining drills
+- [x] Mining drills
   * [x] Basic mining drill 
    * *Maybe it just picks up what's below it?*
-  * [ ] Auto mining drill
+  * [x] Auto mining drill
 
-- [ ] Copper workbench created
+- [x] Copper workbench created
 
 - [x] Smelting works
   * Smelt class (vs CraftingRecipe)?
   * [x] Kiln smelting
   * [x] Forge smelting
 - [ ] Smelters work with funnels
+  * [ ] Auto form of kiln
+  * [ ] Auto form of forge
 
 - [ ] Item Tubes
   * [x] Glass pulls from inventories
   * [x] Stone just moves things along
     * [ ] Prefer moving items in the same direction they came from
+  * [ ] Steel tube for sorting
   * [ ] All tiers of funnels functional w/ chests
 
 - [ ] All tiers of floats work too
@@ -61,24 +64,23 @@
   * Input Buffer class
     * Maybe use modifier keys (shift, ctrl, etc) for larger stack transfers (chest)
 
-- [ ] Instead of crafting location, have workbench
-  FacData classes to provide the available crafts.
+- [x] Instead of crafting location, have workbench FacData classes to provide the available crafts.
 
 
 
 ## v0.3 - Don't know yet
 
-- [ ] Refactor GUI to be more GUI and less state
+- [ ] ~~Refactor GUI to be more GUI and less state~~
   - May be unnecessary when I get here
 
 - [x] Place controls into globals
-- [ ] Place colors into globals
+- [ ] ~~Place colors into globals~~
 - [ ] Allow for picking up of factory parts
 
 #### Cleanup
 
 - [x] Go to update mode w/ constant fps
-- [ ] Rename project to be factorii instead of minirpg
+- [x] Rename project to be factorii instead of minirpg
 - [x] Create consistency in file names
 
 
