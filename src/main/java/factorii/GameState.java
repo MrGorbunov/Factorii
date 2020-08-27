@@ -57,7 +57,7 @@ public class GameState {
     }
 
     public static void makeNewWorld () {
-        world = worldBuilder.generateDirtWorld();
+        world = worldBuilder.generatePocketDirtWorld();
     }
 
 }

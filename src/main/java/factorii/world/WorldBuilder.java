@@ -20,6 +20,65 @@ public class WorldBuilder {
         return new World(terrain, resources, factory);
     }
 
+    public World generatePocketDirtWorld () {
+        boolean[][] terrainMask = randomMaskPercent(0.6);
+        for (int i=0; i<3; i++)
+            terrainMask = smoothMask(terrainMask, 3);
+
+        // Sand
+        /*
+        The outer edge is almost completely filled
+        The inner edge is ~50% sand
+        */
+        // outer edge
+        boolean[][] landMask = terrainMask;
+        boolean[][] innerFill = erodeMask(landMask);
+        boolean[][] sandNoise = randomMaskPercent(0.94);
+        boolean[][] sandMask = masksXOR(terrainMask, innerFill);
+        sandMask = masksAND(sandNoise, sandMask);
+
+        innerFill = erodeMask(innerFill);
+        sandNoise = randomMaskPercent(0.5);
+        boolean[][] innerEdge = masksXOR(terrainMask, innerFill);
+        innerEdge = masksAND(sandNoise, innerEdge);
+        sandMask = masksOR(sandMask, innerEdge);
+
+        // Stone
+        boolean[][] stoneMask = generateOreMask(landMask, 0.39);
+        
+        // Ores
+        boolean[][] coalMask = generateOreMask(landMask, 0.35);
+        boolean[][] copperMask = generateOreMask(landMask, 0.35);
+        boolean[][] ironMask = generateOreMask(landMask, 0.36);
+
+        // Trees
+        landMask = erodeMask(landMask);
+        landMask = erodeMask(landMask);
+        boolean[][] treeMask = randomMaskPercent(0.3);
+        treeMask = smoothMask(treeMask, 1);
+        treeMask = smoothMask(treeMask, 2);
+        boolean[][] treeNoise = randomMaskPercent(0.9);
+        treeMask = masksAND(treeNoise, treeMask);
+        treeMask = masksAND(landMask, treeMask);
+
+
+
+        // Final conversions
+        Tile[][] terrain = convertMask(terrainMask, Tile.GROUND, Tile.WATER);
+
+        Tile[][] resource = convertMask(treeMask, Tile.TREE, Tile.EMPTY);
+        resource = addToLayer(resource, coalMask, Tile.ORE_COAL, false);
+        resource = addToLayer(resource, copperMask, Tile.ORE_COPPER, false);
+        resource = addToLayer(resource, ironMask, Tile.ORE_IRON, false);
+        resource = addToLayer(resource, stoneMask, Tile.STONE, false);
+        resource = addToLayer(resource, sandMask, Tile.SAND, false);
+
+        // Create a blank tile map for the factory (avoids nulls)
+        Tile[][] factoryMap = convertMask(blankMask(), Tile.CHEST, Tile.EMPTY);
+
+        return new World(terrain, resource, factoryMap);
+    }
+
     public World generateDefaultWorld () {
         boolean[][] terrainMask = randomMask();
         for (int i=0; i<6; i++)
@@ -86,8 +145,10 @@ public class WorldBuilder {
         return new World(terrain, resource, factoryMap);
     }
 
-    private boolean[][] generateOreMask (boolean[][] landMask) {
-        boolean[][] oreMask = randomMaskPercent(0.38);
+
+
+    private boolean[][] generateOreMask (boolean[][] landMask, double percentage) {
+        boolean[][] oreMask = randomMaskPercent(percentage);
         oreMask = smoothMask(oreMask, 1);
         oreMask = smoothMask(oreMask, 2);
         oreMask = smoothMask(oreMask, 2);
@@ -97,6 +158,12 @@ public class WorldBuilder {
         oreMask = masksAND(landMask, oreMask);
         return oreMask;
     }
+
+    private boolean[][] generateOreMask (boolean[][] landMask) {
+        return generateOreMask(landMask, 0.38);
+    }
+
+
 
 
 
