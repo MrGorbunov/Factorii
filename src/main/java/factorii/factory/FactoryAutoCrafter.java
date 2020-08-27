@@ -21,6 +21,19 @@ public class FactoryAutoCrafter implements FacData, FacInventory, FacProducer, F
                 this.tile = Tile.COPPER_WORKBENCH;
                 selectedRecipe = GameState.craftingGlobals.getWorkbenchCrafts()[0];
                 return;
+            
+            case KILN:
+            case IRON_KILN:
+                this.tile = Tile.IRON_KILN;
+                selectedRecipe = GameState.craftingGlobals.getKilnCrafts()[0];
+                return;
+            
+            case FORGE:
+            case STEEL_FORGE:
+                this.tile = Tile.STEEL_FORGE;
+                selectedRecipe = GameState.craftingGlobals.getForgeCrafts()[0];
+                return;
+
         }
 
         this.tile = Tile.COPPER_WORKBENCH;
@@ -33,14 +46,13 @@ public class FactoryAutoCrafter implements FacData, FacInventory, FacProducer, F
 
     public CraftingRecipe[] getRecipes () {
         switch (tile) {
-            case WORKBENCH:
             case COPPER_WORKBENCH:
                 return GameState.craftingGlobals.getWorkbenchCrafts();
             
-            case KILN:
+            case IRON_KILN:
                 return GameState.craftingGlobals.getKilnCrafts();
 
-            case FORGE:
+            case STEEL_FORGE:
                 return GameState.craftingGlobals.getForgeCrafts();
         }
 

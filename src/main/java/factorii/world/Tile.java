@@ -21,7 +21,10 @@ public enum Tile {
     PLAYER,
 
     MINING_DRILL, AUTO_MINING_UPGRADE, 
-    WORKBENCH, COPPER_WORKBENCH, KILN, FORGE,
+    WORKBENCH, COPPER_WORKBENCH, 
+    KILN, IRON_KILN, 
+    FORGE, STEEL_FORGE,
+
 	WOODEN_FLOAT, BRONZE_FLOAT,
     CHEST, ITEM_TUBE_GLASS, ITEM_TUBE_STONE;
     
@@ -82,8 +85,12 @@ public enum Tile {
                 return ItemIndex.COPPER_WORKBENCH;
             case KILN:
                 return ItemIndex.KILN;
+            case IRON_KILN:
+                return ItemIndex.IRON_KILN;
             case FORGE:
                 return ItemIndex.FORGE;
+            case STEEL_FORGE:
+                return ItemIndex.STEEL_FORGE;
 
             case WOODEN_FLOAT:
                 return ItemIndex.WOODEN_FLOAT;

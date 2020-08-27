@@ -23,7 +23,7 @@ public enum ItemIndex {
 
 	// Craftable Items
 	PICKAXE, SHOVEL, MINING_DRILL, AUTO_MINING_UPGRADE,
-	WORKBENCH, COPPER_WORKBENCH, KILN, FORGE,
+	WORKBENCH, COPPER_WORKBENCH, KILN, IRON_KILN, FORGE, STEEL_FORGE,
 	BOAT, TALL_BOOTS, WOODEN_FLOAT, BRONZE_FLOAT,
 	CHEST, ITEM_TUBE_GLASS, ITEM_TUBE_STONE;
 
@@ -59,8 +59,10 @@ public enum ItemIndex {
 
             case WORKBENCH:        return Tile.WORKBENCH;
             case COPPER_WORKBENCH: return Tile.COPPER_WORKBENCH;
-            case KILN:             return Tile.KILN;
-            case FORGE:            return Tile.FORGE;
+			case KILN:             return Tile.KILN;
+			case IRON_KILN:		   return Tile.IRON_KILN;
+			case FORGE:            return Tile.FORGE;
+			case STEEL_FORGE:	   return Tile.STEEL_FORGE;
 
             case WOODEN_FLOAT: return Tile.WOODEN_FLOAT;
             case BRONZE_FLOAT: return Tile.BRONZE_FLOAT;
@@ -130,11 +132,16 @@ public enum ItemIndex {
 
 			case KILN:
 				return "Kiln";
+			case IRON_KILN:
+				return "Iron Kiln";
 			case FORGE:
 				return "Forge";
-		}
+			case STEEL_FORGE:
+				return "Steel Forge";
 
-		return "";
+			default:
+				throw new Error("Unmatched case in .toString() for ItemIndex");
+		}
 	}
 
 }

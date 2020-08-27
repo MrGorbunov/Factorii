@@ -101,8 +101,9 @@ public class Factory {
      * is legal.
      */
     public void placeFactoryTile (Tile tile, int x, int y) {
+        boolean isUpgradingDrill = tile == Tile.AUTO_MINING_UPGRADE && factory[x][y] instanceof FactoryMiningDrill;
         if (factory[x][y] != null &&
-            (tile != Tile.AUTO_MINING_UPGRADE && factory[x][y] instanceof FactoryMiningDrill == false))
+            isUpgradingDrill == false)
                 throw new Error("Attempted to place a factory tile at illegal location");
         
         switch (tile) {
@@ -113,7 +114,9 @@ public class Factory {
                 break;
             
             case COPPER_WORKBENCH:
-                factory[x][y] = new FactoryAutoCrafter(Tile.WORKBENCH);
+            case IRON_KILN:
+            case STEEL_FORGE:
+                factory[x][y] = new FactoryAutoCrafter(tile);
                 break;
             
             case MINING_DRILL:
@@ -128,6 +131,8 @@ public class Factory {
                 ItemIndex autoMiningResource =  ((FactoryMiningDrill) existingDrill).getResource();
                 factory[x][y] = new FactoryAutoMiningDrill(autoMiningResource);
                 break;
+
+
 
             case CHEST:
                 factory[x][y] = new FactoryChest();

@@ -128,7 +128,8 @@ public class CraftingGlobals {
 		};
 
         //
-        // These are made at the workbench, after having unlocked the kiln & forge
+        // These next two arrays are made at the workbench, but only after 
+        // having unlocked the kiln & forge respectively
 		kilnCrafts = new CraftingRecipe[] {
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
@@ -162,6 +163,17 @@ public class CraftingGlobals {
                 ItemIndex.AUTO_MINING_UPGRADE,
                 "Placed onto a mining drill, will automatically collect resources"),
 
+            new CraftingRecipe(
+                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
+                new int[]       {2,              1},
+                ItemIndex.IRON_KILN,
+                "Can smelt like a kiln, but automatically"),
+
+            new CraftingRecipe(
+                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
+                new int[]       {2,              1},
+                ItemIndex.STEEL_FORGE,
+                "Can smelt like a forge, but automatically"),
         };
 
         
