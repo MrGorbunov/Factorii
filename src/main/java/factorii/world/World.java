@@ -203,9 +203,11 @@ public class World {
         switch (factoryTile) {
             case MINING_DRILL:
                 return testTerrainTile == Tile.GROUND &&
-                       // Trees are not renewable
+                       // Trees are not mine-able
                        testResourceTile != Tile.EMPTY && testResourceTile != Tile.TREE &&
                        testFactoryTile == Tile.EMPTY;
+            case AUTO_MINING_UPGRADE:
+                return testFactoryTile == Tile.MINING_DRILL;
 
             case BRONZE_FLOAT:
             case WOODEN_FLOAT:

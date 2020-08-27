@@ -58,7 +58,7 @@ public class FactoryAutoCrafter implements FacData, FacInventory, FacProducer, F
     // Interface implementation
     //
 
-    public void update () {
+    public void tickUpdate () {
         if (inventory.canCraft(selectedRecipe))
             inventory.craftItem(selectedRecipe);
     }

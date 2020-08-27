@@ -69,13 +69,13 @@ public class Factory {
         for (int x=0; x<width; x++) {
             for (int y=0; y<height; y++) {
                 if (factory[x][y] instanceof FacProducer) {
-                    ((FacProducer) factory[x][y]).update();
+                    ((FacProducer) factory[x][y]).tickUpdate();
                 }
             }
         }
 
-        // For item tubes, we essentially have a distributed double buffer
-        // hence two for loops
+        // For item tubes, we have a distributed double buffer
+        // hence two for loops just for them.
         for (int x=0; x<width; x++) {
             for (int y=0; y<height; y++) {
                 if (factory[x][y] instanceof FacItemTube) {
@@ -101,8 +101,9 @@ public class Factory {
      * is legal.
      */
     public void placeFactoryTile (Tile tile, int x, int y) {
-        if (factory[x][y] != null)
-            throw new Error("Attempted to place a factory tile at illegal location");
+        if (factory[x][y] != null &&
+            (tile != Tile.AUTO_MINING_UPGRADE && factory[x][y] instanceof FactoryMiningDrill == false))
+                throw new Error("Attempted to place a factory tile at illegal location");
         
         switch (tile) {
             case WORKBENCH:
@@ -116,8 +117,16 @@ public class Factory {
                 break;
             
             case MINING_DRILL:
-                ItemIndex resource = GameState.world.harvestSpecific(x, y);
-                factory[x][y] = new FactoryMiningDrill(resource);
+                ItemIndex miningResource = GameState.world.harvestSpecific(x, y);
+                factory[x][y] = new FactoryMiningDrill(miningResource);
+                break;
+
+            case AUTO_MINING_UPGRADE:
+                FacData existingDrill = factory[x][y];
+                if (existingDrill instanceof FactoryMiningDrill == false)
+                    throw new Error("Trying to place auto-mining upgrade where there is no drill");
+                ItemIndex autoMiningResource =  ((FactoryMiningDrill) existingDrill).getResource();
+                factory[x][y] = new FactoryAutoMiningDrill(autoMiningResource);
                 break;
 
             case CHEST:

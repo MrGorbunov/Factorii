@@ -19,7 +19,7 @@ public class FactoryItemTubeGlass implements FacData, FacItemTube {
     private final Tile tile;
 
     private FacItemTube[] adjacentTubes;
-    private FacInventory[] adjacentFacInventories;
+    private FacData[] adjacentInventoriesAndProducers;
 
     private final int TICKS_PER_PULL; // Glass only pulls an item out every n ticks
     private int currentTicks;
@@ -48,7 +48,7 @@ public class FactoryItemTubeGlass implements FacData, FacItemTube {
         adjacentTubes = new FacItemTube[4];
         // Because this pulls items out of inventories, we need to be more delicate
         // and so look at the FacData
-        adjacentFacInventories = new FacInventory[4]; 
+        adjacentInventoriesAndProducers = new FacData[4]; 
 
         final int[][] cardinalDirections = new int[][] { {0, 1}, {0, -1}, {1, 0}, {-1, 0} };
         int width = factory.length;
@@ -66,8 +66,9 @@ public class FactoryItemTubeGlass implements FacData, FacItemTube {
                 FacItemTube adjTube = (FacItemTube) testData;
                 adjacentTubes[i] = adjTube;
 
-            } else if (testData instanceof FacInventory) {
-                adjacentFacInventories[i] = (FacInventory) testData;
+            } else if (testData instanceof FacInventory ||
+                       testData instanceof FacProducer) {
+                adjacentInventoriesAndProducers[i] = testData;
             }
         }
     }
@@ -108,16 +109,16 @@ public class FactoryItemTubeGlass implements FacData, FacItemTube {
 
                 for (int i=0; i<4; i++) {
                     // No tubes, so now try to pull from inventory
-                    if (adjacentFacInventories[i] == null)
+                    if (adjacentInventoriesAndProducers[i] == null)
                         continue;
                     
                     
-                    FacInventory adjFacInventory = adjacentFacInventories[i];
+                    FacData adjFacData = adjacentInventoriesAndProducers[i];
 
-                    if (adjFacInventory instanceof FactoryChest) {
-                        Inventory adjInventory = adjFacInventory.getInventory();
+                    // Pull from chest if possible
+                    if (adjFacData instanceof FactoryChest) {
+                        Inventory adjInventory = ((FacInventory) adjFacData).getInventory();
 
-                        // Pull from inventory if possible
                         if (adjInventory.getTotalSize() == 0)
                             continue;
                         
@@ -125,12 +126,13 @@ public class FactoryItemTubeGlass implements FacData, FacItemTube {
                         adjInventory.removeItem(bufferTransportingItem);
                         bufferPreviousTube = null;
 
-                    } else if (adjFacInventory instanceof FactoryAutoCrafter) {
-                        FactoryAutoCrafter autoCrafter = (FactoryAutoCrafter) adjFacInventory;
-                        if (autoCrafter.canTakeProduct() == false)
+                    // Maybe it's a producer (auto mining drill & auto crafting stations)
+                    } else if (adjFacData instanceof FacProducer) {
+                        FacProducer adjProducer = (FacProducer) adjFacData;
+                        if (adjProducer.canTakeProduct() == false)
                             continue;
                         
-                        bufferTransportingItem = autoCrafter.takeProduct();
+                        bufferTransportingItem = adjProducer.takeProduct();
                         bufferPreviousTube = null;
                     }
 
