@@ -18,7 +18,7 @@ public class FactoryCrafter implements FacData, FacCrafter {
         switch (tile) {
             case WORKBENCH:
             case COPPER_WORKBENCH:
-                return GameState.craftingGlobals.getWorkbenchCrafts();
+                return GameState.craftingGlobals.getWorkbenchCrafts(true);
             
             case KILN:
                 return GameState.craftingGlobals.getKilnCrafts();

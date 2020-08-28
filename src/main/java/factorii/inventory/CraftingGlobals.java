@@ -27,13 +27,15 @@ public class CraftingGlobals {
         initializeRecipes();
     }
 
-    public CraftingRecipe[] getWorkbenchCrafts () {
+    // Equipment should only be craftable at a workbench, NOT an autoworkbench
+    // hence the parameter
+    public CraftingRecipe[] getWorkbenchCrafts (boolean includeEquipment) {
         ArrayList<CraftingRecipe> recipes = new ArrayList<CraftingRecipe>();
 
         for (CraftingRecipe recipe : starterCrafts)
             recipes.add(recipe);
 
-        // By being at a workbench, it's guaranteed that tech level is at least WORKBENCH
+        // By being at a workbench, it's guaranteed that tech level is at least WORKBENCH, so no need for ifs until after
         for (CraftingRecipe recipe : workbenchCrafts)
             recipes.add(recipe);
 
@@ -48,12 +50,14 @@ public class CraftingGlobals {
                 recipes.add(recipe);
         }
 
-        for (int i=0; i<equipmentCrafts.length; i++) {
-            int requiredLevel = equipmentUnlocks[i].ordinal();
-            boolean alreadyCrafted = GameState.player.getInventory().getQuantity(equipmentCrafts[i].result()) > 0;
-            if (currentTechOrdinal >= requiredLevel &&
-                alreadyCrafted == false)
-                    recipes.add(equipmentCrafts[i]);
+        if (includeEquipment) {
+            for (int i=0; i<equipmentCrafts.length; i++) {
+                int requiredLevel = equipmentUnlocks[i].ordinal();
+                boolean alreadyCrafted = GameState.player.getInventory().getQuantity(equipmentCrafts[i].result()) > 0;
+                if (currentTechOrdinal >= requiredLevel &&
+                    alreadyCrafted == false)
+                        recipes.add(equipmentCrafts[i]);
+            }
         }
 
         // Conversion

@@ -88,6 +88,7 @@
 - [x] Rename project to be factorii instead of minirpg
 - [x] Create consistency in file names
 
+- [x] Make sure Auto-Crafting cannot craft equipment
 
 
 

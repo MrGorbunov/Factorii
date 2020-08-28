@@ -19,7 +19,7 @@ public class FactoryAutoCrafter implements FacData, FacInventory, FacProducer, F
             case WORKBENCH:
             case COPPER_WORKBENCH:
                 this.tile = Tile.COPPER_WORKBENCH;
-                selectedRecipe = GameState.craftingGlobals.getWorkbenchCrafts()[0];
+                selectedRecipe = GameState.craftingGlobals.getWorkbenchCrafts(false)[0];
                 return;
             
             case KILN:
@@ -36,8 +36,7 @@ public class FactoryAutoCrafter implements FacData, FacInventory, FacProducer, F
 
         }
 
-        this.tile = Tile.COPPER_WORKBENCH;
-        selectedRecipe = GameState.craftingGlobals.getWorkbenchCrafts()[0];
+        throw new Error("Attmpted to create an auto-crafter from invalid workstation (workstation being Kiln, Forge, Workbench, etc)");
     }
 
     public Tile getTile () { return tile; }
@@ -47,7 +46,7 @@ public class FactoryAutoCrafter implements FacData, FacInventory, FacProducer, F
     public CraftingRecipe[] getRecipes () {
         switch (tile) {
             case COPPER_WORKBENCH:
-                return GameState.craftingGlobals.getWorkbenchCrafts();
+                return GameState.craftingGlobals.getWorkbenchCrafts(false);
             
             case IRON_KILN:
                 return GameState.craftingGlobals.getKilnCrafts();
@@ -56,7 +55,7 @@ public class FactoryAutoCrafter implements FacData, FacInventory, FacProducer, F
                 return GameState.craftingGlobals.getForgeCrafts();
         }
 
-        return GameState.craftingGlobals.getPlayerCrafts();
+        throw new Error ("Auto Crafter not created from workstation. Possible that non-auto version of tile was used (Workbench instead of AutoWorkbench)");
     }
 
     public void setRecipe (CraftingRecipe newRecipe) {
