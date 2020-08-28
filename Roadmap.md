@@ -9,10 +9,13 @@
 
 
 
-## v0.2 - Factory Logic 
+
+
+
+
+## v0.2 - Game Base
 
 #### New features
-
 - [x] Functional chests
   * [x] Storing inventories
   * [x] New subscreen
@@ -29,9 +32,9 @@
   * Smelt class (vs CraftingRecipe)?
   * [x] Kiln smelting
   * [x] Forge smelting
-- [ ] Smelters work with funnels
-  * [ ] Auto form of kiln
-  * [ ] Auto form of forge
+- [x] Smelters work with funnels
+  * [x] Auto form of kiln
+  * [x] Auto form of forge
 
 - [ ] Item Tubes
   * [x] Glass pulls from inventories
@@ -40,7 +43,22 @@
   * [ ] Steel tube for sorting
   * [ ] All tiers of funnels functional w/ chests
 
-- [ ] All tiers of floats work too
+- [ ] Landfill works too
+  * [ ] Replace float with landfill
+
+- ~~[ ] Refactor GUI to be more GUI and less state~~
+  - May be unnecessary when I get here
+
+- [x] Place controls into globals
+- ~~[ ] Place colors into globals~~
+
+- [ ] Allow for picking up of factory parts
+
+- [ ] Add Submarine 
+  * [ ] Placeable
+  * [ ] You win by entering it
+  * [ ] Multi-character image
+
 
 #### Cleanup
 - [x] Switch factory tiles to class-based
@@ -66,42 +84,32 @@
 
 - [x] Instead of crafting location, have workbench FacData classes to provide the available crafts.
 
-
-
-## v0.3 - Don't know yet
-
-- [ ] ~~Refactor GUI to be more GUI and less state~~
-  - May be unnecessary when I get here
-
-- [x] Place controls into globals
-- [ ] ~~Place colors into globals~~
-- [ ] Allow for picking up of factory parts
-
-#### Cleanup
-
 - [x] Go to update mode w/ constant fps
 - [x] Rename project to be factorii instead of minirpg
 - [x] Create consistency in file names
 
 
-## v0.5 - Visuals
+
+
+
+
+
+## v0.3 - Final Stretch
 
 #### New features
-- Create start screen
+- [ ] Create start screen
+  * [ ] Maybe remappable controls
+
+- [ ] Actual crafting recipes
+
+- [ ] Spawning Island logic
+  * [ ] Figure out what requirements there are for the starter island
+  * [ ] Character placement
+
+- [ ] Save state?
+
+- [ ] Create a guide or tutorial
 
 
-
-## v0.6 - Dont Know Yet
-- [ ] Add Submarine 
-  - [ ] Placeable
-  - [ ] You win by entering it
-  - [ ] Multi-character image
-
-
-
-## v0.7 - Balance
-
-#### New features
-- Spawning logic looks at multiple islands &
-    the resources there
-- Crafting recipes get a rework
+#### Cleanup
+- [ ] Playtest
