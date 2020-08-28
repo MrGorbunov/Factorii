@@ -184,7 +184,15 @@ public class World {
         if (canPlaceAt(factoryTile, x, y) == false)
             return false;
 
-        GameState.factory.placeFactoryTile(factoryTile, x, y);
+        // Landfills are a special case
+        // ItemIndex translation is ItemIndex.LANDFILL -> Tile.GROUND
+        if (factoryTile == Tile.GROUND) {
+            terrain[x][y] = Tile.GROUND;
+
+        } else {
+            GameState.factory.placeFactoryTile(factoryTile, x, y);
+        }
+
 
         updateStatics();
         updateActives();
@@ -206,11 +214,11 @@ public class World {
                        // Trees are not mine-able
                        testResourceTile != Tile.EMPTY && testResourceTile != Tile.TREE &&
                        testFactoryTile == Tile.EMPTY;
+            
             case AUTO_MINING_UPGRADE:
                 return testFactoryTile == Tile.MINING_DRILL;
 
-            case BRONZE_FLOAT:
-            case WOODEN_FLOAT:
+            case GROUND:
                 return testTerrainTile == Tile.WATER &&
                        testResourceTile == Tile.EMPTY &&
                        testFactoryTile == Tile.EMPTY;

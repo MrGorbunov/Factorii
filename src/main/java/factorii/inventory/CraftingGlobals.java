@@ -115,12 +115,6 @@ public class CraftingGlobals {
                 "Pulls items out of inventories"),
 
             new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD}, 
-                new int[]       {4},
-                ItemIndex.WOODEN_FLOAT,
-                "The player can walk over water without a boat"),
-
-            new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
                 new int[]       {2,             5},
                 ItemIndex.KILN,
@@ -154,8 +148,8 @@ public class CraftingGlobals {
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
                 new int[]       {3,              2},
-                ItemIndex.BRONZE_FLOAT,
-                "Can support the weight of an item tube"),
+                ItemIndex.LANDFILL,
+                "Fills water in with dirt"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 

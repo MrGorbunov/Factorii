@@ -24,7 +24,8 @@ public enum ItemIndex {
 	// Craftable Items
 	PICKAXE, SHOVEL, MINING_DRILL, AUTO_MINING_UPGRADE,
 	WORKBENCH, COPPER_WORKBENCH, KILN, IRON_KILN, FORGE, STEEL_FORGE,
-	BOAT, TALL_BOOTS, WOODEN_FLOAT, BRONZE_FLOAT,
+	BOAT, TALL_BOOTS, 
+	LANDFILL,
 	CHEST, ITEM_TUBE_GLASS, ITEM_TUBE_STONE;
 
 	public boolean isResource () {
@@ -64,11 +65,10 @@ public enum ItemIndex {
 			case FORGE:            return Tile.FORGE;
 			case STEEL_FORGE:	   return Tile.STEEL_FORGE;
 
-            case WOODEN_FLOAT: return Tile.WOODEN_FLOAT;
-            case BRONZE_FLOAT: return Tile.BRONZE_FLOAT;
+			case LANDFILL:		   return Tile.GROUND;
 
-            case CHEST:         return Tile.CHEST;
-            case ITEM_TUBE_GLASS:   return Tile.ITEM_TUBE_GLASS;
+            case CHEST:           return Tile.CHEST;
+            case ITEM_TUBE_GLASS: return Tile.ITEM_TUBE_GLASS;
             case ITEM_TUBE_STONE: return Tile.ITEM_TUBE_STONE;
         }
 
@@ -118,11 +118,10 @@ public enum ItemIndex {
 				return "Boat";
 			case TALL_BOOTS:
 				return "Tall Boots";
-			case WOODEN_FLOAT:
-				return "Wooden Float";
-			case BRONZE_FLOAT:
-				return "Bronze Float";
 			
+			case LANDFILL:
+				return "Landfill";
+
 			case CHEST:
 				return "Chest";
 			case ITEM_TUBE_GLASS:

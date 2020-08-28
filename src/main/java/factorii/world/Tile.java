@@ -17,7 +17,7 @@ public enum Tile {
     ORE_COAL,
     ORE_COPPER,
     ORE_IRON,
-
+    
     PLAYER,
 
     MINING_DRILL, AUTO_MINING_UPGRADE, 
@@ -25,9 +25,7 @@ public enum Tile {
     KILN, IRON_KILN, 
     FORGE, STEEL_FORGE,
 
-	WOODEN_FLOAT, BRONZE_FLOAT,
     CHEST, ITEM_TUBE_GLASS, ITEM_TUBE_STONE;
-    
 
 
 
@@ -91,11 +89,6 @@ public enum Tile {
                 return ItemIndex.FORGE;
             case STEEL_FORGE:
                 return ItemIndex.STEEL_FORGE;
-
-            case WOODEN_FLOAT:
-                return ItemIndex.WOODEN_FLOAT;
-            case BRONZE_FLOAT:
-                return ItemIndex.BRONZE_FLOAT;
 
             case CHEST:
                 return ItemIndex.CHEST;

@@ -21,22 +21,18 @@ public enum Glyph {
 
     MINING_DRILL        ('\'', Convert.hex("#B0D0EF")),
     AUTO_MINING_UPGRADE ('"',  Convert.hex("#D0E0FF")),
-
-    WORKBENCH        ('H', Convert.hex("#3C8338")),
-    COPPER_WORKBENCH ('H', Convert.hex("#81C07D")),
-    KILN             ('A', Convert.hex("#754624")),
-    IRON_KILN        ('A', Convert.hex("#D48781")),
-    FORGE            ('A', Convert.hex("#788BDC")),
-    STEEL_FORGE      ('A', Convert.hex("#A3C6F3")),
-
-    WOODEN_FLOAT ('&', Convert.hex("#7D5C44")),
-    BRONZE_FLOAT ('&', Convert.hex("#AB8546")),
+    WORKBENCH           ('H',  Convert.hex("#3C8338")),
+    COPPER_WORKBENCH    ('H',  Convert.hex("#81C07D")),
+    KILN                ('A',  Convert.hex("#754624")),
+    IRON_KILN           ('A',  Convert.hex("#D48781")),
+    FORGE               ('A',  Convert.hex("#788BDC")),
+    STEEL_FORGE         ('A',  Convert.hex("#A3C6F3")),
 
     // No one-time items (yet?)
     // Boats, Tall Boots, Shovel, etc.
 
-    CHEST         ('?', Convert.hex("#9F8C74")),
-    ITEM_TUBE_GLASS   ('+', Convert.hex("#D0E0FF")),
+    CHEST           ('?', Convert.hex("#9F8C74")),
+    ITEM_TUBE_GLASS ('+', Convert.hex("#D0E0FF")),
     ITEM_TUBE_STONE ('+', Convert.hex("#A0908F"));
     
 
@@ -81,9 +77,6 @@ public enum Glyph {
             case IRON_KILN:        return Glyph.IRON_KILN;
             case FORGE:            return Glyph.FORGE;
             case STEEL_FORGE:      return Glyph.STEEL_FORGE;
-
-            case WOODEN_FLOAT: return Glyph.WOODEN_FLOAT;
-            case BRONZE_FLOAT: return Glyph.BRONZE_FLOAT;
 
             case CHEST:           return Glyph.CHEST;
             case ITEM_TUBE_GLASS: return Glyph.ITEM_TUBE_GLASS;

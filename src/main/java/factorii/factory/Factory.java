@@ -153,6 +153,10 @@ public class Factory {
                 refreshAdjacent(x, y);
                 break;
                 
+
+
+            default:
+                throw new Error("Attempted to place factory tile with no placement imlpementation");
         }
     }
 

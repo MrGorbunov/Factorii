@@ -43,8 +43,8 @@
   * [ ] Steel tube for sorting
   * [ ] All tiers of funnels functional w/ chests
 
-- [ ] Landfill works too
-  * [ ] Replace float with landfill
+- [x] Landfill works too
+  * [x] Replace float with landfill
 
 - ~~[ ] Refactor GUI to be more GUI and less state~~
   - May be unnecessary when I get here
@@ -112,4 +112,4 @@
 
 
 #### Cleanup
-- [ ] Playtest
+- [ ] Playtest 
