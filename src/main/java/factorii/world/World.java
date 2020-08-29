@@ -180,18 +180,18 @@ public class World {
     /**
      * Returns true if successfully was able to place the tile
      */
-    public boolean placeFactoryTile (Tile factoryTile, int x, int y) {
-        if (canPlaceAt(factoryTile, x, y) == false)
+    public boolean placeCraftedTile (Tile craftedTile, int x, int y) {
+        if (canPlaceCraftedTileAt(craftedTile, x, y) == false)
             return false;
 
-        // Landfills are a special case
-        // ItemIndex translation is ItemIndex.LANDFILL -> Tile.GROUND
-        if (factoryTile == Tile.GROUND) {
+        // Most crafted tiles are factory tiles (i.e. are handled by the factory instance)
+        // but the two cases checked for are different
+        if (craftedTile == Tile.GROUND)
             terrain[x][y] = Tile.GROUND;
-
-        } else {
-            GameState.factory.placeFactoryTile(factoryTile, x, y);
-        }
+        else if (craftedTile == Tile.SUBMARINE)
+            terrain[x][y] = Tile.SUBMARINE;
+        else
+            GameState.factory.placeFactoryTile(craftedTile, x, y);
 
 
         updateStatics();
@@ -199,7 +199,7 @@ public class World {
         return true;
     }
 
-    public boolean canPlaceAt (Tile factoryTile, int x, int y) {
+    public boolean canPlaceCraftedTileAt (Tile craftedTile, int x, int y) {
         if (x < 0 || x >= width || y < 0 || y >= height ||
             (x == GameState.player.getX() && y == GameState.player.getY()))
                 return false;
@@ -208,7 +208,7 @@ public class World {
         Tile testResourceTile = resources[x][y];
         Tile testFactoryTile = factory[x][y];
 
-        switch (factoryTile) {
+        switch (craftedTile) {
             case MINING_DRILL:
                 return testTerrainTile == Tile.GROUND &&
                        // Trees are not mine-able

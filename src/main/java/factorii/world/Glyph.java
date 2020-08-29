@@ -87,7 +87,7 @@ public enum Glyph {
             case SUBMARINE: return Glyph.SUBMARINE;
         }
 
-        return Glyph.EMPTY;
+        throw new Error ("Attempted to tile -> glyph conversion which is not implemented");
     }
 }
 

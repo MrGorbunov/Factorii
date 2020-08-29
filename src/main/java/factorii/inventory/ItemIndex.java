@@ -27,7 +27,7 @@ public enum ItemIndex {
 	BOAT, TALL_BOOTS, 
 	LANDFILL,
 	CHEST, ITEM_TUBE_GLASS, ITEM_TUBE_STONE,
-
+	
 	// Final structure in game
 	SUBMARINE;
 
@@ -56,7 +56,15 @@ public enum ItemIndex {
 
             case ORE_COAL:   return Tile.ORE_COAL;
             case ORE_COPPER: return Tile.ORE_COPPER;
-            case ORE_IRON:   return Tile.ORE_IRON;
+			case ORE_IRON:   return Tile.ORE_IRON;
+			
+			case BAR_COPPER:
+			case BAR_IRON:
+			case GLASS:
+			case ALLOY_BRONZE:
+			case ALLOY_STEEL:
+				System.out.println("WARNING: Attempted to convert crafted resource " + item + " into Tile. Not yet implemented");
+				return Tile.EMPTY;
 
             case MINING_DRILL:        return Tile.MINING_DRILL;
             case AUTO_MINING_UPGRADE: return Tile.AUTO_MINING_UPGRADE;
@@ -68,17 +76,22 @@ public enum ItemIndex {
 			case FORGE:            return Tile.FORGE;
 			case STEEL_FORGE:	   return Tile.STEEL_FORGE;
 
-			case LANDFILL:		   return Tile.GROUND;
+			case LANDFILL: return Tile.GROUND;
 
             case CHEST:           return Tile.CHEST;
             case ITEM_TUBE_GLASS: return Tile.ITEM_TUBE_GLASS;
-            case ITEM_TUBE_STONE: return Tile.ITEM_TUBE_STONE;
+			case ITEM_TUBE_STONE: return Tile.ITEM_TUBE_STONE;
 			
 			case SUBMARINE: return Tile.SUBMARINE;
 
-        }
+			case PICKAXE:
+			case SHOVEL:
+			case BOAT:
+			case TALL_BOOTS:
+				throw new Error("Attempted to convert equipment into tile. Equipment should never be on an item tube/ displayed");
+		}
 
-        return Tile.EMPTY;
+		throw new Error("Missing case in item -> tile conversion");
 	}
 
 	@Override

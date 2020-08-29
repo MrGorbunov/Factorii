@@ -50,14 +50,6 @@ public class GameState {
         player.getInventory().addItemMulti(ItemIndex.ORE_IRON, 100);
         player.getInventory().addItemMulti(ItemIndex.BAR_COPPER, 100);
         player.getInventory().addItemMulti(ItemIndex.BAR_IRON, 100);
-
-        // Testing for color
-        factory.placeFactoryTile(Tile.WORKBENCH, 10, 10);
-        factory.placeFactoryTile(Tile.COPPER_WORKBENCH, 10, 11);
-        factory.placeFactoryTile(Tile.KILN, 11, 10);
-        factory.placeFactoryTile(Tile.IRON_KILN, 11, 11);
-        factory.placeFactoryTile(Tile.FORGE, 12, 10);
-        factory.placeFactoryTile(Tile.STEEL_FORGE, 12, 11);
     }
 
     public static void setInputBuffer (InputBuffer inputBuffer) {
@@ -65,7 +57,7 @@ public class GameState {
     }
 
     public static void makeNewWorld () {
-        world = worldBuilder.generateDirtWorld();
+        world = worldBuilder.generateDefaultWorld();
     }
 
 }
