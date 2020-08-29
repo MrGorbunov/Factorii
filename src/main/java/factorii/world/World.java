@@ -219,6 +219,7 @@ public class World {
                 return testFactoryTile == Tile.MINING_DRILL;
 
             case GROUND:
+            case SUBMARINE:
                 return testTerrainTile == Tile.WATER &&
                        testResourceTile == Tile.EMPTY &&
                        testFactoryTile == Tile.EMPTY;

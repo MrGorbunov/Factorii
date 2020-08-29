@@ -25,7 +25,9 @@ public enum Tile {
     KILN, IRON_KILN, 
     FORGE, STEEL_FORGE,
 
-    CHEST, ITEM_TUBE_GLASS, ITEM_TUBE_STONE;
+    CHEST, ITEM_TUBE_GLASS, ITEM_TUBE_STONE,
+
+    SUBMARINE;
 
 
 
@@ -96,6 +98,9 @@ public enum Tile {
                 return ItemIndex.ITEM_TUBE_GLASS;
             case ITEM_TUBE_STONE:
                 return ItemIndex.ITEM_TUBE_STONE;
+            
+            case SUBMARINE:
+                return ItemIndex.SUBMARINE;
         }
 
         throw new Error ("Attempted to do Tile -> Item conversion which does not exist");

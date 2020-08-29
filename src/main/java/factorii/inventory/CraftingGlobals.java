@@ -172,6 +172,12 @@ public class CraftingGlobals {
                 new int[]       {2,              1},
                 ItemIndex.STEEL_FORGE,
                 "Can smelt like a forge, but automatically"),
+
+            new CraftingRecipe(
+                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
+                new int[]       {2,              1},
+                ItemIndex.SUBMARINE,
+                "Allows you leave this world to new unknown lands"),
         };
 
         

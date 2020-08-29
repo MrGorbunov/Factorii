@@ -33,7 +33,9 @@ public enum Glyph {
 
     CHEST           ('?', Convert.hex("#9F8C74")),
     ITEM_TUBE_GLASS ('+', Convert.hex("#D0E0FF")),
-    ITEM_TUBE_STONE ('+', Convert.hex("#A0908F"));
+    ITEM_TUBE_STONE ('+', Convert.hex("#A0908F")),
+    
+    SUBMARINE ('O', Convert.hex("#7A9BC0"));
     
 
 
@@ -81,6 +83,8 @@ public enum Glyph {
             case CHEST:           return Glyph.CHEST;
             case ITEM_TUBE_GLASS: return Glyph.ITEM_TUBE_GLASS;
             case ITEM_TUBE_STONE: return Glyph.ITEM_TUBE_STONE;
+
+            case SUBMARINE: return Glyph.SUBMARINE;
         }
 
         return Glyph.EMPTY;

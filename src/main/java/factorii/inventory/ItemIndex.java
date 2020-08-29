@@ -26,7 +26,10 @@ public enum ItemIndex {
 	WORKBENCH, COPPER_WORKBENCH, KILN, IRON_KILN, FORGE, STEEL_FORGE,
 	BOAT, TALL_BOOTS, 
 	LANDFILL,
-	CHEST, ITEM_TUBE_GLASS, ITEM_TUBE_STONE;
+	CHEST, ITEM_TUBE_GLASS, ITEM_TUBE_STONE,
+
+	// Final structure in game
+	SUBMARINE;
 
 	public boolean isResource () {
 		return this.ordinal() <= ItemIndex.ALLOY_STEEL.ordinal();
@@ -70,6 +73,9 @@ public enum ItemIndex {
             case CHEST:           return Tile.CHEST;
             case ITEM_TUBE_GLASS: return Tile.ITEM_TUBE_GLASS;
             case ITEM_TUBE_STONE: return Tile.ITEM_TUBE_STONE;
+			
+			case SUBMARINE: return Tile.SUBMARINE;
+
         }
 
         return Tile.EMPTY;
@@ -137,6 +143,9 @@ public enum ItemIndex {
 				return "Forge";
 			case STEEL_FORGE:
 				return "Steel Forge";
+
+			case SUBMARINE:
+				return "Submarine";
 
 			default:
 				throw new Error("Unmatched case in .toString() for ItemIndex");
