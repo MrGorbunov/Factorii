@@ -26,10 +26,12 @@ public class FactoryItemTubeGlass implements FacData, FacItemTube {
 
     // Where the current item came from
     private FacItemTube previousTube;
+    private TubeDirection previousDirection;
     private ItemIndex transportingItem;
 
     // To avoid major issues with update order, each instance essentially stores buffer info.
     private FacItemTube bufferPreviousTube;
+    private TubeDirection bufferPreviousDirection;
     private ItemIndex bufferTransportingItem;
 
     public FactoryItemTubeGlass (FacData[][] factory, int x, int y) {
@@ -50,11 +52,11 @@ public class FactoryItemTubeGlass implements FacData, FacItemTube {
         // and so look at the FacData
         adjacentInventoriesAndProducers = new FacData[4]; 
 
-        final int[][] cardinalDirections = new int[][] { {0, 1}, {0, -1}, {1, 0}, {-1, 0} };
         int width = factory.length;
         int height = factory[0].length;
         for (int i=0; i<4; i++) {
-            int[] offset = cardinalDirections[i];
+            TubeDirection dir = TubeDirection.getFromIndex(i);
+            int[] offset = dir.getCordinateOffset();
             int testX = x + offset[0];
             int testY = y + offset[1];
 
@@ -89,10 +91,7 @@ public class FactoryItemTubeGlass implements FacData, FacItemTube {
 
     public boolean canMoveInto () { return false; }
 
-    public void moveInto (FacItemTube previousTube, ItemIndex newItem) { 
-        bufferPreviousTube = previousTube;
-        bufferTransportingItem = newItem;
-
+    public void moveInto (FacItemTube fromTube, TubeDirection fromDir, ItemIndex newItem) { 
         throw new Error ("Attempted to move item into glass item tube, make sure canMoveInto() is checked");
     }
 
@@ -103,52 +102,55 @@ public class FactoryItemTubeGlass implements FacData, FacItemTube {
         currentTicks++;
 
         // If without item, try to get one
-        if (transportingItem == null &&
-            currentTicks > TICKS_PER_PULL) {
-                currentTicks = 0;
+        if (transportingItem == null) {
+            if (currentTicks <= TICKS_PER_PULL)
+                return;
 
-                for (int i=0; i<4; i++) {
-                    // No tubes, so now try to pull from inventory
-                    if (adjacentInventoriesAndProducers[i] == null)
+            currentTicks = 0;
+
+            for (int i=0; i<4; i++) {
+                // No tubes, so now try to pull from inventory
+                if (adjacentInventoriesAndProducers[i] == null)
+                    continue;
+                
+                
+                FacData adjFacData = adjacentInventoriesAndProducers[i];
+
+                // Pull from chest if possible
+                if (adjFacData instanceof FactoryChest) {
+                    Inventory adjInventory = ((FacInventory) adjFacData).getInventory();
+
+                    if (adjInventory.getTotalSize() == 0)
                         continue;
                     
+                    bufferTransportingItem = adjInventory.getFirstItem();
+                    adjInventory.removeItem(bufferTransportingItem);
+                    bufferPreviousTube = null;
+
+                // Maybe it's a producer (auto mining drill & auto crafting stations)
+                } else if (adjFacData instanceof FacProducer) {
+                    FacProducer adjProducer = (FacProducer) adjFacData;
+                    if (adjProducer.canTakeProduct() == false)
+                        continue;
                     
-                    FacData adjFacData = adjacentInventoriesAndProducers[i];
-
-                    // Pull from chest if possible
-                    if (adjFacData instanceof FactoryChest) {
-                        Inventory adjInventory = ((FacInventory) adjFacData).getInventory();
-
-                        if (adjInventory.getTotalSize() == 0)
-                            continue;
-                        
-                        bufferTransportingItem = adjInventory.getFirstItem();
-                        adjInventory.removeItem(bufferTransportingItem);
-                        bufferPreviousTube = null;
-
-                    // Maybe it's a producer (auto mining drill & auto crafting stations)
-                    } else if (adjFacData instanceof FacProducer) {
-                        FacProducer adjProducer = (FacProducer) adjFacData;
-                        if (adjProducer.canTakeProduct() == false)
-                            continue;
-                        
-                        bufferTransportingItem = adjProducer.takeProduct();
-                        bufferPreviousTube = null;
-                    }
+                    bufferTransportingItem = adjProducer.takeProduct();
+                    bufferPreviousTube = null;
+                }
 
 
-                    return;
+                return;
                 }
 
         // Am with an item, try to transport it
         } else {
             for (int i=0; i<4; i++) {
                 if (adjacentTubes[i] == null ||
-                    adjacentTubes[i] == previousTube ||
+                    // No repeat tube check because glass never accepts items
+                    // adjacentTubes[i] == previousTube ||
                     adjacentTubes[i].canMoveInto() == false)
                         continue;
 
-                adjacentTubes[i].moveInto(this, transportingItem); 
+                adjacentTubes[i].moveInto(this, TubeDirection.getFromIndex(i), transportingItem); 
                 transportingItem = null;
                 previousTube = null;
                 return;
@@ -166,9 +168,11 @@ public class FactoryItemTubeGlass implements FacData, FacItemTube {
      */
     public void bufferTick () {
         previousTube = bufferPreviousTube;
+        previousDirection = bufferPreviousDirection;
         transportingItem = bufferTransportingItem;
 
         bufferPreviousTube = null;
+        bufferPreviousDirection = null;
         bufferTransportingItem = null;
     }
 

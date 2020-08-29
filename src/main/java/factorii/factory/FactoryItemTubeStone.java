@@ -20,10 +20,12 @@ public class FactoryItemTubeStone implements FacData, FacItemTube {
 
     // Where the current item came from
     private FacItemTube previousTube;
+    private TubeDirection previousDirection;
     private ItemIndex transportingItem;
 
     // To avoid major issues with update order, each instance essentially stores buffer info.
     private FacItemTube bufferPreviousTube;
+    private TubeDirection bufferPreviousDirection;
     private ItemIndex bufferTransportingItem;
 
     public FactoryItemTubeStone (FacData[][] factory, int x, int y) {
@@ -39,11 +41,11 @@ public class FactoryItemTubeStone implements FacData, FacItemTube {
         adjacentTubes = new FacItemTube[4];
         adjacentInventories = new Inventory[4];
 
-        final int[][] cardinalDirections = new int[][] { {0, 1}, {0, -1}, {1, 0}, {-1, 0} };
         int width = factory.length;
         int height = factory[0].length;
         for (int i=0; i<4; i++) {
-            int[] offset = cardinalDirections[i];
+            TubeDirection dir = TubeDirection.getFromIndex(i);
+            int[] offset = dir.getCordinateOffset();
             int testX = x + offset[0];
             int testY = y + offset[1];
 
@@ -77,8 +79,9 @@ public class FactoryItemTubeStone implements FacData, FacItemTube {
 
     public boolean canMoveInto () { return transportingItem == null && bufferTransportingItem == null; }
 
-    public void moveInto (FacItemTube previousTube, ItemIndex newItem) { 
-        bufferPreviousTube = previousTube;
+    public void moveInto (FacItemTube fromTube, TubeDirection fromDir, ItemIndex newItem) { 
+        bufferPreviousDirection = fromDir.getOppositeDirection();
+        bufferPreviousTube = fromTube;
         bufferTransportingItem = newItem;
     }
 
@@ -89,28 +92,17 @@ public class FactoryItemTubeStone implements FacData, FacItemTube {
         if (transportingItem == null)
             return;
 
-        for (int i=0; i<4; i++) {
-            if (adjacentTubes[i] == null) {
-                // No tubes, test for inventory instead
-                if (adjacentInventories[i] == null)
-                    continue;
-                
-                // Place into inventory
-                adjacentInventories[i].addItem(transportingItem);
-                bufferTransportingItem = null;
-                bufferPreviousTube = null;
-                return;
-            }
-
-            // This is checking reference, it is not .equals(...) for a reason
-            if (adjacentTubes[i] == previousTube ||
-                adjacentTubes[i].canMoveInto() == false)
-                    continue;
-
-            adjacentTubes[i].moveInto(this, transportingItem); 
-            transportingItem = null;
-            previousTube = null;
+        // If possible, move in preferredDirection, otherwise look at other dirs
+        TubeDirection preferredDirection = previousDirection.getOppositeDirection();
+        if (tryToMoveInDir(preferredDirection))
             return;
+
+        for (TubeDirection dir : TubeDirection.values()) {
+            if (dir == preferredDirection)
+                continue;
+
+            if (tryToMoveInDir(dir))
+                return;
         }
 
         // If the code reaches here, then it wasn't able to move the item anywhere.
@@ -120,14 +112,48 @@ public class FactoryItemTubeStone implements FacData, FacItemTube {
         bufferPreviousTube = null;
     }
 
+    private boolean tryToMoveInDir (TubeDirection dir) {
+        int index = dir.toIndex();
+
+        if (adjacentTubes[index] == null) {
+            // Test for adjacent inventory
+            if (adjacentInventories[index] == null)
+                return false;
+            
+            // Place into inventory
+            adjacentInventories[index].addItem(transportingItem);
+            bufferTransportingItem = null;
+            bufferPreviousTube = null;
+            return true;
+
+
+        } else {
+            // Test for adjacent tube
+
+            // This is checking reference, it is not .equals(...) for a reason
+            if (adjacentTubes[index] == previousTube ||
+                adjacentTubes[index].canMoveInto() == false)
+                    return false;
+
+            // Place into tube
+            adjacentTubes[index].moveInto(this, TubeDirection.getFromIndex(index), transportingItem); 
+            transportingItem = null;
+            previousTube = null;
+            return true;
+
+        }
+    }
+
     /**
      * Resets the buffer
      */
     public void bufferTick () {
         previousTube = bufferPreviousTube;
+        previousDirection = bufferPreviousDirection;
         transportingItem = bufferTransportingItem;
 
         bufferPreviousTube = null;
+        bufferPreviousDirection = null;
         bufferTransportingItem = null;
     }
 

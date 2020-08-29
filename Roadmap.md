@@ -39,7 +39,7 @@
 - [ ] Item Tubes
   * [x] Glass pulls from inventories
   * [x] Stone just moves things along
-    * [ ] Prefer moving items in the same direction they came from
+    * [x] Prefer moving items in the same direction they came from
   * [ ] Steel tube for sorting
   * [ ] All tiers of funnels functional w/ chests
 

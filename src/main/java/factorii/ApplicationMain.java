@@ -44,7 +44,6 @@ public class ApplicationMain extends JFrame {
         InputBuffer inputBuffer = new InputBuffer();
 
         GameState.initGameState(200, 170);
-        GameState.makeNewWorld();
         GameState.setInputBuffer(inputBuffer);
 
         addKeyListener(inputBuffer);

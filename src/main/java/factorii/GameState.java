@@ -41,6 +41,8 @@ public class GameState {
         techLevel = TechLevel.START;
         craftingGlobals = new CraftingGlobals();
 
+        makeNewWorld();
+
         // For easier testing
         player.getInventory().addItemMulti(ItemIndex.WOOD, 100);
         player.getInventory().addItemMulti(ItemIndex.STONE, 100);
@@ -50,6 +52,23 @@ public class GameState {
         player.getInventory().addItemMulti(ItemIndex.ORE_IRON, 100);
         player.getInventory().addItemMulti(ItemIndex.BAR_COPPER, 100);
         player.getInventory().addItemMulti(ItemIndex.BAR_IRON, 100);
+
+        // Testing tube direction
+        for (int x=5; x<=10; x++) {
+            for (int y=5; y<=10; y++) {
+                world.placeCraftedTile(Tile.ITEM_TUBE_STONE, x, y);
+            }
+        }
+
+        world.placeCraftedTile(Tile.CHEST, 7, 3);
+        world.placeCraftedTile(Tile.ITEM_TUBE_GLASS, 7, 4);
+        world.placeCraftedTile(Tile.ITEM_TUBE_STONE, 7, 11);
+        world.placeCraftedTile(Tile.CHEST, 7, 12);
+
+        world.placeCraftedTile(Tile.CHEST, 3, 7);
+        world.placeCraftedTile(Tile.ITEM_TUBE_GLASS, 4, 7);
+        world.placeCraftedTile(Tile.ITEM_TUBE_STONE, 11, 7);
+        world.placeCraftedTile(Tile.CHEST, 12, 7);
     }
 
     public static void setInputBuffer (InputBuffer inputBuffer) {
@@ -57,7 +76,7 @@ public class GameState {
     }
 
     public static void makeNewWorld () {
-        world = worldBuilder.generateDefaultWorld();
+        world = worldBuilder.generateDirtWorld();
     }
 
 }
