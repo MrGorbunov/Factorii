@@ -25,7 +25,7 @@ public enum Tile {
     KILN, IRON_KILN, 
     FORGE, STEEL_FORGE,
 
-    CHEST, ITEM_TUBE_GLASS, ITEM_TUBE_STONE,
+    CHEST, ITEM_TUBE_GLASS, ITEM_TUBE_STONE, ITEM_TUBE_STEEL,
 
     SUBMARINE;
 
@@ -98,6 +98,8 @@ public enum Tile {
                 return ItemIndex.ITEM_TUBE_GLASS;
             case ITEM_TUBE_STONE:
                 return ItemIndex.ITEM_TUBE_STONE;
+            case ITEM_TUBE_STEEL:
+                return ItemIndex.ITEM_TUBE_STEEL;
             
             case SUBMARINE:
                 return ItemIndex.SUBMARINE;

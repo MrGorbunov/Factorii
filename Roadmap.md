@@ -41,6 +41,7 @@
   * [x] Stone just moves things along
     * [x] Prefer moving items in the same direction they came from
   * [ ] Steel tube for sorting
+  * [ ] Bronze tubes for directionality
   * [ ] All tiers of funnels functional w/ chests
 
 - [x] Landfill works too

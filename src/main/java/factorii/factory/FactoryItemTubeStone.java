@@ -80,8 +80,8 @@ public class FactoryItemTubeStone implements FacData, FacItemTube {
     public boolean canMoveInto () { return transportingItem == null && bufferTransportingItem == null; }
 
     public void moveInto (FacItemTube fromTube, TubeDirection fromDir, ItemIndex newItem) { 
-        bufferPreviousDirection = fromDir.getOppositeDirection();
         bufferPreviousTube = fromTube;
+        bufferPreviousDirection = fromDir.getOppositeDirection();
         bufferTransportingItem = newItem;
     }
 

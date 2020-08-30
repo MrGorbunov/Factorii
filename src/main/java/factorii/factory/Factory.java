@@ -153,6 +153,12 @@ public class Factory {
                 refreshAdjacent(x, y);
                 break;
                 
+            case ITEM_TUBE_STEEL:
+                FactoryItemTubeSteel steelTube = new FactoryItemTubeSteel(factory, x, y);
+                factory[x][y] = steelTube;
+                steelTube.refresh(factory, x, y);
+                refreshAdjacent(x, y);
+                break;
 
 
             default:
