@@ -21,8 +21,8 @@ public class FactoryItemTubeSteel implements FacData, FacItemTube {
     private FacItemTube[] adjacentTubes;
     private Inventory[] adjacentInventories;
 
-    private boolean[] filterIsWhitelist;
-    private ArrayList<ArrayList<ItemIndex>> filterItems = new ArrayList<ArrayList<ItemIndex>>();
+    private boolean filterIsWhitelist;
+    private ArrayList<ItemIndex> filterItems = new ArrayList<ItemIndex>();
 
     // Where the current item came from
     private FacItemTube previousTube;
@@ -38,12 +38,8 @@ public class FactoryItemTubeSteel implements FacData, FacItemTube {
         tile = Tile.ITEM_TUBE_STEEL;
         transportingItem = null;
 
-        filterIsWhitelist = new boolean[] {false, false, false, false};
-        filterItems = new ArrayList<ArrayList<ItemIndex>> ();
-        filterItems.add(new ArrayList<ItemIndex> ());
-        filterItems.add(new ArrayList<ItemIndex> ());
-        filterItems.add(new ArrayList<ItemIndex> ());
-        filterItems.add(new ArrayList<ItemIndex> ());
+        filterIsWhitelist = false;
+        filterItems = new ArrayList<ItemIndex> ();
     }
 
     /**
@@ -94,59 +90,45 @@ public class FactoryItemTubeSteel implements FacData, FacItemTube {
     // Item Filter Configuration
     //
 
-    // With 4 cardinal directions, this effectively has 4 filters
-    // TubeDirection is thus used as a key for each filter.
-    // Specifically, the tubeDirection.toIndex(); is used as the (surprise surprise) index in the filter lists
-
     /**
-     * Sets the filter mode of a given direction. If whiteList is true, then
+     * Sets the filter mode. If whiteList is true, then
      * the filter acts as a whitelist. Otherwise it acts as a blacklist.
      */
-    public void setFilterMode (TubeDirection dir, boolean whitelist) {
-        filterIsWhitelist[dir.toIndex()] = whitelist;
+    public void setFilterMode (boolean whitelist) {
+        filterIsWhitelist = whitelist;
     }
 
-    public void addItemToFilter (TubeDirection dir, ItemIndex item) {
-        ArrayList<ItemIndex> itemsInFilter = filterItems.get(dir.toIndex());
-
-        if (itemsInFilter.contains(item))
+    public void addItemToFilter (ItemIndex item) {
+        if (filterItems.contains(item))
             return;
 
-        itemsInFilter.add(item);
+        filterItems.add(item);
     }
 
-    public void removeItemFromFilter (TubeDirection dir, ItemIndex item) {
-        ArrayList<ItemIndex> itemsInFilter = filterItems.get(dir.toIndex());
-
-        itemsInFilter.remove(item);
-    }
-
-    public ArrayList<ItemIndex> getItemsInFilter (TubeDirection dir) {
-        return filterItems.get(dir.toIndex());
+    public void removeItemFromFilter (ItemIndex item) {
+        filterItems.remove(item);
     }
 
     /**
-     * Checks if the transporting item can go into a certain direction.
+     * Returns a clone of the current item list. IT IS NOT A REFERENCE;
+     * if you want to add/ remove items use .addItemToFilter() and .removeItemFromFilter()
      */
-    private boolean passesFilter (TubeDirection direction) {
-        if (transportingItem == null || direction == null)
-            throw new NullPointerException("passesFilter() should not be called on null directions or with no transporting item");
+    public ArrayList<ItemIndex> getItemsInFilter (TubeDirection dir) {
+        return (ArrayList<ItemIndex>) filterItems.clone();
+    }
 
-        boolean containedInList = false;
-        int index = direction.toIndex();
+    /**
+     * Checks if an item can go into a certain direction.
+     */
+    private boolean passesFilter (ItemIndex testItem) {
+        if (transportingItem == null)
+            throw new NullPointerException("passesFilter() should not be called with null item");
 
-        for (ItemIndex item : filterItems.get(index)) {
-            if (item == transportingItem) {
-                containedInList = true;
-                break;
-            }
-        }
+        boolean containedInList = filterItems.contains(testItem);
 
-        if (filterIsWhitelist[index])
-            // Whitelist
+        if (filterIsWhitelist)
             return containedInList;
         else
-            // Blacklist
             return containedInList == false;
     }
 
@@ -158,11 +140,11 @@ public class FactoryItemTubeSteel implements FacData, FacItemTube {
     // Updating & Item Transfer
     //
 
-    // TODO: canMoveInto() should have a directional input to control directional mobility
-    // 
-    // Then SteelTubes could have an option to accept or reject based on direction.
-
-    public boolean canMoveInto () { return transportingItem == null && bufferTransportingItem == null; }
+    public boolean canMoveInto (ItemIndex testItem) { 
+        return transportingItem == null && 
+               bufferTransportingItem == null &&
+               passesFilter(testItem);
+    }
 
     public void moveInto (FacItemTube fromTube, TubeDirection fromDir, ItemIndex newItem) { 
         bufferPreviousTube = fromTube;
@@ -208,9 +190,6 @@ public class FactoryItemTubeSteel implements FacData, FacItemTube {
     private boolean tryToMoveInDir (TubeDirection dir) {
         int index = dir.toIndex();
 
-        if (passesFilter(dir) == false)
-            return false;
-
         // Test for adjacent inventory
         if (adjacentInventories[index] != null) {
             adjacentInventories[index].addItem(transportingItem);
@@ -220,7 +199,7 @@ public class FactoryItemTubeSteel implements FacData, FacItemTube {
 
         // Test for adjacent tube
         } else if (adjacentTubes[index] != null &&
-                   adjacentTubes[index].canMoveInto()) {
+                   adjacentTubes[index].canMoveInto(transportingItem)) {
             adjacentTubes[index].moveInto(this, TubeDirection.getFromIndex(index), transportingItem); 
             transportingItem = null;
             previousTube = null;

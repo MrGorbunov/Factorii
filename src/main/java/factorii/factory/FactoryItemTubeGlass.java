@@ -89,7 +89,7 @@ public class FactoryItemTubeGlass implements FacData, FacItemTube {
     // Updating & Item Transfer
     //
 
-    public boolean canMoveInto () { return false; }
+    public boolean canMoveInto (ItemIndex testItem) { return false; }
 
     public void moveInto (FacItemTube fromTube, TubeDirection fromDir, ItemIndex newItem) { 
         throw new Error ("Attempted to move item into glass item tube, make sure canMoveInto() is checked");
@@ -147,7 +147,7 @@ public class FactoryItemTubeGlass implements FacData, FacItemTube {
                 if (adjacentTubes[i] == null ||
                     // No repeat tube check because glass never accepts items
                     // adjacentTubes[i] == previousTube ||
-                    adjacentTubes[i].canMoveInto() == false)
+                    adjacentTubes[i].canMoveInto(transportingItem) == false)
                         continue;
 
                 adjacentTubes[i].moveInto(this, TubeDirection.getFromIndex(i), transportingItem); 

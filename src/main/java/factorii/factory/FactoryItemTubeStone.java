@@ -77,7 +77,7 @@ public class FactoryItemTubeStone implements FacData, FacItemTube {
     // Updating & Item Transfer
     //
 
-    public boolean canMoveInto () { return transportingItem == null && bufferTransportingItem == null; }
+    public boolean canMoveInto (ItemIndex testItem) { return transportingItem == null && bufferTransportingItem == null; }
 
     public void moveInto (FacItemTube fromTube, TubeDirection fromDir, ItemIndex newItem) { 
         bufferPreviousTube = fromTube;
@@ -132,7 +132,7 @@ public class FactoryItemTubeStone implements FacData, FacItemTube {
 
             // This is checking reference, it is not .equals(...) for a reason
             if (adjacentTubes[index] == previousTube ||
-                adjacentTubes[index].canMoveInto() == false)
+                adjacentTubes[index].canMoveInto(transportingItem) == false)
                     return false;
 
             // Place into tube
