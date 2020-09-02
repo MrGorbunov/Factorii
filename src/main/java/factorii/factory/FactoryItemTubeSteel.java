@@ -5,14 +5,9 @@ import factorii.inventory.ItemIndex;
 import factorii.inventory.StackSizedInventory;
 import factorii.world.Tile;
 
-import java.util.ArrayList;
-
 /*
 A Steel item tube, which sorts item by filtering what can exit
 in what direction. These can be eithe white or black lists.
-
-Currently there is no way to filter what goes into the itemtube, 
-only the output.
 */
 
 public class FactoryItemTubeSteel implements FacData, FacItemTube {
@@ -21,6 +16,8 @@ public class FactoryItemTubeSteel implements FacData, FacItemTube {
 
     private FacItemTube[] adjacentTubes;
     private Inventory[] adjacentInventories;
+    private boolean existsAdjacentSteelTube;
+    private boolean existsAdjacentInventory;
 
     private boolean filterIsWhitelist;
     private Inventory filterItems;
@@ -49,15 +46,15 @@ public class FactoryItemTubeSteel implements FacData, FacItemTube {
      */
     public void refresh (FacData[][] factory, int x, int y) {
         adjacentTubes = new FacItemTube[4];
-        // Because this pulls items out of inventories, we need to be more delicate
-        // and so look at the FacData
         adjacentInventories = new Inventory[4]; 
+        existsAdjacentInventory = false;
+        existsAdjacentSteelTube = false;
 
-        final int[][] cardinalDirections = new int[][] { {0, 1}, {0, -1}, {1, 0}, {-1, 0} };
         int width = factory.length;
         int height = factory[0].length;
         for (int i=0; i<4; i++) {
-            int[] offset = cardinalDirections[i];
+            TubeDirection dir = TubeDirection.getFromIndex(i);
+            int[] offset = dir.getCordinateOffset();
             int testX = x + offset[0];
             int testY = y + offset[1];
 
@@ -68,9 +65,12 @@ public class FactoryItemTubeSteel implements FacData, FacItemTube {
             if (testData instanceof FacItemTube) {
                 FacItemTube adjTube = (FacItemTube) testData;
                 adjacentTubes[i] = adjTube;
+                if (testData instanceof FactoryItemTubeSteel)
+                    existsAdjacentSteelTube = true;
 
             } else if (testData instanceof FacInventory) {
                 adjacentInventories[i] = ((FacInventory) testData).getInventory();
+                existsAdjacentInventory = true;
             }
         }
     }
@@ -153,18 +153,53 @@ public class FactoryItemTubeSteel implements FacData, FacItemTube {
         if (transportingItem == null)
             return;
 
-        // If possible, move in preferredDirection, otherwise look at other dirs
-        TubeDirection preferredDirection = previousDirection.getOppositeDirection();
-        if (tryToMoveInDir(preferredDirection))
+        /*
+            Try to find adjacent inventory,
+            if not then adjacent steel tube,
+            if not then look in prefferred directionm
+            then two other directions,
+            then lastly go backwards.
+        */
+        TubeDirection firstDirectionChoice = previousDirection.getOppositeDirection();
+        TubeDirection lastDirectionChoice = previousDirection;
+
+        if (existsAdjacentInventory) {
+            for (Inventory inv : adjacentInventories) {
+                if (inv == null) continue;
+
+                moveIntoInventory(inv);
+                return;
+            }
+        }
+
+        // See if there's a steel tube, and that the current item didn't come from it
+        if (existsAdjacentSteelTube) {
+            for (int i=0; i<4; i++) {
+                FacItemTube tube = adjacentTubes[i];
+                if (tube == null || 
+                    tube instanceof FactoryItemTubeSteel == false ||
+                    lastDirectionChoice.toIndex() == i) 
+                        continue;
+
+                if (moveIntoTube(i))
+                    return;
+            }
+        }
+
+        // Then just try to move into preffered direction, other two directions, non preffered direction
+        if (moveIntoTube(firstDirectionChoice.toIndex()))
             return;
-
         for (TubeDirection dir : TubeDirection.values()) {
-            if (dir == preferredDirection)
-                continue;
+            if (dir.equals(firstDirectionChoice) ||
+                dir.equals(lastDirectionChoice))
+                    continue;
 
-            if (tryToMoveInDir(dir))
+            if (moveIntoTube(dir.toIndex()))
                 return;
         }
+        if (moveIntoTube(lastDirectionChoice.toIndex()))
+            return;
+
 
         // If the code reaches here, then it wasn't able to move the item anywhere.
         // So, buffer is filled with current item but removes previous tube,
@@ -174,31 +209,27 @@ public class FactoryItemTubeSteel implements FacData, FacItemTube {
     }
 
     /**
-     * Attempts to move the transporting item in the direction
+     * Attempts to move the transporting item into the tube provided
      * provided. 
      * If successful, returns true (and handles movement logic).
      * If unsuccessful, returns false and nothign happens.
      */
-    private boolean tryToMoveInDir (TubeDirection dir) {
-        int index = dir.toIndex();
+    private boolean moveIntoTube (int index) {
+        FacItemTube tube = adjacentTubes[index];
+        if (tube == null ||
+            tube.canMoveInto(transportingItem) == false)
+            return false;
 
-        // Test for adjacent inventory
-        if (adjacentInventories[index] != null) {
-            adjacentInventories[index].addItem(transportingItem);
-            bufferTransportingItem = null;
-            bufferPreviousTube = null;
-            return true;
+        tube.moveInto(this, TubeDirection.getFromIndex(index), transportingItem); 
+        transportingItem = null;
+        previousTube = null;
+        return true;
+    }
 
-        // Test for adjacent tube
-        } else if (adjacentTubes[index] != null &&
-                   adjacentTubes[index].canMoveInto(transportingItem)) {
-            adjacentTubes[index].moveInto(this, TubeDirection.getFromIndex(index), transportingItem); 
-            transportingItem = null;
-            previousTube = null;
-            return true;
-        }
-
-        return false;
+    private void moveIntoInventory (Inventory inv) {
+        inv.addItem(transportingItem);
+        transportingItem = null;
+        previousTube = null;
     }
 
     /**
@@ -213,5 +244,4 @@ public class FactoryItemTubeSteel implements FacData, FacItemTube {
         bufferPreviousDirection = null;
         bufferTransportingItem = null;
     }
-
 }

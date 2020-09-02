@@ -17,6 +17,8 @@ public class FactoryItemTubeStone implements FacData, FacItemTube {
 
     private FacItemTube[] adjacentTubes;
     private Inventory[] adjacentInventories;
+    private boolean existsAdjacentSteelTube;
+    private boolean existsAdjacentInventory;
 
     // Where the current item came from
     private FacItemTube previousTube;
@@ -40,6 +42,8 @@ public class FactoryItemTubeStone implements FacData, FacItemTube {
     public void refresh (FacData[][] factory, int x, int y) {
         adjacentTubes = new FacItemTube[4];
         adjacentInventories = new Inventory[4];
+        existsAdjacentInventory = false;
+        existsAdjacentSteelTube = false;
 
         int width = factory.length;
         int height = factory[0].length;
@@ -56,9 +60,12 @@ public class FactoryItemTubeStone implements FacData, FacItemTube {
             if (testData instanceof FacItemTube) {
                 FacItemTube adjTube = (FacItemTube) testData;
                 adjacentTubes[i] = adjTube;
+                if (testData instanceof FactoryItemTubeSteel)
+                    existsAdjacentSteelTube = true;
 
             } else if (testData instanceof FacInventory) {
                 adjacentInventories[i] = ((FacInventory) testData).getInventory();
+                existsAdjacentInventory = true;
             }
         }
     }
@@ -89,25 +96,57 @@ public class FactoryItemTubeStone implements FacData, FacItemTube {
         bufferTransportingItem = newItem;
     }
 
-    /**
-     * Populates the buffer
-     */
     public void movementTick () {
         if (transportingItem == null)
             return;
 
-        // If possible, move in preferredDirection, otherwise look at other dirs
-        TubeDirection preferredDirection = previousDirection.getOppositeDirection();
-        if (tryToMoveInDir(preferredDirection))
+        /*
+            Try to find adjacent inventory,
+            if not then adjacent steel tube,
+            if not then look in prefferred directionm
+            then two other directions,
+            then lastly go backwards.
+        */
+        TubeDirection firstDirectionChoice = previousDirection.getOppositeDirection();
+        TubeDirection lastDirectionChoice = previousDirection;
+
+        if (existsAdjacentInventory) {
+            for (Inventory inv : adjacentInventories) {
+                if (inv == null) continue;
+
+                moveIntoInventory(inv);
+                return;
+            }
+        }
+
+        // See if there's a steel tube, and that the current item didn't come from it
+        if (existsAdjacentSteelTube) {
+            for (int i=0; i<4; i++) {
+                FacItemTube tube = adjacentTubes[i];
+                if (tube == null || 
+                    tube instanceof FactoryItemTubeSteel == false ||
+                    lastDirectionChoice.toIndex() == i) 
+                        continue;
+
+                if (moveIntoTube(i))
+                    return;
+            }
+        }
+
+        // Then just try to move into preffered direction, other two directions, non preffered direction
+        if (moveIntoTube(firstDirectionChoice.toIndex()))
             return;
-
         for (TubeDirection dir : TubeDirection.values()) {
-            if (dir == preferredDirection)
-                continue;
+            if (dir.equals(firstDirectionChoice) ||
+                dir.equals(lastDirectionChoice))
+                    continue;
 
-            if (tryToMoveInDir(dir))
+            if (moveIntoTube(dir.toIndex()))
                 return;
         }
+        if (moveIntoTube(lastDirectionChoice.toIndex()))
+            return;
+
 
         // If the code reaches here, then it wasn't able to move the item anywhere.
         // So, buffer is filled with current item but removes previous tube,
@@ -116,36 +155,27 @@ public class FactoryItemTubeStone implements FacData, FacItemTube {
         bufferPreviousTube = null;
     }
 
-    private boolean tryToMoveInDir (TubeDirection dir) {
-        int index = dir.toIndex();
+    /**
+     * Attemptes to move into a tube in the given index
+     * @param index int the index to move into
+     * @return true = success, false = unable
+     */
+    private boolean moveIntoTube (int index) {
+        FacItemTube tube = adjacentTubes[index];
+        if (tube == null ||
+            tube.canMoveInto(transportingItem) == false)
+            return false;
 
-        if (adjacentTubes[index] == null) {
-            // Test for adjacent inventory
-            if (adjacentInventories[index] == null)
-                return false;
-            
-            // Place into inventory
-            adjacentInventories[index].addItem(transportingItem);
-            bufferTransportingItem = null;
-            bufferPreviousTube = null;
-            return true;
+        tube.moveInto(this, TubeDirection.getFromIndex(index), transportingItem); 
+        transportingItem = null;
+        previousTube = null;
+        return true;
+    }
 
-
-        } else {
-            // Test for adjacent tube
-
-            // This is checking reference, it is not .equals(...) for a reason
-            if (adjacentTubes[index] == previousTube ||
-                adjacentTubes[index].canMoveInto(transportingItem) == false)
-                    return false;
-
-            // Place into tube
-            adjacentTubes[index].moveInto(this, TubeDirection.getFromIndex(index), transportingItem); 
-            transportingItem = null;
-            previousTube = null;
-            return true;
-
-        }
+    private void moveIntoInventory (Inventory inv) {
+        inv.addItem(transportingItem);
+        transportingItem = null;
+        previousTube = null;
     }
 
     /**
