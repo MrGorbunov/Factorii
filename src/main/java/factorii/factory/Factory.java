@@ -86,6 +86,48 @@ public class Factory {
         return factory[x][y];
     }
 
+    /**
+     * Will find a FacData adjacent to the player that can be harvested, 
+     * remove it from the factory, and add it to the player's inventory.
+     */
+    public void harvestAdjacentToPlayer () {
+        // If standing on something -> harvest
+        // else look around & harvest trees first, then ore
+        int playerX = GameState.player.getX();
+        int playerY = GameState.player.getY();
+        FacData testData = factory[playerX][playerY];
+
+        if (testData != null) {
+            GameState.player.getInventory().addItem(Tile.tileToItem(testData.getTile()));
+            factory[playerX][playerY] = null;
+            return;
+        }
+
+
+        for (int dx=-1; dx<=1; dx++) {
+            for (int dy=-1; dy<=1; dy++) {
+                if (dx == 0 && dy == 0) continue;
+
+                int testX = playerX + dx;
+                int testY = playerY + dy;
+                if (testX < 0 || testX >= width || testY < 0 || testY >= height) continue;
+
+                testData = factory[testX][testY];
+
+                if (testData != null) { 
+                    GameState.player.getInventory().addItem(Tile.tileToItem(testData.getTile()));
+                    factory[testX][testY] = null;
+                    return;
+                }
+            }
+        }
+    }
+
+
+
+
+
+
     public void update () {
 
         // Checking to make sure processing only happens every n update calls

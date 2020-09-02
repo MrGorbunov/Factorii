@@ -102,7 +102,11 @@ public class World {
     // Player Actions
     //
 
-    public void harvestAdjacent () {
+    /**
+     * Will find a tile adjacent to the player that can be harvested, 
+     * remove it from the world, and add it to the player's inventory.
+     */
+    public void harvestAdjacentToPlayer () {
         // If standing on something -> harvest
         // else look around & harvest trees first, then ore
         int playerX = GameState.player.getX();

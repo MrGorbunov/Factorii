@@ -24,6 +24,8 @@ Interact
 */
 
 public enum Controls {
+    MODIFIER  (KeyEvent.VK_SHIFT),
+
     DIR_UP    (KeyEvent.VK_UP),
     DIR_DOWN  (KeyEvent.VK_DOWN),
     DIR_LEFT  (KeyEvent.VK_LEFT),
