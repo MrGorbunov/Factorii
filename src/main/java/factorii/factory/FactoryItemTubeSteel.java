@@ -2,6 +2,7 @@ package factorii.factory;
 
 import factorii.inventory.Inventory;
 import factorii.inventory.ItemIndex;
+import factorii.inventory.StackSizedInventory;
 import factorii.world.Tile;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class FactoryItemTubeSteel implements FacData, FacItemTube {
     private Inventory[] adjacentInventories;
 
     private boolean filterIsWhitelist;
-    private ArrayList<ItemIndex> filterItems = new ArrayList<ItemIndex>();
+    private Inventory filterItems;
 
     // Where the current item came from
     private FacItemTube previousTube;
@@ -39,7 +40,7 @@ public class FactoryItemTubeSteel implements FacData, FacItemTube {
         transportingItem = null;
 
         filterIsWhitelist = false;
-        filterItems = new ArrayList<ItemIndex> ();
+        filterItems = new StackSizedInventory(1);
     }
 
     /**
@@ -98,23 +99,16 @@ public class FactoryItemTubeSteel implements FacData, FacItemTube {
         filterIsWhitelist = whitelist;
     }
 
-    public void addItemToFilter (ItemIndex item) {
-        if (filterItems.contains(item))
-            return;
-
-        filterItems.add(item);
-    }
-
-    public void removeItemFromFilter (ItemIndex item) {
-        filterItems.remove(item);
-    }
-
     /**
-     * Returns a clone of the current item list. IT IS NOT A REFERENCE;
-     * if you want to add/ remove items use .addItemToFilter() and .removeItemFromFilter()
+     * true = whitelist
+     * false = blacklist
      */
-    public ArrayList<ItemIndex> getItemsInFilter (TubeDirection dir) {
-        return (ArrayList<ItemIndex>) filterItems.clone();
+    public boolean getFilterMode () {
+        return filterIsWhitelist;
+    }
+
+    public Inventory getFilterInventory () {
+        return filterItems;
     }
 
     /**
@@ -124,7 +118,7 @@ public class FactoryItemTubeSteel implements FacData, FacItemTube {
         if (transportingItem == null)
             throw new NullPointerException("passesFilter() should not be called with null item");
 
-        boolean containedInList = filterItems.contains(testItem);
+        boolean containedInList = filterItems.getQuantity(testItem) > 0;
 
         if (filterIsWhitelist)
             return containedInList;

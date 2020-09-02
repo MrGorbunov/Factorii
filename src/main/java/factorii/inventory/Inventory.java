@@ -5,7 +5,7 @@ import factorii.TechLevel;
 
 public class Inventory {
 
-    private int[] itemAmounts;
+    protected int[] itemAmounts;
 
     public Inventory () {
         itemAmounts = new int[ItemIndex.values().length];
