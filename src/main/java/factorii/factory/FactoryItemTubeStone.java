@@ -77,7 +77,11 @@ public class FactoryItemTubeStone implements FacData, FacItemTube {
     // Updating & Item Transfer
     //
 
-    public boolean canMoveInto (ItemIndex testItem) { return transportingItem == null && bufferTransportingItem == null; }
+    public boolean canMoveInto (ItemIndex testItem) { 
+        // Stone item tubes do not care what items are passed to them
+        return transportingItem == null && 
+               bufferTransportingItem == null; 
+    }
 
     public void moveInto (FacItemTube fromTube, TubeDirection fromDir, ItemIndex newItem) { 
         bufferPreviousTube = fromTube;

@@ -115,7 +115,7 @@ public class FactoryItemTubeSteel implements FacData, FacItemTube {
      * Checks if an item can go into a certain direction.
      */
     private boolean passesFilter (ItemIndex testItem) {
-        if (transportingItem == null)
+        if (testItem == null)
             throw new NullPointerException("passesFilter() should not be called with null item");
 
         boolean containedInList = filterItems.getQuantity(testItem) > 0;
@@ -144,8 +144,6 @@ public class FactoryItemTubeSteel implements FacData, FacItemTube {
         bufferPreviousTube = fromTube;
         bufferPreviousDirection = fromDir.getOppositeDirection();
         bufferTransportingItem = newItem;
-
-        throw new Error ("Attempted to move item into glass item tube, make sure canMoveInto() is checked");
     }
 
     /**

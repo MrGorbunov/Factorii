@@ -243,11 +243,8 @@ public class GridSubscreen {
                 Color bgColor = highlightBG ? Color.GRAY : Color.BLACK;
                 
                 String displayString = displayStrings.get(index);
-                if (index == markedOptionIndex) {
+                if (index == markedOptionIndex)
                     displayString += " *";
-                    System.out.println(displayString);
-
-                }
 
                 terminal.write(displayString, xCord, yCord, Color.LIGHT_GRAY, bgColor);
 
