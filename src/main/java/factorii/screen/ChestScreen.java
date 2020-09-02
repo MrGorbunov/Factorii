@@ -97,8 +97,13 @@ public class ChestScreen implements Screen {
             if (transferItem == null)
                 return this;
 
-            playerInventorySubscreen.getInventory().addItem(transferItem);
-            chestInventorySubscreen.getInventory().removeItem(transferItem);
+            int quantity = 1;
+            if (inputBuffer.pressState(Controls.MODIFIER) == PressState.PRESSED ||
+                inputBuffer.pressState(Controls.MODIFIER) == PressState.JUST_PRESSED)  
+                    quantity = Math.min(chestInventorySubscreen.getInventory().getQuantity(transferItem), 5);
+
+            playerInventorySubscreen.getInventory().addItemMulti(transferItem, quantity);
+            chestInventorySubscreen.getInventory().removeItemMulti(transferItem, quantity);
             chestInventorySubscreen.refresh();
             playerInventorySubscreen.refresh();
         
@@ -131,7 +136,13 @@ public class ChestScreen implements Screen {
             if (transferItem == null)
                 return this;
 
-            chestInventorySubscreen.getInventory().addItem(transferItem); playerInventorySubscreen.getInventory().removeItem(transferItem);
+            int quantity = 1;
+            if (inputBuffer.pressState(Controls.MODIFIER) == PressState.PRESSED ||
+                inputBuffer.pressState(Controls.MODIFIER) == PressState.JUST_PRESSED)  
+                    quantity = Math.min(playerInventorySubscreen.getInventory().getQuantity(transferItem), 5);
+
+            chestInventorySubscreen.getInventory().addItemMulti(transferItem, quantity); 
+            playerInventorySubscreen.getInventory().removeItemMulti(transferItem, quantity);
             playerInventorySubscreen.refresh();
             chestInventorySubscreen.refresh();
         

@@ -32,7 +32,7 @@ public class Inventory {
     }
 
     /**
-     * Attempts to remove an item. If not possible, debugs a warning
+     * Attempts to remove an item. If not possible, throws an error
      */
     public void removeItem (ItemIndex item) {
         if (itemAmounts[item.ordinal()] == 0) {
@@ -40,6 +40,17 @@ public class Inventory {
         }
 
         itemAmounts[item.ordinal()]--;
+    }
+
+    /**
+     * Attempts to remove an item. If not possible, throws an error
+     */
+    public void removeItemMulti (ItemIndex item, int amount) {
+        if (itemAmounts[item.ordinal()] < amount) {
+            throw new Error("Attempted to remove more of item than is in inventory");
+        }
+
+        itemAmounts[item.ordinal()] -= amount;
     }
 
     public int getTotalSize () {
