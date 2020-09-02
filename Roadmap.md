@@ -36,13 +36,17 @@
   * [x] Auto form of kiln
   * [x] Auto form of forge
 
-- [ ] Item Tubes
+- [x] Item Tubes
   * [x] Glass pulls from inventories
   * [x] Stone just moves things along
     * [x] Prefer moving items in the same direction they came from
-  * [ ] Steel tube for sorting
-  * [ ] Bronze tubes for directionality
-  * [ ] All tiers of funnels functional w/ chests
+  * [x] Steel tube for sorting
+  * [x] All tiers of funnels functional w/ chests
+  * [x] Rework movement logic
+    * Should move into adjacent inventories if possible
+    * Otherwise try for steel tubes
+    * Then try to follow direction
+    * Then look for other stone tubes
 
 - [x] Landfill works too
   * [x] Replace float with landfill
@@ -53,7 +57,8 @@
 - [x] Place controls into globals
 - ~~[ ] Place colors into globals~~
 
-- [ ] Allow for picking up of factory parts
+- [x] Allow for picking up of factory parts
+  * Holding down modifier key 
 
 - [ ] Add Submarine 
   * [ ] Placeable
@@ -66,8 +71,15 @@
   * Still hold tiles?
   * Factory class would hold the entire thing
 
+- [ ] Allow for faster item transfer w/ holding shift
+- [ ] Allow for better factory building by staying
+      on the placement screen if there are more items
+      to be placed
+
 - [ ] Inheritence / interface for subscreen
   * ~~Maybe also for handling input?~~
+
+- [ ] Inheritence for Factory classes
 
 - [x] Turn all screens into statemachines
   * Refactor input handling in the craft screen
@@ -90,6 +102,7 @@
 - [x] Create consistency in file names
 
 - [x] Make sure Auto-Crafting cannot craft equipment
+- [x] Rework FacData priority in World.getAdjacentFactoryData();
 
 
 

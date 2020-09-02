@@ -38,6 +38,9 @@ public class InputTestScreen implements Screen {
 
         terminal.write("Dir Right: " + buffer.pressState(Controls.DIR_RIGHT), xCord, yCord);
         yCord++;
+        yCord++;
+
+        terminal.write("Modifier: " + buffer.pressState(Controls.MODIFIER), xCord, yCord);
     }
 
     public Screen update () {

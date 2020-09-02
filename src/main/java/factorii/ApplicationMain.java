@@ -60,14 +60,14 @@ public class ApplicationMain extends JFrame {
             //      be careful what you mess with
             previousTime = System.currentTimeMillis();
 
+            // Update
             screen = screen.update();
+            GameState.inputBuffer.update();
 
             // Draw
             terminal.clear();
             screen.displayOutput(terminal);
             super.repaint();
-
-            GameState.inputBuffer.update();
 
             // Wait
             long currentTime = System.currentTimeMillis();
