@@ -3,6 +3,7 @@ package factorii.screen;
 import factorii.Controls;
 import factorii.GameState;
 import factorii.InputBuffer;
+import factorii.Player;
 import factorii.PressState;
 import factorii.factory.FactoryChest;
 import factorii.factory.FactoryCrafter;
@@ -183,7 +184,8 @@ public class WorldScreen implements Screen {
     }
 
     private Screen gotoFactoryScreen () {
-        FacData factoryData = GameState.world.getAdjacentFactoryData();
+        Player player = GameState.player;
+        FacData factoryData = GameState.factory.getAdjacentFacData(player.getX(), player.getY());
         if (factoryData != null) {
             if (factoryData instanceof FactoryCrafter)
                 return new CraftScreen(factoryData);

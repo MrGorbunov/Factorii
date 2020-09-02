@@ -76,31 +76,6 @@ public class World {
     // Factory Stuff
     //
 
-    public FacData getAdjacentFactoryData () {
-        int playerX = GameState.player.getX();
-        int playerY = GameState.player.getY();
-        Tile standingOver = factory[playerX][playerY];
-        if (standingOver != Tile.EMPTY) {
-            return GameState.factory.getFacData(playerX, playerY);
-        }
-
-        for (int dx=-1; dx<=1; dx++) {
-            for (int dy=-1; dy<=1; dy++) {
-                if (dx == 0 && dy == 0) continue;
-
-                int testX = playerX + dx;
-                int testY = playerY + dy;
-                if (testX < 0 || testX >= width || testY < 0 || testY >= height) continue;
-
-                Tile testTile = factory[testX][testY];
-                if (testTile != Tile.EMPTY) 
-                    return GameState.factory.getFacData(testX, testY);
-            }
-        }
-
-        return null;
-    }
-
     public boolean canStandAt (int x, int y) {
         if (x < 0 || x >= width || y < 0 || y >= height)
             return false;
@@ -142,7 +117,7 @@ public class World {
             return;
 
         } else if (testFactory == Tile.MINING_DRILL) {
-            FactoryMiningDrill drill = (FactoryMiningDrill) GameState.factory.getFacData(playerX, playerY);
+            FactoryMiningDrill drill = (FactoryMiningDrill) GameState.factory.getFacDataAt(playerX, playerY);
             ItemIndex extractedResource = drill.getResource();
             GameState.player.getInventory().addItem(extractedResource);
             // Doesn't change map so no need to update anything
@@ -168,7 +143,7 @@ public class World {
                     return;
 
                 } else if (testFactory == Tile.MINING_DRILL) {
-                    FactoryMiningDrill drill = (FactoryMiningDrill) GameState.factory.getFacData(testX, testY);
+                    FactoryMiningDrill drill = (FactoryMiningDrill) GameState.factory.getFacDataAt(testX, testY);
                     ItemIndex extractedResource = drill.getResource();
                     GameState.player.getInventory().addItem(extractedResource);
                     return;

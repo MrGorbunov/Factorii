@@ -1,7 +1,5 @@
 package factorii.factory;
 
-import java.util.HashMap;
-
 import factorii.GameState;
 import factorii.inventory.CraftingGlobals;
 import factorii.inventory.Inventory;
@@ -49,7 +47,42 @@ public class Factory {
         return factoryTiles;
     }
 
-    public FacData getFacData (int x, int y) {
+    public FacData getAdjacentFacData (int x, int y) {
+        FacData standingOver = factory[x][y];
+
+        if (standingOver != null) {
+            if (Tile.interactabilityPriotiy(standingOver.getTile()) != -1) {
+                return factory[x][y];
+            }
+        }
+
+        int maxPriority = -1;
+        FacData maxFacData = null;
+
+        for (int dx=-1; dx<=1; dx++) {
+            for (int dy=-1; dy<=1; dy++) {
+                if (dx == 0 && dy == 0) continue;
+
+                int testX = x + dx;
+                int testY = y + dy;
+                if (testX < 0 || testX >= width || testY < 0 || testY >= height) continue;
+
+                FacData testData = factory[testX][testY];
+                if (testData == null) continue;
+
+                Tile testTile = factory[testX][testY].getTile();
+                int priority = Tile.interactabilityPriotiy(testTile);
+                if (priority > maxPriority) {
+                    maxPriority = priority;
+                    maxFacData = factory[testX][testY];
+                }
+            }
+        }
+
+        return maxFacData;
+    }
+
+    public FacData getFacDataAt (int x, int y) {
         return factory[x][y];
     }
 

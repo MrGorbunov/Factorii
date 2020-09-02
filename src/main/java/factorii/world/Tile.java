@@ -59,6 +59,35 @@ public enum Tile {
                tile == Tile.STONE;
     }
 
+    /**
+     * When deciding what tile to interact with, this value
+     * is used for the comparision.
+     * High value = priority
+     * -1 = not interactable
+     */
+    public static int interactabilityPriotiy (Tile tile) {
+        switch (tile) {
+            case COPPER_WORKBENCH:
+            case IRON_KILN:
+            case STEEL_FORGE:
+                return 3;
+
+            case CHEST:
+                return 2;
+
+            case KILN:
+            case FORGE:
+            case WORKBENCH:
+                return 1;
+                
+            case ITEM_TUBE_STEEL:
+                return 0;
+
+            default:
+                return -1;
+        }
+    }
+
     public static ItemIndex tileToItem (Tile tile) {
         switch (tile) {
             case TREE:
