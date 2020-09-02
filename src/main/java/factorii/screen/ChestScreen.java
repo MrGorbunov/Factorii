@@ -11,6 +11,7 @@ import factorii.InputBuffer;
 import factorii.PressState;
 import factorii.factory.FactoryChest;
 import factorii.inventory.CraftingRecipe;
+import factorii.inventory.Inventory;
 import factorii.inventory.ItemIndex;
 import factorii.subscreen.CraftingSubscreen;
 import factorii.subscreen.InventoryGridSubscreen;
@@ -29,8 +30,11 @@ public class ChestScreen implements Screen {
         int screenHeight = GameState.windowHeight;
         int transferMenuHeight = 5;
 
-        playerInventorySubscreen = new InventoryGridSubscreen(screenWidth / 2, screenHeight);
-        chestInventorySubscreen = new InventoryGridSubscreen((screenWidth + 1) / 2, screenHeight - transferMenuHeight, (screenWidth+1) / 2, 0);
+        Inventory playerInv = GameState.player.getInventory();
+        Inventory chestInv = chest.getInventory();
+
+        playerInventorySubscreen = new InventoryGridSubscreen(screenWidth / 2, screenHeight, playerInv);
+        chestInventorySubscreen = new InventoryGridSubscreen((screenWidth + 1) / 2, screenHeight - transferMenuHeight, (screenWidth+1) / 2, 0, chestInv);
 
         screenState = ScreenState.LOOKING_AT_PLAYER_INVENTORY;
 
@@ -41,7 +45,6 @@ public class ChestScreen implements Screen {
         playerInventorySubscreen.setActive(true);
         playerInventorySubscreen.refresh();
 
-        chestInventorySubscreen.setInventory(chest.getInventory());
         chestInventorySubscreen.setIgnoreResources(false);
         chestInventorySubscreen.setColumns(1);
         chestInventorySubscreen.setPad(2);

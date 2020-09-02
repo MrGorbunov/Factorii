@@ -6,13 +6,13 @@ import factorii.InputBuffer;
 import factorii.PressState;
 import factorii.factory.FactoryChest;
 import factorii.factory.FactoryCrafter;
+import factorii.factory.FactoryItemTubeSteel;
 import factorii.factory.FactoryStatic;
 import factorii.factory.FacData;
 import factorii.factory.FactoryAutoCrafter;
+import factorii.inventory.Inventory;
 import factorii.inventory.ItemIndex;
-import factorii.subscreen.InventoryGridSubscreen;
-import factorii.subscreen.WorldPlacementSubscreen;
-import factorii.subscreen.WorldSubscreen;
+import factorii.subscreen.*;
 import factorii.world.*;
 
 import asciiPanel.AsciiPanel;
@@ -31,12 +31,15 @@ public class WorldScreen implements Screen {
 
         int inventoryGridHeight = 5;
 
+        Inventory playerInv = GameState.player.getInventory();
+
         worldSubscreen = new WorldSubscreen(width, height - inventoryGridHeight, 0, 0);
         worldPlacementSubscreen = new WorldPlacementSubscreen(width, height - inventoryGridHeight, 0, 0);
-        inventoryGridSubscreen = new InventoryGridSubscreen(width, inventoryGridHeight, 0, height - inventoryGridHeight);
+        inventoryGridSubscreen = new InventoryGridSubscreen(width, inventoryGridHeight, 0, height - inventoryGridHeight, playerInv);
 
         screenState = ScreenState.MOVING_IN_WORLD;
         inventoryGridSubscreen.setActive(false);
+        inventoryGridSubscreen.refresh();
     }
 
     enum ScreenState {
@@ -55,7 +58,7 @@ public class WorldScreen implements Screen {
     public Screen update () {
         switch (screenState) {
             case MOVING_IN_WORLD:
-                // Input is handled by the player 
+                // player will automatically look at input buffer & update accordingly
                 GameState.player.update();
                 GameState.factory.update();
                 return traversalInput();
@@ -190,6 +193,9 @@ public class WorldScreen implements Screen {
 
             else if (factoryData instanceof FactoryAutoCrafter)
                 return new AutoCraftingScreen((FactoryAutoCrafter) factoryData);
+
+            else if (factoryData instanceof FactoryItemTubeSteel)
+                return new SteelTubeScreen((FactoryItemTubeSteel) factoryData);
         }
 
         return new CraftScreen(new FactoryStatic(Tile.EMPTY));

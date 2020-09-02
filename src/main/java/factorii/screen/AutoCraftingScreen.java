@@ -12,6 +12,7 @@ import factorii.PressState;
 import factorii.factory.FactoryAutoCrafter;
 import factorii.factory.FactoryChest;
 import factorii.inventory.CraftingRecipe;
+import factorii.inventory.Inventory;
 import factorii.inventory.ItemIndex;
 import factorii.subscreen.CraftingSubscreen;
 import factorii.subscreen.InventoryGridSubscreen;
@@ -33,9 +34,12 @@ public class AutoCraftingScreen implements Screen {
         int inventoryHeight = 8;
         int workbenchSubscreensX = (screenWidth + 1) / 2;
 
-        playerInventorySubscreen = new InventoryGridSubscreen(screenWidth / 2, screenHeight);
+        Inventory playerInventory = GameState.player.getInventory();
+        Inventory workbenchInv = autoCrafter.getInventory();
+
+        playerInventorySubscreen = new InventoryGridSubscreen(screenWidth / 2, screenHeight, playerInventory);
         workbenchCraftsSubscreen = new CraftingSubscreen(workbenchSubscreensX, screenHeight - inventoryHeight, workbenchSubscreensX, 0, autoCrafter);
-        workbenchInventorySubscreen = new InventoryGridSubscreen(workbenchSubscreensX, inventoryHeight, workbenchSubscreensX, screenHeight - inventoryHeight);
+        workbenchInventorySubscreen = new InventoryGridSubscreen(workbenchSubscreensX, inventoryHeight, workbenchSubscreensX, screenHeight - inventoryHeight, workbenchInv);
 
         screenState = ScreenState.LOOKING_AT_PLAYER_INVENTORY;
 
@@ -51,7 +55,6 @@ public class AutoCraftingScreen implements Screen {
         workbenchCraftsSubscreen.setChangeColorIfAvailable(false);
         workbenchCraftsSubscreen.refresh();
 
-        workbenchInventorySubscreen.setInventory(autoCrafter.getInventory());
         workbenchInventorySubscreen.setIgnoreResources(false);
         workbenchInventorySubscreen.setColumns(1);
         workbenchInventorySubscreen.setPad(2);
