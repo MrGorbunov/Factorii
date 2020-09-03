@@ -23,8 +23,7 @@ public class WorldPlacementSubscreen {
 	private int xCord;
 	private int yCord;
 	private Tile placementTile;
-    private Glyph[][] worldSlice;
-    private Tile[][] worldTiles;
+    private Tile[][] worldSlice;
     private int radius;
 
     public WorldPlacementSubscreen (int width, int height, int xOff, int yOff) {
@@ -112,8 +111,8 @@ public class WorldPlacementSubscreen {
     public void drawSubscreen (AsciiPanel terminal) {
         for (int x=0; x<width; x++) {
             for (int y=0; y<height; y++) {
-                Glyph g = worldSlice[x][y];
-                terminal.write(g.getChar(), x + xOff, y + yOff, g.getColor());
+                Tile t = worldSlice[x][y];
+                terminal.write(t.getChar(), x + xOff, y + yOff, t.getColor());
             }
         }
 
@@ -121,7 +120,7 @@ public class WorldPlacementSubscreen {
         int worldX = xCord - (width / 2) + GameState.player.getX();
         int worldY = yCord - (height / 2) + GameState.player.getY();
         Color displayColor = world.canPlaceCraftedTileAt(placementTile, worldX, worldY) ? Color.GREEN : Color.RED;
-		terminal.write(Glyph.tileToGlyph(placementTile).getChar(), xCord + xOff, yCord + yOff, displayColor);
+		terminal.write(placementTile.getChar(), xCord + xOff, yCord + yOff, displayColor);
     }
 
     // For now, there's no reason to actually track whether or not the subscreen is active
@@ -135,8 +134,7 @@ public class WorldPlacementSubscreen {
     private void updateLists () {
         World world = GameState.world;
         Tile[][] entireWorld = world.getWorld();
-        worldTiles = new Tile[width][height];
-        worldSlice = new Glyph[width][height];
+        worldSlice = new Tile[width][height];
 
         int startX = GameState.player.getX() - (width / 2);
         int startY = GameState.player.getY() - (height / 2);
@@ -147,14 +145,11 @@ public class WorldPlacementSubscreen {
                 int worldY = y+startY;
 
                 if (worldX < 0 || worldX >= world.getWidth() ||
-                    worldY < 0 || worldY >= world.getHeight()) {
-                        worldSlice[x][y] = Glyph.EMPTY;
-                        worldTiles[x][y] = Tile.EMPTY;
-                        continue;
-                }
-                
-                worldSlice[x][y] = Glyph.tileToGlyph(entireWorld[worldX][worldY]);
-                worldTiles[x][y] = entireWorld[worldX][worldY];
+                    worldY < 0 || worldY >= world.getHeight())
+                        worldSlice[x][y] = Tile.EMPTY;
+
+                else
+                    worldSlice[x][y] = entireWorld[worldX][worldY];
             }
         }
     }

@@ -1,33 +1,60 @@
 package factorii.world;
 
+import java.awt.Color;
+
 import factorii.GameState;
 import factorii.inventory.ItemIndex;
 
 public enum Tile {
-    EMPTY, // EMPTY should always be first so it's defaulted to
-    BOUNDS,
+    EMPTY  (' ', Convert.hex("#000000")),
+    BOUNDS ('X', Convert.hex("#333333")),
 
-    GROUND,
-    WATER, 
+    GROUND   ('#', Convert.hex("#302522")),
+    WATER  ('#', Convert.hex("#080642")),
 
-    TREE,
-    STONE,
-    SAND,
+    TREE   ('$', Convert.hex("#44852C")),
+    STONE  ('%', Convert.hex("#70605F")),
+    SAND   ('#', Convert.hex("#4B4C29")),
 
-    ORE_COAL,
-    ORE_COPPER,
-    ORE_IRON,
+    ORE_COAL   ('%', Convert.hex("#3E4049")),
+    ORE_COPPER ('%', Convert.hex("#B5542E")),
+    ORE_IRON   ('%', Convert.hex("#4C4C7D")),
+
+    PLAYER ('!', Color.WHITE),
+
+    MINING_DRILL        ('\'', Convert.hex("#B0D0EF")),
+    AUTO_MINING_UPGRADE ('"',  Convert.hex("#D0E0FF")),
+    WORKBENCH           ('H',  Convert.hex("#3C8338")),
+    COPPER_WORKBENCH    ('H',  Convert.hex("#81C07D")),
+    KILN                ('A',  Convert.hex("#754624")),
+    IRON_KILN           ('A',  Convert.hex("#D48781")),
+    FORGE               ('A',  Convert.hex("#788BDC")),
+    STEEL_FORGE         ('A',  Convert.hex("#A3C6F3")),
+
+    CHEST           ('?', Convert.hex("#9F8C74")),
+    ITEM_TUBE_GLASS ('+', Convert.hex("#D0E0FF")),
+    ITEM_TUBE_STONE ('+', Convert.hex("#A0908F")),
+    ITEM_TUBE_STEEL ('+', Convert.hex("#788BDC")),
     
-    PLAYER,
+    SUBMARINE ('O', Convert.hex("#7A9BC0"));
 
-    MINING_DRILL, AUTO_MINING_UPGRADE, 
-    WORKBENCH, COPPER_WORKBENCH, 
-    KILN, IRON_KILN, 
-    FORGE, STEEL_FORGE,
 
-    CHEST, ITEM_TUBE_GLASS, ITEM_TUBE_STONE, ITEM_TUBE_STEEL,
 
-    SUBMARINE;
+
+    //
+    // Graphical stuff
+    //
+
+    private char character;
+    private Color color;
+
+    public char getChar () { return character; }
+    public Color getColor () { return color; }
+
+    private Tile (char character, Color color) {
+        this.character = character;
+        this.color = color;
+    }
 
 
 
@@ -90,50 +117,43 @@ public enum Tile {
 
     public static ItemIndex tileToItem (Tile tile) {
         switch (tile) {
-            case TREE:
-                return ItemIndex.WOOD;
-            case STONE:
-                return ItemIndex.STONE;
-            case SAND:
-                return ItemIndex.SAND;
+            case TREE:  return ItemIndex.WOOD;
+            case STONE: return ItemIndex.STONE;
+            case SAND:  return ItemIndex.SAND;
 
-            case ORE_COAL:
-                return ItemIndex.ORE_COAL;
-            case ORE_COPPER:
-                return ItemIndex.ORE_COPPER;
-            case ORE_IRON:
-                return ItemIndex.ORE_IRON;
+            case ORE_COAL:   return ItemIndex.ORE_COAL;
+            case ORE_COPPER: return ItemIndex.ORE_COPPER;
+            case ORE_IRON:   return ItemIndex.ORE_IRON;
 
-            case MINING_DRILL:
-                return ItemIndex.MINING_DRILL;
-            case AUTO_MINING_UPGRADE:
-                return ItemIndex.AUTO_MINING_UPGRADE;
-            case WORKBENCH:
-                return ItemIndex.WORKBENCH;
-            case COPPER_WORKBENCH:
-                return ItemIndex.COPPER_WORKBENCH;
-            case KILN:
-                return ItemIndex.KILN;
-            case IRON_KILN:
-                return ItemIndex.IRON_KILN;
-            case FORGE:
-                return ItemIndex.FORGE;
-            case STEEL_FORGE:
-                return ItemIndex.STEEL_FORGE;
+            case MINING_DRILL:        return ItemIndex.MINING_DRILL;
+            case AUTO_MINING_UPGRADE: return ItemIndex.AUTO_MINING_UPGRADE;
+            case WORKBENCH:           return ItemIndex.WORKBENCH;
+            case COPPER_WORKBENCH:    return ItemIndex.COPPER_WORKBENCH;
+            case KILN:                return ItemIndex.KILN;
+            case IRON_KILN:           return ItemIndex.IRON_KILN;
+            case FORGE:               return ItemIndex.FORGE;
+            case STEEL_FORGE:         return ItemIndex.STEEL_FORGE;
 
-            case CHEST:
-                return ItemIndex.CHEST;
-            case ITEM_TUBE_GLASS:
-                return ItemIndex.ITEM_TUBE_GLASS;
-            case ITEM_TUBE_STONE:
-                return ItemIndex.ITEM_TUBE_STONE;
-            case ITEM_TUBE_STEEL:
-                return ItemIndex.ITEM_TUBE_STEEL;
+            case CHEST:           return ItemIndex.CHEST;
+            case ITEM_TUBE_GLASS: return ItemIndex.ITEM_TUBE_GLASS;
+            case ITEM_TUBE_STONE: return ItemIndex.ITEM_TUBE_STONE;
+            case ITEM_TUBE_STEEL: return ItemIndex.ITEM_TUBE_STEEL;
             
-            case SUBMARINE:
-                return ItemIndex.SUBMARINE;
+            case SUBMARINE: return ItemIndex.SUBMARINE;
         }
 
         throw new Error ("Attempted to do Tile -> Item conversion which does not exist");
     }
+
 }
+
+class Convert {
+    public static Color hex (String hexInput) {
+        int red =   Integer.decode("0x" + hexInput.substring(1, 3));
+        int green = Integer.decode("0x" + hexInput.substring(3, 5));
+        int blue =  Integer.decode("0x" + hexInput.substring(5, 7));
+
+        return new Color(red / 255.0f, green / 255.0f, blue / 255.0f);
+    }
+}
+

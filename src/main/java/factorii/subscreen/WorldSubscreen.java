@@ -41,21 +41,21 @@ public class WorldSubscreen {
     //
 
     public void drawSubscreen (AsciiPanel terminal) {
-        Glyph[][] worldSlice = getGlyphSlice();
+        Tile[][] worldSlice = getWorldSlice();
 
-        for (int x=0; x<width; x++) {
-            for (int y=0; y<height; y++) {
-                Glyph g = worldSlice[x][y];
-                terminal.write(g.getChar(), x + xOff, y + yOff, g.getColor());
+        for (int x=0; x<width-1; x++) {
+            for (int y=0; y<height-1; y++) {
+                Tile t = worldSlice[x][y];
+                terminal.write(t.getChar(), x + xOff, y + yOff, t.getColor());
+                // terminal.write("A", x + xOff, y + yOff);
             }
         }
     }
 
-    // TODO: Right now this is center on player, will likely need to be changed
-    private Glyph[][] getGlyphSlice () {
+    private Tile[][] getWorldSlice () {
         World world = GameState.world;
-        Tile[][] worldTiles = world.getWorld();
-        Glyph[][] worldSlice = new Glyph[width][height];
+        Tile[][] entireWorld = world.getWorld();
+        Tile[][] worldSlice = new Tile[width][height];
 
         int startX = GameState.player.getX() - (width / 2);
         int startY = GameState.player.getY() - (height / 2);
@@ -66,12 +66,11 @@ public class WorldSubscreen {
                 int worldY = y+startY;
 
                 if (worldX < 0 || worldX >= world.getWidth() ||
-                    worldY < 0 || worldY >= world.getHeight()) {
-                        worldSlice[x][y] = Glyph.EMPTY;
-                        continue;
-                }
-                
-                worldSlice[x][y] = Glyph.tileToGlyph(worldTiles[worldX][worldY]);
+                    worldY < 0 || worldY >= world.getHeight())
+                        worldSlice[x][y] = Tile.EMPTY;
+
+                else
+                    worldSlice[x][y] = entireWorld[worldX][worldY];
             }
         }
 
