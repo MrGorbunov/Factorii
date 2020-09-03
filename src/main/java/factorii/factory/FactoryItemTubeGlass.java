@@ -96,103 +96,13 @@ public class FactoryItemTubeGlass implements FacData, FacItemTube {
 
 
     //
-    // Updating & Item Transfer
+    // Interacting with others
     //
 
     public boolean canMoveInto (ItemIndex testItem) { return false; }
 
     public void moveInto (FacItemTube fromTube, TubeDirection fromDir, ItemIndex newItem) { 
         throw new Error ("Attempted to move item into glass item tube, make sure canMoveInto() is checked");
-    }
-
-    /**
-     * Populates the buffer
-     */
-    public void movementTick () {
-        currentTicks++;
-
-        // This value gets reset upon transporting an item away, not pulling an item in
-        // i.e. just after the "} else {"
-        if (currentTicks <= TICKS_PER_PULL)
-            return;
-        
-        // If without item, try to get one from an adjacent inventory or producer
-        if (transportingItem == null) {
-            if (existsAdjacentInventoryOrProducer == false)
-                return;
-            
-            for (int i=0; i<4; i++) {
-                FacData adjFacData = adjacentInventoriesAndProducers[i];
-                if (adjFacData == null)
-                    continue;
-                
-                if (adjFacData instanceof FactoryChest) {
-                    Inventory adjInventory = ((FacInventory) adjFacData).getInventory();
-                    if (adjInventory.getTotalSize() == 0)
-                        continue;
-                    bufferTransportingItem = adjInventory.getFirstItem();
-                    adjInventory.removeItem(bufferTransportingItem);
-                    bufferPreviousTube = null;
-                    return;
-
-                } else if (adjFacData instanceof FacProducer) {
-                    FacProducer adjProducer = (FacProducer) adjFacData;
-                    if (adjProducer.canTakeProduct() == false)
-                        continue;
-                    bufferTransportingItem = adjProducer.takeProduct();
-                    bufferPreviousTube = null;
-                    return;
-                }
-            }
-
-        // Am with an item, try to transport it (but not into an inventory)
-        } else {
-            currentTicks = 0;
-
-            if (existsAdjacentSteelTube) {
-                for (int i=0; i<4; i++) {
-                    FacItemTube tube = adjacentTubes[i];
-                    if (tube == null ||
-                        tube instanceof FactoryItemTubeSteel == false)
-                            continue;
-
-                    if (moveIntoTube(i))
-                        return;
-                }
-            }
-
-            // No Steel tube, just find any tube to move into
-            for (int i=0; i<4; i++) {
-                FacItemTube tube = adjacentTubes[i];
-                if (tube == null)
-                    continue;
-                
-                if (moveIntoTube(i))
-                    return;
-            }
-        }
-
-        // If the code reaches here, then it wasn't able to move the item anywhere.
-        // So, buffer is filled with current info so that nothing changed
-        bufferTransportingItem = transportingItem;
-        bufferPreviousTube = previousTube;
-    }
-
-    /**
-     * Attemptes to move into a tube in the given index
-     * @param index int the index to move into
-     * @return true = success, false = unable
-     */
-    private boolean moveIntoTube (int index) {
-        FacItemTube tube = adjacentTubes[index];
-        if (tube == null ||
-            tube.canMoveInto(transportingItem) == false)
-            return false;
-
-        tube.moveInto(this, TubeDirection.getFromIndex(index), transportingItem); 
-        transportingItem = null;
-        previousTube = null;
-        return true;
     }
 
     /**
@@ -206,6 +116,116 @@ public class FactoryItemTubeGlass implements FacData, FacItemTube {
         bufferPreviousTube = null;
         bufferPreviousDirection = null;
         bufferTransportingItem = null;
+    }
+
+
+
+
+
+
+    //
+    // Bulk of self updating
+    //
+
+    /**
+     * Populates the buffer
+     */
+    public void movementTick () {
+        currentTicks++;
+
+        if (currentTicks <= TICKS_PER_PULL) {
+            bufferTransportingItem = transportingItem;
+            bufferPreviousTube = previousTube;
+            return;
+        }
+        
+        // These functions return true if they succesfully pull/ move an item
+        if (transportingItem == null) {
+            if (tryToPullFromAdjInvOrProducer())
+                return;
+
+        // Am with an item, try to transport it (but not into an inventory)
+        } else {
+            currentTicks = 0;
+
+            if (tryToMoveIntoAdjTubeUnbiased())
+                return;
+        }
+
+        // If the code reaches here, then it wasn't able to move the item anywhere.
+        // So, buffer is filled with current info so that nothing changed
+        bufferTransportingItem = transportingItem;
+        bufferPreviousTube = previousTube;
+    }
+
+    private boolean tryToPullFromAdjInvOrProducer () {
+        if (existsAdjacentInventoryOrProducer == false)
+            return false;
+        
+        for (int i=0; i<4; i++) {
+            FacData adjFacData = adjacentInventoriesAndProducers[i];
+            if (adjFacData == null)
+                continue;
+            
+            if (adjFacData instanceof FactoryChest) {
+                Inventory adjInventory = ((FacInventory) adjFacData).getInventory();
+                if (adjInventory.getTotalSize() == 0)
+                    continue;
+                bufferTransportingItem = adjInventory.getFirstItem();
+                adjInventory.removeItem(bufferTransportingItem);
+                bufferPreviousTube = null;
+                return true;
+
+            } else if (adjFacData instanceof FacProducer) {
+                FacProducer adjProducer = (FacProducer) adjFacData;
+                if (adjProducer.canTakeProduct() == false)
+                    continue;
+                bufferTransportingItem = adjProducer.takeProduct();
+                bufferPreviousTube = null;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean tryToMoveIntoAdjTubeUnbiased () {
+        if (existsAdjacentSteelTube) {
+            for (int i=0; i<4; i++) {
+                FacItemTube tube = adjacentTubes[i];
+                if (tube == null ||
+                    tube instanceof FactoryItemTubeSteel == false)
+                        continue;
+
+                if (moveIntoTube(i))
+                    return true;
+            }
+        }
+
+        // No Steel tube, just find any tube to move into
+        for (int i=0; i<4; i++) {
+            if (moveIntoTube(i))
+                return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Attemptes to move into a tube in the given index
+     * @param index int the index to move into
+     * @return true = success, false = unable
+     */
+    private boolean moveIntoTube (int index) {
+        FacItemTube tube = adjacentTubes[index];
+        if (tube == null ||
+            tube.canMoveInto(transportingItem) == false)
+                return false;
+
+        tube.moveInto(this, TubeDirection.getFromIndex(index), transportingItem); 
+        transportingItem = null;
+        previousTube = null;
+        return true;
     }
 
 }

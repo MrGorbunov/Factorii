@@ -131,7 +131,7 @@ public class FactoryItemTubeSteel implements FacData, FacItemTube {
 
 
     //
-    // Updating & Item Transfer
+    // Interacting with other tubes & updating
     //
 
     public boolean canMoveInto (ItemIndex testItem) { 
@@ -147,59 +147,43 @@ public class FactoryItemTubeSteel implements FacData, FacItemTube {
     }
 
     /**
-     * Populates the buffer
+     * Resets the buffer
      */
+    public void bufferTick () {
+        previousTube = bufferPreviousTube;
+        previousDirection = bufferPreviousDirection;
+        transportingItem = bufferTransportingItem;
+
+        bufferPreviousTube = null;
+        bufferPreviousDirection = null;
+        bufferTransportingItem = null;
+    }
+
+
+
+
+
+
+    //
+    // Self Updating
+    //
+
     public void movementTick () {
         if (transportingItem == null)
             return;
 
-        /*
-            Try to find adjacent inventory,
-            if not then adjacent steel tube,
-            if not then look in prefferred directionm
-            then two other directions,
-            then lastly go backwards.
-        */
-        TubeDirection firstDirectionChoice = previousDirection.getOppositeDirection();
-        TubeDirection lastDirectionChoice = previousDirection;
-
-        if (existsAdjacentInventory) {
-            for (Inventory inv : adjacentInventories) {
-                if (inv == null) continue;
-
-                moveIntoInventory(inv);
-                return;
-            }
-        }
-
-        // See if there's a steel tube, and that the current item didn't come from it
-        if (existsAdjacentSteelTube) {
-            for (int i=0; i<4; i++) {
-                FacItemTube tube = adjacentTubes[i];
-                if (tube == null || 
-                    tube instanceof FactoryItemTubeSteel == false ||
-                    lastDirectionChoice.toIndex() == i) 
-                        continue;
-
-                if (moveIntoTube(i))
-                    return;
-            }
-        }
-
-        // Then just try to move into preffered direction, other two directions, non preffered direction
-        if (moveIntoTube(firstDirectionChoice.toIndex()))
-            return;
-        for (TubeDirection dir : TubeDirection.values()) {
-            if (dir.equals(firstDirectionChoice) ||
-                dir.equals(lastDirectionChoice))
-                    continue;
-
-            if (moveIntoTube(dir.toIndex()))
-                return;
-        }
-        if (moveIntoTube(lastDirectionChoice.toIndex()))
+        if (tryToMoveIntoAdjInventory())
             return;
 
+        if (previousDirection == null) {
+            if (tryToMoveIntoAdjTubeUnbiased())
+                return;
+
+        } else {
+            TubeDirection preferredDir = previousDirection.getOppositeDirection();
+            if (tryToMoveIntoAdjTubeBiased(preferredDir))
+                return;
+        }
 
         // If the code reaches here, then it wasn't able to move the item anywhere.
         // So, buffer is filled with current item but removes previous tube,
@@ -208,11 +192,80 @@ public class FactoryItemTubeSteel implements FacData, FacItemTube {
         bufferPreviousTube = null;
     }
 
+    private boolean tryToMoveIntoAdjInventory () {
+        if (existsAdjacentInventory == false)
+            return false;
+
+        for (Inventory inv : adjacentInventories) {
+            if (inv == null) continue;
+
+            inv.addItem(transportingItem);
+            transportingItem = null;
+            previousTube = null;
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean tryToMoveIntoAdjTubeBiased (TubeDirection preferredDir) {
+        TubeDirection unfavoredDirection = preferredDir.getOppositeDirection();
+
+        if (existsAdjacentSteelTube) {
+            for (int i=0; i<4; i++) {
+                FacItemTube tube = adjacentTubes[i];
+                if (tube == null || 
+                    tube instanceof FactoryItemTubeSteel == false ||
+                    unfavoredDirection.toIndex() == i) 
+                        continue;
+
+                if (moveIntoTube(i))
+                    return true;
+            }
+        }
+
+        // Then just try to move into preffered direction, other two directions, non preffered direction
+        if (moveIntoTube(preferredDir.toIndex()))
+            return true;
+        for (TubeDirection dir : TubeDirection.values()) {
+            if (dir.equals(preferredDir) ||
+                dir.equals(unfavoredDirection))
+                    continue;
+
+            if (moveIntoTube(dir.toIndex()))
+                return true;
+        }
+        if (moveIntoTube(unfavoredDirection.toIndex()))
+            return true;
+
+        return false;
+    }
+
+    private boolean tryToMoveIntoAdjTubeUnbiased () {
+        if (existsAdjacentSteelTube) {
+            for (int i=0; i<4; i++) {
+                FacItemTube tube = adjacentTubes[i];
+                if (tube == null || 
+                    tube instanceof FactoryItemTubeSteel == false)
+                        continue;
+
+                if (moveIntoTube(i))
+                    return true;
+            }
+        }
+
+        for (TubeDirection dir : TubeDirection.values()) {
+            if (moveIntoTube(dir.toIndex()))
+                return true;
+        }
+
+        return false;
+    }
+
     /**
-     * Attempts to move the transporting item into the tube provided
-     * provided. 
-     * If successful, returns true (and handles movement logic).
-     * If unsuccessful, returns false and nothign happens.
+     * Attemptes to move into a tube in the given index
+     * @param index int the index to move into
+     * @return true = success, false = unable
      */
     private boolean moveIntoTube (int index) {
         FacItemTube tube = adjacentTubes[index];
@@ -226,22 +279,4 @@ public class FactoryItemTubeSteel implements FacData, FacItemTube {
         return true;
     }
 
-    private void moveIntoInventory (Inventory inv) {
-        inv.addItem(transportingItem);
-        transportingItem = null;
-        previousTube = null;
-    }
-
-    /**
-     * Resets the buffer
-     */
-    public void bufferTick () {
-        previousTube = bufferPreviousTube;
-        previousDirection = bufferPreviousDirection;
-        transportingItem = bufferTransportingItem;
-
-        bufferPreviousTube = null;
-        bufferPreviousDirection = null;
-        bufferTransportingItem = null;
-    }
 }
