@@ -38,7 +38,7 @@ public class StartScreen implements Screen {
 
     
     public void displayOutput (AsciiPanel terminal) {
-        // Escape sequences screw up some of the lines in the the terminal.write(...) part, so here it is in comment
+        // Escape sequences screw up some of the lines in the the terminal.write(...) part, so here is the string in comment form
         /*
             /$$$$$$$$                   /$$                         /$$ /$$
             | $$_____/                  | $$                        |__/|__/

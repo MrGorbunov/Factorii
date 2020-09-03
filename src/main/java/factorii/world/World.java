@@ -210,4 +210,21 @@ public class World {
         }
     }
 
+
+
+
+    //
+    // Testing methods
+    //
+
+    public void setTile (Tile tile, int x, int y) {
+        if (tile == Tile.GROUND || 
+            tile == Tile.WATER)
+                terrain[x][y] = tile;
+    
+        else
+            resources[x][y] = tile;
+    }
+
+
 }

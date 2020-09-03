@@ -28,8 +28,18 @@ public class ApplicationMain extends JFrame {
     private Screen screen;
     private AsciiPanel terminal;
 
+    private final int FRAMES_PER_FPS_READOUT;
+    private int current_frames;
+    private long processing_since_last_readout;
+
     public ApplicationMain () {
         super();
+
+        // For benchmarking
+        FRAMES_PER_FPS_READOUT = 50;
+        current_frames = 0;
+        processing_since_last_readout = 0;
+
 
         int screenWidth = 120;
         int screenHeight = 40;
@@ -43,7 +53,7 @@ public class ApplicationMain extends JFrame {
         screen = new StartScreen();
         InputBuffer inputBuffer = new InputBuffer();
 
-        GameState.initGameState(200, 170);
+        GameState.initBenchmarkGame(200, 170);
         GameState.setInputBuffer(inputBuffer);
 
         addKeyListener(inputBuffer);
@@ -56,6 +66,17 @@ public class ApplicationMain extends JFrame {
         long previousTime;
 
         while (true) {
+            // Benchmarking
+            current_frames++;
+            if (current_frames >= FRAMES_PER_FPS_READOUT) {
+                double processing_fps = (double) FRAMES_PER_FPS_READOUT / processing_since_last_readout * 1000;
+                System.out.println(("Max FPS: " + processing_fps).substring(0, 14));
+
+                current_frames = 0;
+                processing_since_last_readout = 0;
+            }
+
+
             // WARNING: Order is pretty important here
             //      be careful what you mess with
             previousTime = System.currentTimeMillis();
@@ -72,10 +93,13 @@ public class ApplicationMain extends JFrame {
             // Wait
             long currentTime = System.currentTimeMillis();
             long executionTime = currentTime - previousTime;
+
+            processing_since_last_readout += executionTime;
+
             try {
                 Thread.sleep(frameTimeMillis - executionTime);
             } catch (InterruptedException e) { }
-              catch (IllegalArgumentException e) { System.out.println("WARNING: Frame took longer than frameTimeMillis; overloaded"); }
+              catch (IllegalArgumentException e) { } // System.out.println("WARNING: Frame took longer than frameTimeMillis; overloaded"); }
         }
     }
 
