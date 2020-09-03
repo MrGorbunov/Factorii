@@ -71,7 +71,7 @@
   * Still hold tiles?
   * Factory class would hold the entire thing
 
-- [ ] Allow for faster item transfer w/ holding shift
+- [x] Allow for faster item transfer w/ holding shift
 - [ ] Allow for better factory building by staying
       on the placement screen if there are more items
       to be placed

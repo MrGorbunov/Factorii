@@ -167,8 +167,15 @@ public class WorldScreen implements Screen {
             if (placedSuccesfully) {
                 // No null-checks because guaranteed (fingers crossed) that the item is there
                 GameState.player.getInventory().removeItem(inventoryGridSubscreen.getSelectedItem());
+
+                // Only move out if no more of the item is left
+                if (GameState.player.getInventory().getQuantity(inventoryGridSubscreen.getSelectedItem()) == 0) {
+                    screenState = ScreenState.MOVING_IN_WORLD;
+                    inventoryGridSubscreen.setActive(false);
+                }
+
                 inventoryGridSubscreen.refresh();
-                screenState = ScreenState.MOVING_IN_WORLD;
+                worldPlacementSubscreen.refresh();
             }
 
         // I don't use the xInput() and yInput() because these are taps and it's not character movement
