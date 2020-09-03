@@ -113,7 +113,8 @@
 
 #### New features
 - [ ] Create start screen
-  * [ ] Maybe remappable controls
+  * [x] Maybe remappable controls
+  * [ ] Perhaps options
 
 - [ ] Actual crafting recipes
 
@@ -122,11 +123,27 @@
   * [ ] Character placement
 
 - [ ] Save state?
+- [ ] Draw all resources
+  * (Bars, Alloys, Glass)
 
 - [ ] Create a guide or tutorial
+- [ ] Game win screen
 
 
 #### Cleanup
 - [ ] Playtest 
+
+- [ ] Credit screen
+- [ ] Nicer readme
+- [ ] Remove unused imports
+
 - [ ] Better organized crafting
 - [ ] Names for all UI panels
+- [ ] Rebindable keys
+
+- [ ] Standardize colors
+- [ ] Optimize Rendering
+  - [ ] Maybe try to batch similar colored sprite together?
+    * terminal.write("****") vs for (int i=0;i<8;i=++) termianl.write("*", i);
+  - [ ] Merge tiles & glyphs
+  - [x] Benchmark fps
