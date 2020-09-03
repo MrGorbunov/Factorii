@@ -61,7 +61,7 @@
   * Holding down modifier key 
 
 - [ ] Add Submarine 
-  * [ ] Placeable
+  * [x] Placeable
   * [ ] You win by entering it
   * [ ] Multi-character image
 
@@ -72,14 +72,14 @@
   * Factory class would hold the entire thing
 
 - [x] Allow for faster item transfer w/ holding shift
-- [ ] Allow for better factory building by staying
+- [x] Allow for better factory building by staying
       on the placement screen if there are more items
       to be placed
 
-- [ ] Inheritence / interface for subscreen
+- [ ] ~~Inheritence / interface for subscreen~~
   * ~~Maybe also for handling input?~~
 
-- [ ] Inheritence for Factory classes
+- [ ] ~~Inheritence for Factory classes~~
 
 - [x] Turn all screens into statemachines
   * Refactor input handling in the craft screen
@@ -128,3 +128,5 @@
 
 #### Cleanup
 - [ ] Playtest 
+- [ ] Better organized crafting
+- [ ] Names for all UI panels
