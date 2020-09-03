@@ -6,67 +6,53 @@ import factorii.factory.FactoryMiningDrill;
 import factorii.inventory.ItemIndex;
 
 public class World {
+    // These must be seperate;
     private Tile[][] terrain;    
     private Tile[][] resources;
-    private Tile[][] factory; // Gotten from a different class (Factory Layer)
 
-    // Used in order to be efficient
-    private Tile[][] worldBuffer;
-    private Tile[][] staticsBuffer;
     private int width;
     private int height;
 
     public int getWidth () { return width; }
     public int getHeight () { return height; }
 
-    public Tile[][] getWorld () { return worldBuffer; }
-
-    public World (Tile[][] terrain, Tile[][] interactables, Tile[][] factory, int playerX, int playerY) {
+    public World (Tile[][] terrain, Tile[][] resources, int playerX, int playerY) {
         this.terrain = terrain;
-        this.resources = interactables;
-        this.factory = factory;
+        this.resources = resources;
 
         width = terrain.length;
         height = terrain[0].length;
-
-        updateStatics();
-        updateActives();
     }
 
-    public World (Tile[][] terrain, Tile[][] interactables, Tile[][] factory) {
-        this(terrain, interactables, factory, 0, 0);
+    public World (Tile[][] terrain, Tile[][] resources) {
+        this(terrain, resources, 0, 0);
     }
 
-    private void updateStatics () {
-        staticsBuffer = new Tile[width][height];
+    /**
+     * Combines the terrain, resources, AND factory layers (accessed via GameState)
+     * to produce a Tile[][] representing the world
+     */
+    public Tile[][] getWorld () {
+        Tile[][] combinedWorldTiles = new Tile[width][height];
         for (int i=0; i<width; i++)
-            staticsBuffer[i] = terrain[i].clone();
+            combinedWorldTiles[i] = terrain[i].clone();
         
-        factory = GameState.factory.getFactoryLayer();
+        Tile[][] factory = GameState.factory.getFactoryLayer();
         for (int x=0; x<width; x++) {
             for (int y=0; y<height; y++) {
                 Tile resource = resources[x][y];
                 Tile factoryTile = factory[x][y];
 
                 if (resource != Tile.EMPTY)
-                    staticsBuffer[x][y] = resource;
+                    combinedWorldTiles[x][y] = resource;
                 else if (factoryTile != Tile.EMPTY)
-                    staticsBuffer[x][y] = factoryTile;
+                    combinedWorldTiles[x][y] = factoryTile;
             }
         }
-    }
 
-    private void updateActives () {
-        worldBuffer = new Tile[width][height];
-        for (int i=0; i<width; i++)
-            worldBuffer[i] = staticsBuffer[i].clone();
-        
-        worldBuffer[GameState.player.getX()][GameState.player.getY()] = Tile.PLAYER;
-    }
+        combinedWorldTiles[GameState.player.getX()][GameState.player.getY()] = Tile.PLAYER;
 
-    public void refresh () {
-        updateStatics();
-        updateActives();
+        return combinedWorldTiles;
     }
 
 
@@ -82,7 +68,7 @@ public class World {
 
         Tile terrainTile = terrain[x][y];
         Tile resourceTile = resources[x][y];
-        Tile factoryTile = factory[x][y];
+        Tile factoryTile = GameState.factory.getFactoryLayer()[x][y];
 
         return Tile.canStandOn(terrainTile) &&
                Tile.canStandOn(resourceTile) &&
@@ -109,6 +95,8 @@ public class World {
     public void harvestAdjacentToPlayer () {
         // If standing on something -> harvest
         // else look around & harvest trees first, then ore
+        Tile[][] factory = GameState.factory.getFactoryLayer();
+
         int playerX = GameState.player.getX();
         int playerY = GameState.player.getY();
         Tile testResource = resources[playerX][playerY];
@@ -117,7 +105,6 @@ public class World {
         if (Tile.canHarvest(testResource)) {
             GameState.player.getInventory().addItem(Tile.tileToItem(testResource));
             resources[playerX][playerY] = Tile.EMPTY;
-            updateStatics();
             return;
 
         } else if (testFactory == Tile.MINING_DRILL) {
@@ -143,7 +130,6 @@ public class World {
                 if (Tile.canHarvest(testResource)) { 
                     GameState.player.getInventory().addItem(Tile.tileToItem(testResource));
                     resources[testX][testY] = Tile.EMPTY;
-                    updateStatics();
                     return;
 
                 } else if (testFactory == Tile.MINING_DRILL) {
@@ -173,8 +159,6 @@ public class World {
             GameState.factory.placeFactoryTile(craftedTile, x, y);
 
 
-        updateStatics();
-        updateActives();
         return true;
     }
 
@@ -185,7 +169,7 @@ public class World {
 
         Tile testTerrainTile = terrain[x][y];
         Tile testResourceTile = resources[x][y];
-        Tile testFactoryTile = factory[x][y];
+        Tile testFactoryTile = GameState.factory.getFactoryLayer()[x][y];
 
         switch (craftedTile) {
             case MINING_DRILL:

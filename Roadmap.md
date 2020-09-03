@@ -145,5 +145,6 @@
 - [ ] Optimize Rendering
   - [ ] Maybe try to batch similar colored sprite together?
     * terminal.write("****") vs for (int i=0;i<8;i=++) termianl.write("*", i);
+  - [x] Rework World's buffer system
   - [ ] Merge tiles & glyphs
   - [x] Benchmark fps

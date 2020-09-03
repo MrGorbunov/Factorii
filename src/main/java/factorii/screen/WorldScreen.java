@@ -227,7 +227,6 @@ public class WorldScreen implements Screen {
         if (screenState == ScreenState.PLACING_IN_WORLD)
             worldPlacementSubscreen.drawSubscreen(terminal);
         else {
-            GameState.world.refresh();
             worldSubscreen.drawSubscreen(terminal);
         }
         

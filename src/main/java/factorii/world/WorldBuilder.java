@@ -15,9 +15,8 @@ public class WorldBuilder {
     public World generateDirtWorld () {
         Tile[][] terrain = convertMask(blankMask(), Tile.GROUND, Tile.GROUND);
         Tile[][] resources = convertMask(blankMask(), Tile.EMPTY, Tile.EMPTY);
-        Tile[][] factory = convertMask(blankMask(), Tile.EMPTY, Tile.EMPTY);
         
-        return new World(terrain, resources, factory);
+        return new World(terrain, resources);
     }
 
     public World generatePocketDirtWorld () {
@@ -73,10 +72,7 @@ public class WorldBuilder {
         resource = addToLayer(resource, stoneMask, Tile.STONE, false);
         resource = addToLayer(resource, sandMask, Tile.SAND, false);
 
-        // Create a blank tile map for the factory (avoids nulls)
-        Tile[][] factoryMap = convertMask(blankMask(), Tile.CHEST, Tile.EMPTY);
-
-        return new World(terrain, resource, factoryMap);
+        return new World(terrain, resource);
     }
 
     public World generateDefaultWorld () {
@@ -139,10 +135,7 @@ public class WorldBuilder {
         resource = addToLayer(resource, stoneMask, Tile.STONE, false);
         resource = addToLayer(resource, sandMask, Tile.SAND, false);
 
-        // Create a blank tile map for the factory (avoids nulls)
-        Tile[][] factoryMap = convertMask(blankMask(), Tile.CHEST, Tile.EMPTY);
-
-        return new World(terrain, resource, factoryMap);
+        return new World(terrain, resource);
     }
 
 
