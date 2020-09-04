@@ -28,17 +28,17 @@ public class ApplicationMain extends JFrame {
     private Screen screen;
     private AsciiPanel terminal;
 
-    private final int FRAMES_PER_FPS_READOUT;
-    private int current_frames;
-    private long processing_since_last_readout;
+    // private final int FRAMES_PER_FPS_READOUT;
+    // private int current_frames;
+    // private long processing_since_last_readout;
 
     public ApplicationMain () {
         super();
 
         // For benchmarking
-        FRAMES_PER_FPS_READOUT = 50;
-        current_frames = 0;
-        processing_since_last_readout = 0;
+        // FRAMES_PER_FPS_READOUT = 50;
+        // current_frames = 0;
+        // processing_since_last_readout = 0;
 
 
         int screenWidth = 120;
@@ -53,7 +53,7 @@ public class ApplicationMain extends JFrame {
         screen = new StartScreen();
         InputBuffer inputBuffer = new InputBuffer();
 
-        GameState.initBenchmarkGame(200, 170);
+        GameState.initNormalGame(170, 140);
         GameState.setInputBuffer(inputBuffer);
 
         addKeyListener(inputBuffer);
@@ -67,14 +67,14 @@ public class ApplicationMain extends JFrame {
 
         while (true) {
             // Benchmarking
-            current_frames++;
-            if (current_frames >= FRAMES_PER_FPS_READOUT) {
-                double processing_fps = (double) FRAMES_PER_FPS_READOUT / processing_since_last_readout * 1000;
-                System.out.println(("Max FPS: " + processing_fps).substring(0, 14));
+            // current_frames++;
+            // if (current_frames >= FRAMES_PER_FPS_READOUT) {
+            //     double processing_fps = (double) FRAMES_PER_FPS_READOUT / processing_since_last_readout * 1000;
+            //     System.out.println(("Max FPS: " + processing_fps).substring(0, 14));
 
-                current_frames = 0;
-                processing_since_last_readout = 0;
-            }
+            //     current_frames = 0;
+            //     processing_since_last_readout = 0;
+            // }
 
 
             // WARNING: Order is pretty important here
@@ -94,7 +94,7 @@ public class ApplicationMain extends JFrame {
             long currentTime = System.currentTimeMillis();
             long executionTime = currentTime - previousTime;
 
-            processing_since_last_readout += executionTime;
+            // processing_since_last_readout += executionTime;
 
             try {
                 Thread.sleep(frameTimeMillis - executionTime);
