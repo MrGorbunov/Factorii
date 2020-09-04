@@ -141,6 +141,10 @@
 - [ ] Names for all UI panels
 - [ ] Rebindable keys
 
+- [x] Better spawning
+  - [x] Different resources (coal, copper, iron, etc) on different islands
+  - [ ] ~~Island selection at game start~~
+
 - [ ] Standardize colors
 - [ ] Optimize Rendering
   - [ ] Maybe try to batch similar colored sprite together?

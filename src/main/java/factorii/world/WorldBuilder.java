@@ -1,354 +1,180 @@
 package factorii.world;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.spi.ResourceBundleControlProvider;
+
+import factorii.GameState;
+
 public class WorldBuilder {
     private int width;
     private int height;
 
+    private WorldBuilderTerrainGenerator terrainGen;
+    private WorldBuilderIslandFilterer islandProcesser;
+
     public WorldBuilder (int width, int height) {
         this.width = width;
         this.height = height;
-    }
 
-    /**
-     * Endless dirt
-     */
-    public World generateDirtWorld () {
-        Tile[][] terrain = convertMask(blankMask(), Tile.GROUND, Tile.GROUND);
-        Tile[][] resources = convertMask(blankMask(), Tile.EMPTY, Tile.EMPTY);
-        
-        return new World(terrain, resources);
-    }
-
-    public World generatePocketDirtWorld () {
-        boolean[][] terrainMask = randomMaskPercent(0.6);
-        for (int i=0; i<3; i++)
-            terrainMask = smoothMask(terrainMask, 3);
-
-        // Sand
-        /*
-        The outer edge is almost completely filled
-        The inner edge is ~50% sand
-        */
-        // outer edge
-        boolean[][] landMask = terrainMask;
-        boolean[][] innerFill = erodeMask(landMask);
-        boolean[][] sandNoise = randomMaskPercent(0.94);
-        boolean[][] sandMask = masksXOR(terrainMask, innerFill);
-        sandMask = masksAND(sandNoise, sandMask);
-
-        innerFill = erodeMask(innerFill);
-        sandNoise = randomMaskPercent(0.5);
-        boolean[][] innerEdge = masksXOR(terrainMask, innerFill);
-        innerEdge = masksAND(sandNoise, innerEdge);
-        sandMask = masksOR(sandMask, innerEdge);
-
-        // Stone
-        boolean[][] stoneMask = generateOreMask(landMask, 0.39);
-        
-        // Ores
-        boolean[][] coalMask = generateOreMask(landMask, 0.35);
-        boolean[][] copperMask = generateOreMask(landMask, 0.35);
-        boolean[][] ironMask = generateOreMask(landMask, 0.36);
-
-        // Trees
-        landMask = erodeMask(landMask);
-        landMask = erodeMask(landMask);
-        boolean[][] treeMask = randomMaskPercent(0.3);
-        treeMask = smoothMask(treeMask, 1);
-        treeMask = smoothMask(treeMask, 2);
-        boolean[][] treeNoise = randomMaskPercent(0.9);
-        treeMask = masksAND(treeNoise, treeMask);
-        treeMask = masksAND(landMask, treeMask);
-
-
-
-        // Final conversions
-        Tile[][] terrain = convertMask(terrainMask, Tile.GROUND, Tile.WATER);
-
-        Tile[][] resource = convertMask(treeMask, Tile.TREE, Tile.EMPTY);
-        resource = addToLayer(resource, coalMask, Tile.ORE_COAL, false);
-        resource = addToLayer(resource, copperMask, Tile.ORE_COPPER, false);
-        resource = addToLayer(resource, ironMask, Tile.ORE_IRON, false);
-        resource = addToLayer(resource, stoneMask, Tile.STONE, false);
-        resource = addToLayer(resource, sandMask, Tile.SAND, false);
-
-        return new World(terrain, resource);
+        terrainGen = new WorldBuilderTerrainGenerator();
+        islandProcesser = new WorldBuilderIslandFilterer();
     }
 
     public World generateDefaultWorld () {
-        boolean[][] terrainMask = randomMask();
-        for (int i=0; i<6; i++)
-            terrainMask = smoothMask(terrainMask, 3);
+        Tile[][] terrain;
+        Tile[][] resources;
 
-        // Sand
+        terrain = terrainGen.generateDefaultWorldBase(width, height);
+        resources = terrainGen.generateDefaultWorldResources(width, height, terrain);
+        ArrayList<IslandStats> islandComposition = new ArrayList<IslandStats>();
+
+        // First we select for a certain combinatino of islands
+        while (true) {
+            terrain = terrainGen.generateDefaultWorldBase(width, height);
+            resources = terrainGen.generateDefaultWorldResources(width, height, terrain);
+
+            islandComposition = islandProcesser.filterIslands(terrain, resources);
+            Collections.sort(islandComposition, new Comparator<IslandStats>(){
+                public int compare (IslandStats a, IslandStats b) {
+                    return b.getIslandSize() - a.getIslandSize();
+                }
+            });
+
+            if (islandComposition.get(0).getIslandSize() > 5000 &&
+                islandComposition.get(1).getIslandSize() > 2000 &&
+                islandComposition.get(2).getIslandSize() > 1000 &&
+                islandComposition.get(3).getIslandSize() <= 1000 &&
+                islandComposition.size() >= 6) {
+                    for (int i=0; i<islandComposition.size(); i++) {
+                        System.out.println(islandComposition.get(i).getIslandSize());
+                    }
+
+                    break;
+            }
+        }
+
+
+        // Then we adjust resources so there's a progression
         /*
-        The outer edge is almost completely filled
-        The inner edge is ~50% sand
+            Starting Island should have stone, tree & sand
+            Next biggest island should be just stone & ores (except coal)
+            Next biggest island should be mainly coal
+
+            Then the tiny island all specialize, cycling to be the major resources
         */
-        // outer edge
-        boolean[][] landMask = terrainMask;
-        boolean[][] innerFill = erodeMask(landMask);
-        boolean[][] sandNoise = randomMaskPercent(0.94);
-        boolean[][] sandMask = masksXOR(terrainMask, innerFill);
-        sandMask = masksAND(sandNoise, sandMask);
+        IslandStats startingIsland = islandComposition.get(0);
+        for (int[] cord : startingIsland.getCords()) {
+            int x = cord[0];
+            int y = cord[1];
 
-        innerFill = erodeMask(innerFill);
-        sandNoise = randomMaskPercent(0.5);
-        boolean[][] innerEdge = masksXOR(terrainMask, innerFill);
-        innerEdge = masksAND(sandNoise, innerEdge);
-        sandMask = masksOR(sandMask, innerEdge);
+            switch (resources[x][y]) {
+                case ORE_COAL:
+                    resources[x][y] = Tile.TREE;
+                    break;
 
-        // Stone
-        boolean[][] stoneNoise = randomMaskPercent(0.5);
-        stoneNoise = smoothMask(stoneNoise, 3);
+                case ORE_COPPER:
+                case ORE_IRON:
+                    resources[x][y] = Tile.STONE;
+                    break;
 
-        boolean[][] stoneMask = randomMaskPercent(0.9);
-        stoneMask = erodeMask(stoneMask);
-        stoneMask = smoothMask(stoneMask, 1);
-        stoneMask = masksAND(landMask, stoneMask);
-        stoneMask = masksAND(stoneNoise, stoneMask);
-        
-        // Ores
-        boolean[][] coalMask = generateOreMask(landMask);
-        boolean[][] copperMask = generateOreMask(landMask);
-        boolean[][] ironMask = generateOreMask(landMask);
-
-        // Trees
-        landMask = erodeMask(landMask);
-        landMask = erodeMask(landMask);
-        boolean[][] treeMask = randomMaskPercent(0.4);
-        treeMask = smoothMask(treeMask, 1);
-        treeMask = smoothMask(treeMask, 1);
-        boolean[][] treeNoise = randomMaskPercent(0.9);
-        treeMask = masksAND(treeNoise, treeMask);
-        treeMask = masksAND(landMask, treeMask);
-
-
-
-        // Final conversions
-        Tile[][] terrain = convertMask(terrainMask, Tile.GROUND, Tile.WATER);
-
-        Tile[][] resource = convertMask(treeMask, Tile.TREE, Tile.EMPTY);
-        resource = addToLayer(resource, coalMask, Tile.ORE_COAL, false);
-        resource = addToLayer(resource, copperMask, Tile.ORE_COPPER, false);
-        resource = addToLayer(resource, ironMask, Tile.ORE_IRON, false);
-        resource = addToLayer(resource, stoneMask, Tile.STONE, false);
-        resource = addToLayer(resource, sandMask, Tile.SAND, false);
-
-        return new World(terrain, resource);
-    }
-
-
-
-    private boolean[][] generateOreMask (boolean[][] landMask, double percentage) {
-        boolean[][] oreMask = randomMaskPercent(percentage);
-        oreMask = smoothMask(oreMask, 1);
-        oreMask = smoothMask(oreMask, 2);
-        oreMask = smoothMask(oreMask, 2);
-        for (int i=0; i<3; i++)
-            oreMask = smoothMask(oreMask, 1);
-
-        oreMask = masksAND(landMask, oreMask);
-        return oreMask;
-    }
-
-    private boolean[][] generateOreMask (boolean[][] landMask) {
-        return generateOreMask(landMask, 0.38);
-    }
-
-
-
-
-
-    //
-    // Mask Operations
-    //
-    /*
-    Operations are done on boolean[][] masks, and then
-    layer on they're converted to Tile[][] layers.
-     */
-
-    /**
-     * Generates a blank mask of false
-    */
-    private boolean[][] blankMask () {
-        // Because these are primitives, they default to false
-        return new boolean[width][height];
-    }
-
-    private boolean[][] randomMask () {
-        boolean[][] mask = new boolean[width][height];
-
-        for (int x=0; x<width; x++) {
-            for (int y=0; y<height; y++) {
-                mask[x][y] = Math.random() < 0.5;
+                case SAND:
+                    resources[x][y] = Tile.EMPTY;
+                    break;
             }
         }
 
-        return mask;
-    }
+        // Copper, and Iron
+        IslandStats secondIsland = islandComposition.get(1);
+        for (int[] cord : secondIsland.getCords()) {
+            int x = cord[0];
+            int y = cord[1];
 
-    private boolean[][] randomMaskPercent (double percentFill) {
-        boolean[][] mask = new boolean[width][height];
+            // Tree -> Iron, Coal -> Copper, Sand -> Nothing
+            switch (resources[x][y]) {
+                case TREE:
+                    resources[x][y] = Tile.ORE_IRON;
+                    break;
 
-        for (int x=0; x<width; x++) {
-            for (int y=0; y<height; y++) {
-                mask[x][y] = Math.random() < percentFill;
+                case ORE_COAL:
+                case STONE:
+                    resources[x][y] = Tile.ORE_COPPER;
+                    break;
+
+                case SAND:
+                    resources[x][y] = Tile.EMPTY;
+                    break;
             }
         }
 
-        return mask;
-    }
+        // Coal & Sand
+        IslandStats thirdIsland = islandComposition.get(2);
+        for (int[] cord : thirdIsland.getCords()) {
+            int x = cord[0];
+            int y = cord[1];
 
-    private boolean[][] smoothMask (boolean[][] inputMask, int radius) {
-        boolean[][] smootherMask = new boolean[width][height];
-         
-        // radius 1 = 3x3 square,  radius 3 = 5x5 square
-        int thresholdNeighbours = (2*radius + 1) * (2*radius + 1) / 2;
+            switch (resources[x][y]) {
+                case STONE:
+                case ORE_COPPER:
+                case ORE_IRON:
+                    resources[x][y] = Tile.ORE_COAL;
+                    break;
 
-        for (int x=0; x<width; x++) {
-            for (int y=0; y<height; y++) {
-                int numTrueNeighbours = 0;
+                case TREE:
+                    resources[x][y] = Tile.EMPTY;
+                    break;
+            }
+        }
 
-                for (int dx=-radius; dx<=radius; dx++) {
-                    for (int dy=-radius; dy<=radius; dy++) {
-                        int checkX = x + dx;
-                        int checkY = y + dy;
+        // Everything else is sand, tree, and stone
+        int resourceInd = 0;
+        Tile[] resourceCycle = new Tile[] {Tile.SAND, Tile.TREE, Tile.STONE};
+        for (int i=3; i<islandComposition.size(); i++) {
+            Tile replacementTile = resourceCycle[resourceInd];
 
-                        if (checkX < 0 || checkX >= width || checkY < 0 || checkY >= height)
-                            continue;
+            for (int[] cord : islandComposition.get(i).getCords()) {
+                int x = cord[0];
+                int y = cord[1];
 
-                        if (inputMask[checkX][checkY])
-                            numTrueNeighbours++;
-                    }
+                switch (resources[x][y]) {
+                    case EMPTY:
+                        break;
+
+                    default:
+                        resources[x][y] = replacementTile;
+                        break;
                 }
-                
-                // By checking if it's above a threshold instead of %,
-                // the edges of the map become homogenous => this is
-                // useful to surround the world with ocean.
-                smootherMask[x][y] = numTrueNeighbours > thresholdNeighbours;
             }
+
+            resourceInd++;
+            resourceInd %= 3;
         }
 
-        return smootherMask;
+
+        // As a last aside, it is necessary to find a spawn location
+        ArrayList<int[]> possibleStarts = startingIsland.getCords();
+        int maxIndex = possibleStarts.size();
+        int[] startCord = possibleStarts.get((int) (Math.random() * maxIndex * 0.9) + 1);
+        resources[startCord[0]][startCord[1]] = Tile.EMPTY;
+        GameState.player.setSpawn(startCord[0], startCord[1]);
+
+        return new World(terrain, resources);
     }
 
-    private boolean[][] masksAND (boolean[][] maskA, boolean[][] maskB) {
-        boolean[][] finalMask = new boolean[width][height];
+    public World generateDirtWorld () {
+        Tile[][] terrain = terrainGen.generateDirtBase(width, height);
+        Tile[][] resources = terrainGen.generateBlankGrid(width, height);
 
-        for (int x=0; x<width; x++) {
-            for (int y=0; y<height; y++) {
-                finalMask[x][y] = maskA[x][y] && maskB[x][y];
-            }
-        }
-    
-        return finalMask;
+        return new World(terrain, resources);
     }
 
-    private boolean[][] masksOR (boolean[][] maskA, boolean[][] maskB) {
-        boolean[][] finalMask = new boolean[width][height];
+    public World generatePocketWorld () {
+        Tile[][] terrain = terrainGen.generatePocketWorldBase(width, height);
+        Tile[][] resources = terrainGen.generatePocketWorldResources(width, height, terrain);
 
-        for (int x=0; x<width; x++) {
-            for (int y=0; y<height; y++) {
-                finalMask[x][y] = maskA[x][y] || maskB[x][y];
-            }
-        }
-    
-        return finalMask;
+        return new World(terrain, resources);
     }
 
-    private boolean[][] masksXOR (boolean[][] maskA, boolean[][] maskB) { 
-        boolean[][] finalMask = new boolean[width][height];
-
-        for (int x=0; x<width; x++) {
-            for (int y=0; y<height; y++) {
-                boolean a = maskA[x][y];
-                boolean b = maskB[x][y];
-                finalMask[x][y] = (a && !b) || (!a && b);
-            }
-        }
-    
-        return finalMask;
-    }
-
-    private boolean[][] erodeMask (boolean[][] inputMask) {
-        // Very similar logic to smoothing
-        // Just that radius = 1 and unless completely surrounded,
-        // this says nope
-        boolean[][] erodedMask = new boolean[width][height];
-         
-        for (int x=0; x<width; x++) {
-            cords : for (int y=0; y<height; y++) {
-                for (int dx=-1; dx<=1; dx++) {
-                    for (int dy=-1; dy<=1; dy++) {
-                        int checkX = x + dx;
-                        int checkY = y + dy;
-
-                        if (checkX < 0 || checkX >= width || checkY < 0 || checkY >= height)
-                            continue;
-
-                        if (inputMask[checkX][checkY] == false) {
-                            erodedMask[x][y] = false;
-                            continue cords;
-                        }
-                    }
-                }
-                
-                erodedMask[x][y] = true;
-            }
-        }
-
-        return erodedMask;
-    }
-
-
-
-
-
-    //
-    // Mask to Layer conversions
-    //
-
-    private Tile[][] convertMask (boolean[][] mask, Tile trueTile, Tile falseTile) {
-        Tile[][] worldLayer = new Tile[width][height];
-
-        for (int x=0; x<width; x++) {
-            for (int y=0; y<height; y++) {
-                if (mask[x][y])
-                    worldLayer[x][y] = trueTile;
-                else
-                    worldLayer[x][y] = falseTile;
-            }
-        }
-
-        return worldLayer;
-    }
-
-    /**
-     * Adds trueTile to a Tile[][] where mask is true,
-     * and does nothing where mask is false.
-     *
-     * @param overrideTiles if true, this method will replace
-     *   tiles in mask even if there was information there.
-     *   Otherwise it checks if mask[x][y] is Tile.EMPTY
-     */
-    private Tile[][] addToLayer (Tile[][] layer, boolean[][] mask, Tile trueTile, boolean overrideTiles) {
-        Tile[][] newLayer = new Tile[width][height];
-
-        for (int x=0; x<width; x++) {
-            for (int y=0; y<height; y++) {
-                if (!mask[x][y]) {
-                    newLayer[x][y] = layer[x][y];
-                    continue;
-                }
-
-                if (overrideTiles || layer[x][y] == Tile.EMPTY)
-                    newLayer[x][y] = trueTile;
-                else 
-                    newLayer[x][y] = layer[x][y];
-            }
-        }
-
-        return newLayer;
-    }
 }

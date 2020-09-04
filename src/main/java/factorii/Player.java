@@ -15,17 +15,25 @@ public class Player {
     public int getY () { return yCord; }
     public Inventory getInventory () { return playerInventory; }
 
-    public Player (int x, int y) {
-        TICKS_PER_MOVE = 3; // Basically speed, but lower = faster
+    public Player () {
+        TICKS_PER_MOVE = 1; // Basically speed, but lower = faster
         updateTicks = 0;
 
-        xCord = x;
-        yCord = y;
+        xCord = 0;
+        yCord = 0;
         playerInventory = new Inventory();
     }
 
-    public Player () {
-        this(0, 0);
+    /**
+     * Used to set the players position. 
+     * 
+     * Is called "setSpawn" because it should ONLY be used
+     * at startup to move the player. Otherwise, player movement
+     * should be handled by the .update() method.
+     */
+    public void setSpawn (int x, int y) {
+        xCord = x;
+        yCord = y;
     }
 
     public void update () {
