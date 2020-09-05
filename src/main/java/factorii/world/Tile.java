@@ -62,14 +62,31 @@ public enum Tile {
     //
     // Tile flags
     //
-    // TODO: Update these flags to take crafted items into account
 
     public static boolean canStandOn (Tile tile) {
-        return false ==
-                (tile == Tile.TREE ||
-                //  tile == Tile.WATER ||
-                 tile == Tile.PLAYER);
-            
+        switch (tile) {
+            case TREE:
+            case PLAYER:
+                return false;
+
+            case WATER:
+                // Check if boat has been crafted
+                return GameState.player.getInventory().getQuantity(ItemIndex.BOAT) > 0;
+
+            case MINING_DRILL:
+            case AUTO_MINING_UPGRADE:
+            case WORKBENCH:
+            case COPPER_WORKBENCH:
+            case KILN:
+            case IRON_KILN:
+            case FORGE:
+            case STEEL_FORGE:
+            case CHEST:
+                return GameState.player.getInventory().getQuantity(ItemIndex.TALL_BOOTS) > 0;
+
+            default:
+                return true;
+        }
     }
 
     public static boolean canHarvest (Tile tile) {
