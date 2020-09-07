@@ -92,8 +92,8 @@ public class CraftingGlobals {
 	private void initializeRecipes () {
         starterCrafts = new CraftingRecipe[] {
             new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
-                new int[]       {5,             3},
+                new ItemIndex[] {ItemIndex.STONE}, 
+                new int[]       {5},
                 ItemIndex.WORKBENCH,
                 "Unlocks more crafting options"),
 
@@ -102,88 +102,93 @@ public class CraftingGlobals {
 		workbenchCrafts = new CraftingRecipe[] {
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
-                new int[]       {3,             1},
-                ItemIndex.CHEST,
-                "Allows for storage of items"),
-
-            new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD}, 
-                new int[]       {2},
-                ItemIndex.ITEM_TUBE_STONE,
-                "Transports items between tubes & inserts into inventories"),
-
-            new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD}, 
-                new int[]       {2},
-                ItemIndex.ITEM_TUBE_GLASS,
-                "Pulls items out of inventories"),
+                new int[]       {2,              4},
+                ItemIndex.MINING_DRILL,
+                "Extract infinite resources from a single tile"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
-                new int[]       {2,             5},
+                new int[]       {4,              5},
+                ItemIndex.CHEST,
+                "Can store items"),
+
+            new CraftingRecipe(
+                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
+                new int[]       {1,              2},
+                ItemIndex.LANDFILL,
+                "Fills water in with dirt that can be walked & built on top of"),
+
+            new CraftingRecipe(
+                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
+                new int[]       {2,              10},
                 ItemIndex.KILN,
-                "Process copper ore & sand to produce resources"),
-		};
+                "Process copper & sand to produce new resources"),
+        };
+        
+        // TODO: Crafts are too hard, there are 2 hard crafts: the forge & the sub
+        // It might be good to remove mining drills from start
 
         //
         // These next two arrays are made at the workbench, but only after 
-        // having unlocked the kiln & forge respectively
+        // having unlocked the kiln or forge
 		kilnCrafts = new CraftingRecipe[] {
             new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
-                new int[]       {2,              1},
-                ItemIndex.COPPER_WORKBENCH,
-                "Will automatically craft when a recipe is selected and items are pumped in"),
-
-            new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
-                new int[]       {2,              1},
-                ItemIndex.MINING_DRILL,
-                "Will drill up the resource it is placed on infinitely"),
-
-            new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
-                new int[]       {2,              1},
-                ItemIndex.FORGE,
-                "Can smelt iron and produce alloys"),
-        };
-        
-        forgeCrafts = new CraftingRecipe[] {
-            new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
-                new int[]       {3,              2},
-                ItemIndex.LANDFILL,
-                "Fills water in with dirt"),
-
-            new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
-                new int[]       {2,              1},
+                new ItemIndex[] {ItemIndex.STONE, ItemIndex.BAR_COPPER}, 
+                new int[]       {5,               5},
                 ItemIndex.AUTO_MINING_UPGRADE,
                 "Placed onto a mining drill, will automatically collect resources"),
 
             new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
-                new int[]       {2,              1},
+                new ItemIndex[] {ItemIndex.STONE}, 
+                new int[]       {5},
+                ItemIndex.ITEM_TUBE_STONE,
+                "Transports items between tubes & inserts into inventories"),
+
+            new CraftingRecipe(
+                new ItemIndex[] {ItemIndex.GLASS}, 
+                new int[]       {5},
+                ItemIndex.ITEM_TUBE_GLASS,
+                "Pulls items out of inventories"),
+
+            new CraftingRecipe(
+                new ItemIndex[] {ItemIndex.STONE, ItemIndex.BAR_COPPER, ItemIndex.GLASS}, 
+                new int[]       {15,              15,                   15},
+                ItemIndex.FORGE,
+                "Smelt iron and produce alloys"),
+        };
+        
+        forgeCrafts = new CraftingRecipe[] {
+
+            // TODO: GLASS Here
+            new CraftingRecipe(
+                new ItemIndex[] {ItemIndex.WORKBENCH, ItemIndex.BAR_COPPER}, 
+                new int[]       {1,                   10},
+                ItemIndex.COPPER_WORKBENCH,
+                "Will automatically craft when a recipe is selected and items are pumped in"),
+
+            new CraftingRecipe(
+                new ItemIndex[] {ItemIndex.KILN, ItemIndex.BAR_IRON}, 
+                new int[]       {1,              10},
                 ItemIndex.IRON_KILN,
                 "Can smelt like a kiln, but automatically"),
 
             new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
-                new int[]       {2,              1},
+                new ItemIndex[] {ItemIndex.FORGE, ItemIndex.ALLOY_STEEL}, 
+                new int[]       {1,               10},
                 ItemIndex.STEEL_FORGE,
                 "Can smelt like a forge, but automatically"),
 
             new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
-                new int[]       {2,              1},
+                new ItemIndex[] {ItemIndex.ALLOY_STEEL}, 
+                new int[]       {5},
                 ItemIndex.ITEM_TUBE_STEEL,
                 "Used to filter out-going items"),
 
             new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
-                new int[]       {2,              1},
+                new ItemIndex[] {ItemIndex.STONE, ItemIndex.GLASS, ItemIndex.ALLOY_STEEL}, 
+                new int[]       {20,              30,              40},
                 ItemIndex.SUBMARINE,
-                "Allows you leave this world to new unknown lands"),
+                "The ultimate creation"),
         };
 
         
@@ -192,35 +197,23 @@ public class CraftingGlobals {
         // Equipment is weird because it's a 1-time craft
         equipmentCrafts = new CraftingRecipe[] {
             new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
-                new int[]       {3,             2},
-                ItemIndex.PICKAXE,
-                "Allows for harvesting coal and ores"),
-
-            new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
-                new int[]       {3,              2},
+                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.ALLOY_BRONZE}, 
+                new int[]       {20,             25},
                 ItemIndex.BOAT,
-                "Move across water to new islands"),
+                "Move across water without landfills"),
 
             new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
-                new int[]       {2,              1},
-                ItemIndex.SHOVEL,
-                "Allows for sand collection"),
-
-            new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.BAR_COPPER}, 
-                new int[]       {2,              1},
+                new ItemIndex[] {ItemIndex.BAR_IRON, ItemIndex.ALLOY_BRONZE}, 
+                new int[]       {10,                 5},
                 ItemIndex.TALL_BOOTS,
                 "Improved mobility over factory components"),
         };
 
         // Stores at what TechLevel each equipment is unlocked
         equipmentUnlocks = new TechLevel[] {
-            TechLevel.WORKBENCH, // Pickaxe
-            TechLevel.KILN, // Boat
-            TechLevel.KILN, // Shovel
+            TechLevel.WORKBENCH,  // Pickaxe
+            TechLevel.FORGE, // Boat
+            TechLevel.KILN,  // Shovel
             TechLevel.FORGE, // Tall Boots
         };
 

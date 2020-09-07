@@ -22,7 +22,7 @@ public enum ItemIndex {
 	ALLOY_BRONZE, ALLOY_STEEL,
 
 	// Craftable Items
-	PICKAXE, SHOVEL, MINING_DRILL, AUTO_MINING_UPGRADE,
+	MINING_DRILL, AUTO_MINING_UPGRADE,
 	WORKBENCH, COPPER_WORKBENCH, KILN, IRON_KILN, FORGE, STEEL_FORGE,
 	BOAT, TALL_BOOTS, 
 	LANDFILL,
@@ -40,9 +40,7 @@ public enum ItemIndex {
 
 	// Stuff you only craft once 
 	public boolean isEquipable () {
-		return this == PICKAXE ||
-			   this == SHOVEL ||
-			   this == BOAT ||
+		return this == BOAT ||
 			   this == TALL_BOOTS;
 	}
 
@@ -83,8 +81,6 @@ public enum ItemIndex {
 			
 			case SUBMARINE: return Tile.SUBMARINE;
 
-			case PICKAXE:
-			case SHOVEL:
 			case BOAT:
 			case TALL_BOOTS:
 				throw new Error("Attempted to convert equipment into tile. Equipment should never be on an item tube/ displayed");
@@ -119,10 +115,6 @@ public enum ItemIndex {
 			case ALLOY_STEEL:
 				return "Steel Alloy";
 
-			case PICKAXE:
-				return "Pickaxe";
-			case SHOVEL:
-				return "Shovel";
 			case MINING_DRILL:
 				return "Mining Drill";
 			case AUTO_MINING_UPGRADE:
