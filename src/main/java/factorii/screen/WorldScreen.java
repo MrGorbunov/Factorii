@@ -89,13 +89,8 @@ public class WorldScreen implements Screen {
             return this;
         
         // Harvest adjacent
-        } else if (inputBuffer.pressState(Controls.ACTION) == PressState.JUST_PRESSED) {
-            if (inputBuffer.pressState(Controls.MODIFIER) == PressState.PRESSED ||
-                inputBuffer.pressState(Controls.MODIFIER) == PressState.JUST_PRESSED)
-                    GameState.factory.harvestAdjacentToPlayer();
-            else
-                GameState.world.harvestAdjacentToPlayer();
-
+        } else if (inputBuffer.pressState(Controls.ACTION).isDown()) {
+            // Harvesting logic is done in player.update();
             inventoryGridSubscreen.refresh();
             return this;
         } 

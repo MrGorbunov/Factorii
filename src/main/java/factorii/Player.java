@@ -4,8 +4,10 @@ import factorii.inventory.Inventory;
 
 public class Player {
 
-    private int updateTicks;
+    private int moveTicks;
     private final int TICKS_PER_MOVE;
+    private int mineTicks;
+    private final int TICKS_PER_MINE;
 
     private int xCord;
     private int yCord;
@@ -17,7 +19,9 @@ public class Player {
 
     public Player () {
         TICKS_PER_MOVE = 2; // Basically speed, but lower = faster
-        updateTicks = 0;
+        TICKS_PER_MINE = 20; // Mining speed
+        moveTicks = 0;
+        mineTicks = 0;
 
         xCord = 0;
         yCord = 0;
@@ -37,24 +41,41 @@ public class Player {
     }
 
     public void update () {
-        if (updateTicks < TICKS_PER_MOVE) {
-            updateTicks++;
-            return;
-        }
-
         InputBuffer inputBuffer = GameState.inputBuffer;
 
-        if (inputBuffer.xInput() != 0 || inputBuffer.yInput() != 0) {
-            int newX = xCord + inputBuffer.xInput();
-            int newY = yCord + inputBuffer.yInput();
+        if (moveTicks < TICKS_PER_MOVE) {
+            moveTicks++;
 
-            if (GameState.world.canStandAt(newX, yCord))
-                xCord = newX;
-            if (GameState.world.canStandAt(xCord, newY))
-                yCord = newY;
+        } else {
+            if (inputBuffer.xInput() != 0 || inputBuffer.yInput() != 0) {
+                int newX = xCord + inputBuffer.xInput();
+                int newY = yCord + inputBuffer.yInput();
 
-            updateTicks = 0;
+                if (GameState.world.canStandAt(newX, yCord))
+                    xCord = newX;
+                if (GameState.world.canStandAt(xCord, newY))
+                    yCord = newY;
+
+                moveTicks = 0;
+            }
         }
+
+        if (mineTicks < TICKS_PER_MINE) {
+            mineTicks++;
+
+        } else {
+            if (inputBuffer.pressState(Controls.ACTION).isDown()) {
+                if (inputBuffer.pressState(Controls.MODIFIER).isUp()) {
+                    GameState.world.harvestAdjacentToPlayer();
+                } else {
+                    GameState.factory.harvestAdjacentToPlayer();
+                }
+
+                mineTicks = 0;
+            }
+        }
+
+
 
     }
 
