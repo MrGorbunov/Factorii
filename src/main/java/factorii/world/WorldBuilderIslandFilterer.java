@@ -1,6 +1,8 @@
 package factorii.world;
 
 import java.util.ArrayList;
+import java.util.Queue;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /*
 This class is responsible for selecting a spawning location.
@@ -36,7 +38,11 @@ public class WorldBuilderIslandFilterer {
                 Tile.MINING_DRILL,
                 Tile.AUTO_MINING_UPGRADE,
                 Tile.ITEM_TUBE_STONE,
-                Tile.ITEM_TUBE_GLASS
+                Tile.ITEM_TUBE_GLASS,
+                Tile.ORE_COAL,
+                Tile.CHEST,
+                Tile.WORKBENCH,
+                Tile.STEEL_FORGE
         };
 
         for (int i=0; i<islandProperties.size(); i++) {
@@ -89,27 +95,56 @@ public class WorldBuilderIslandFilterer {
         return islandProperties;
     }
 
-    // TODO: BUG: This leads to a stack overflow with very large islands
     private void markIsland (int x, int y) {
-        // It would be cleaner to check for out of bounds, but
-        // it's almost a guarantee that the edge will be water
-        // and thus not reached by this call.
-        // if (x < 0 || x >= width || y < 0 || y >= height)
-        //     return;
+        // With only one queue, the search would beelin along a single path & fill up (depth-first)
+        // by using two queue & alternating, the search goes in waves and spawns out (bredth-first)
+        Queue<int[]> cordsToCheckA = new ArrayBlockingQueue<int[]>(1000, true);
+        Queue<int[]> cordsToCheckB = new ArrayBlockingQueue<int[]>(1000, true);
+        cordsToCheckA.add(new int[] {x, y});
 
-        if (exploredYet[x][y] == true ||
-            terrain[x][y] == Tile.WATER)
-                return;
+        while (cordsToCheckA.size() != 0 || cordsToCheckB.size() != 0) {
+            while (cordsToCheckA.size() != 0) {
+                int[] currentCord = cordsToCheckA.remove();
+                int curX = currentCord[0];
+                int curY = currentCord[1];
 
-        islandProperties.get(currentGroup).addNewCoordinate(new int[] {x, y});
-        Tile resource = resources[x][y];
-        if (resource != null)
-            islandProperties.get(currentGroup).addNewTile(resource);
-        exploredYet[x][y] = true;
-        markIsland(x-1, y);
-        markIsland(x+1, y);
-        markIsland(x, y-1);
-        markIsland(x, y+1);
+                if (terrain[curX][curY] == Tile.WATER ||
+                    exploredYet[curX][curY])
+                        continue;
+
+                islandProperties.get(currentGroup).addNewCoordinate(new int[] {curX, curY});
+                Tile resource = resources[curX][curY];
+                if (resource != null)
+                    islandProperties.get(currentGroup).addNewTile(resource);
+                exploredYet[curX][curY] = true;
+
+                cordsToCheckB.add(new int[] {curX - 1, curY});
+                cordsToCheckB.add(new int[] {curX + 1, curY});
+                cordsToCheckB.add(new int[] {curX, curY - 1});
+                cordsToCheckB.add(new int[] {curX, curY + 1});
+            }
+
+            while (cordsToCheckB.size() != 0) {
+                int[] currentCord = cordsToCheckB.remove();
+                int curX = currentCord[0];
+                int curY = currentCord[1];
+
+                if (terrain[curX][curY] == Tile.WATER ||
+                    exploredYet[curX][curY])
+                        continue;
+
+                islandProperties.get(currentGroup).addNewCoordinate(new int[] {curX, curY});
+                Tile resource = resources[curX][curY];
+                if (resource != null)
+                    islandProperties.get(currentGroup).addNewTile(resource);
+                exploredYet[curX][curY] = true;
+
+                cordsToCheckA.add(new int[] {curX - 1, curY});
+                cordsToCheckA.add(new int[] {curX + 1, curY});
+                cordsToCheckA.add(new int[] {curX, curY - 1});
+                cordsToCheckA.add(new int[] {curX, curY + 1});
+            }
+        }
     }
 
 }
