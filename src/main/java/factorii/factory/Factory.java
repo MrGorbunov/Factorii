@@ -205,6 +205,7 @@ public class Factory {
                     throw new Error("Trying to place auto-mining upgrade where there is no drill");
                 ItemIndex autoMiningResource =  ((FactoryMiningDrill) existingDrill).getResource();
                 factory[x][y] = new FactoryAutoMiningDrill(autoMiningResource);
+                refreshAdjacent(x, y);
                 break;
 
 
