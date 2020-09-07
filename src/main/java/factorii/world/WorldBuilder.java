@@ -43,15 +43,11 @@ public class WorldBuilder {
                 }
             });
 
-            if (islandComposition.get(0).getIslandSize() > 5000 &&
+            if (islandComposition.size() >= 6 &&
+                islandComposition.get(0).getIslandSize() > 5000 &&
                 islandComposition.get(1).getIslandSize() > 2000 &&
                 islandComposition.get(2).getIslandSize() > 1000 &&
-                islandComposition.get(3).getIslandSize() <= 1000 &&
-                islandComposition.size() >= 6) {
-                    for (int i=0; i<islandComposition.size(); i++) {
-                        System.out.println(islandComposition.get(i).getIslandSize());
-                    }
-
+                islandComposition.get(3).getIslandSize() <= 1000) {
                     break;
             }
         }
@@ -86,19 +82,18 @@ public class WorldBuilder {
             }
         }
 
-        // Copper, and Iron
+        // Copper and Coal
         IslandStats secondIsland = islandComposition.get(1);
         for (int[] cord : secondIsland.getCords()) {
             int x = cord[0];
             int y = cord[1];
 
-            // Tree -> Iron, Coal -> Copper, Sand -> Nothing
             switch (resources[x][y]) {
                 case TREE:
-                    resources[x][y] = Tile.ORE_IRON;
+                    resources[x][y] = Tile.ORE_COAL;
                     break;
 
-                case ORE_COAL:
+                case ORE_IRON:
                 case STONE:
                     resources[x][y] = Tile.ORE_COPPER;
                     break;
@@ -109,7 +104,7 @@ public class WorldBuilder {
             }
         }
 
-        // Coal & Sand
+        // Iron & Sand
         IslandStats thirdIsland = islandComposition.get(2);
         for (int[] cord : thirdIsland.getCords()) {
             int x = cord[0];
@@ -118,8 +113,7 @@ public class WorldBuilder {
             switch (resources[x][y]) {
                 case STONE:
                 case ORE_COPPER:
-                case ORE_IRON:
-                    resources[x][y] = Tile.ORE_COAL;
+                    resources[x][y] = Tile.ORE_IRON;
                     break;
 
                 case TREE:

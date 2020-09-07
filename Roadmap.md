@@ -117,16 +117,18 @@
   * [ ] Perhaps options
 
 - [ ] Actual crafting recipes
+- [ ] Rework input buffer to work on a hashmap instead
+  - Allows for multiple keys -> 1 action (ex: both arrow keys & wasd used for movement)
 
-- [ ] Spawning Island logic
-  * [ ] Figure out what requirements there are for the starter island
-  * [ ] Character placement
+- [x] Spawning Island logic
+  * [x] Figure out what requirements there are for the starter island
+  * [x] Character placement
 
 - [ ] Save state?
 - [ ] Draw all resources
   * (Bars, Alloys, Glass)
 
-- [ ] Create a guide or tutorial
+- [ ] Create a guide
 - [ ] Game win screen
 
 
@@ -141,14 +143,37 @@
 - [ ] Names for all UI panels
 - [ ] Rebindable keys
 
-- [x] Better spawning
-  - [x] Different resources (coal, copper, iron, etc) on different islands
-  - [ ] ~~Island selection at game start~~
-
 - [ ] Standardize colors
-- [ ] Optimize Rendering
-  - [ ] Maybe try to batch similar colored sprite together?
+  * Especially with UI
+
+Bro benchmarking is wack, I made some changes that seem
+like they'd reduce computation but benchmarking made the changes
+seem neglible.
+
+It is however true that most of the processing is done in the
+factory.update() call, and that that's what would lead to the
+greatest increase in max fps. Right now though, the max fps 
+is still 10x higher than the cap (max fps ~= 300, and game cap is 30).
+
+- [x] Optimize Rendering
+  - [ ] ~~Maybe try to batch similar colored sprite together?~~
     * terminal.write("****") vs for (int i=0;i<8;i=++) termianl.write("*", i);
   - [x] Rework World's buffer system
-  - [ ] Merge tiles & glyphs
+  - [x] Merge tiles & glyphs
   - [x] Benchmark fps
+
+
+
+
+### V0.4 - Stretch Goals
+- [ ] Sounds 
+- [ ] Rebindable keys
+- [ ] Seeded Worlds
+
+- [ ] Safely Resizable Window
+- [ ] Full Screen Mode
+
+- [ ] Startup Screen
+- [ ] Loading Screen for terrain gen & world loading
+
+- [ ] Music that plays based on system time

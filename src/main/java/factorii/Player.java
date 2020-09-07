@@ -16,7 +16,7 @@ public class Player {
     public Inventory getInventory () { return playerInventory; }
 
     public Player () {
-        TICKS_PER_MOVE = 1; // Basically speed, but lower = faster
+        TICKS_PER_MOVE = 2; // Basically speed, but lower = faster
         updateTicks = 0;
 
         xCord = 0;
