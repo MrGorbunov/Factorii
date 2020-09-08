@@ -63,7 +63,12 @@ public class Inventory {
         return total;
     }
 
-    public ItemIndex getFirstItem () {
+    /**
+     * Returns the first item in the inventory, and does NOT remove it.
+     * 
+     * .removeItem() must be called to remove the item
+     */
+    public ItemIndex returnFirstItem () {
         for (ItemIndex item : ItemIndex.values()) {
             if (itemAmounts[item.ordinal()] != 0)
                 return item;

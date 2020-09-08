@@ -116,7 +116,7 @@
   * [x] Maybe remappable controls
   * [ ] Perhaps options
 
-- [ ] Actual crafting recipes
+- [x] Actual crafting recipes
 - [ ] Rework input buffer to work on a hashmap instead
   - Allows for multiple keys -> 1 action (ex: both arrow keys & wasd used for movement)
 
@@ -133,7 +133,7 @@
 
 
 #### Cleanup
-- [ ] Playtest 
+- [x] Playtest 
 
 - [ ] Credit screen
 - [ ] Nicer readme
@@ -165,7 +165,25 @@ is still 10x higher than the cap (max fps ~= 300, and game cap is 30).
 
 
 
-### V0.4 - Stretch Goals
+## V0.4 - Balance
+- [ ] Creating Mining Drills & Auto Mining drills seperate
+- [ ] Auto Mining drills should auto-spew onto item tubes
+
+- [ ] Only allow for auto-crafting
+- [ ] Crafting should take time
+
+- [ ] Focus on instances of spamming
+- [ ] Make mining a tick-based activity
+
+- [ ] Generally add feedback (sound? visual?)
+  - [ ] When is something mined
+  - [ ] What subscreen is active
+
+
+
+
+
+## V0.5 - Stretch Goals
 - [ ] Sounds 
 - [ ] Rebindable keys
 - [ ] Seeded Worlds
