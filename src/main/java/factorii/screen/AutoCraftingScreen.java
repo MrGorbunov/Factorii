@@ -20,7 +20,7 @@ import factorii.subscreen.PlayerInventorySubscreen;
 
 public class AutoCraftingScreen implements Screen {
     
-    private InventoryGridSubscreen playerInventorySubscreen;
+    private PlayerInventorySubscreen playerInventorySubscreen;
     private CraftingSubscreen workbenchCraftsSubscreen;
     private InventoryGridSubscreen workbenchInventorySubscreen;
     private ScreenState screenState;
@@ -35,20 +35,15 @@ public class AutoCraftingScreen implements Screen {
         int workbenchSubscreensX = (screenWidth + 1) / 2;
 
         Inventory playerInventory = GameState.player.getInventory();
-        Inventory workbenchInv = autoCrafter.getInventory();
+        Inventory workbenchInv = autoCrafter.getInventory(); 
 
-        playerInventorySubscreen = new InventoryGridSubscreen(screenWidth / 2, screenHeight, playerInventory);
+        playerInventorySubscreen = new PlayerInventorySubscreen(screenWidth / 2, screenHeight);
         workbenchCraftsSubscreen = new CraftingSubscreen(workbenchSubscreensX, screenHeight - inventoryHeight, workbenchSubscreensX, 0, autoCrafter);
         workbenchInventorySubscreen = new InventoryGridSubscreen(workbenchSubscreensX, inventoryHeight, workbenchSubscreensX, screenHeight - inventoryHeight, workbenchInv);
 
         screenState = ScreenState.LOOKING_AT_PLAYER_INVENTORY;
 
-        playerInventorySubscreen.setIgnoreResources(false);
-        playerInventorySubscreen.setColumns(1);
-        playerInventorySubscreen.setPad(2);
-        playerInventorySubscreen.setTitle("Your Inventory");
         playerInventorySubscreen.setActive(true);
-        playerInventorySubscreen.refresh();
 
         workbenchCraftsSubscreen.setDrawDescription(false);
         workbenchCraftsSubscreen.setSetRecipe(autoCrafter.getSelectedRecipe());
@@ -58,7 +53,7 @@ public class AutoCraftingScreen implements Screen {
         workbenchInventorySubscreen.setIgnoreResources(false);
         workbenchInventorySubscreen.setColumns(1);
         workbenchInventorySubscreen.setPad(2);
-        workbenchInventorySubscreen.setTitle("Workbench Inventory");
+        workbenchInventorySubscreen.setTitle("Workbench Stored Items");
         workbenchInventorySubscreen.setActive(false);
         workbenchInventorySubscreen.refresh();
 
@@ -69,7 +64,6 @@ public class AutoCraftingScreen implements Screen {
 
     enum ScreenState {
         LOOKING_AT_PLAYER_INVENTORY,
-        LOOKING_AT_WORKBENCH_INVENTORY,
         LOOKING_AT_WORKBENCH_CRAFTS;
     }
 
@@ -88,9 +82,6 @@ public class AutoCraftingScreen implements Screen {
 
             case LOOKING_AT_WORKBENCH_CRAFTS:
                 return workbenchCraftInput();
-
-            case LOOKING_AT_WORKBENCH_INVENTORY:
-                return workbenchInventoryInput();
         }
 
         return this;
@@ -109,23 +100,13 @@ public class AutoCraftingScreen implements Screen {
             playerInventorySubscreen.setActive(false);
             screenState = ScreenState.LOOKING_AT_WORKBENCH_CRAFTS;
 
-        // Transfer from player to chest
-        } else if (inputBuffer.pressState(Controls.ACTION) == PressState.JUST_PRESSED) {
-            // TODO: Limit chest capacity
-            ItemIndex transferItem = playerInventorySubscreen.getSelectedItem();
-            if (transferItem == null)
-                return this;
+        // Never transfer from player to chest
 
-            workbenchInventorySubscreen.getInventory().addItem(transferItem);
-            playerInventorySubscreen.getInventory().removeItem(transferItem);
-            playerInventorySubscreen.refresh();
-            workbenchInventorySubscreen.refresh();
-        
         // Scrolling
         } else if (inputBuffer.pressState(Controls.DIR_UP) == PressState.JUST_PRESSED)
-            playerInventorySubscreen.moveUp();
+            playerInventorySubscreen.scrollUp();
         else if (inputBuffer.pressState(Controls.DIR_DOWN) == PressState.JUST_PRESSED)
-            playerInventorySubscreen.moveDown();
+            playerInventorySubscreen.scrollDown();
 
         return this;
     }
@@ -137,11 +118,11 @@ public class AutoCraftingScreen implements Screen {
         if (inputBuffer.pressState(Controls.OPEN_SCREEN) == PressState.JUST_PRESSED)
             return new WorldScreen();
 
-        // Go to workbench inventory subscreen
+        // Go to player inventory screen
         else if (inputBuffer.pressState(Controls.SWITCH_SUBSCREEN) == PressState.JUST_PRESSED) {
-            workbenchInventorySubscreen.setActive(true);
+            playerInventorySubscreen.setActive(true);
             workbenchCraftsSubscreen.setActive(false);
-            screenState = ScreenState.LOOKING_AT_WORKBENCH_INVENTORY;
+            screenState = ScreenState.LOOKING_AT_PLAYER_INVENTORY;
 
         // Set new recipe
         } else if (inputBuffer.pressState(Controls.ACTION) == PressState.JUST_PRESSED) {
@@ -157,40 +138,6 @@ public class AutoCraftingScreen implements Screen {
 
         return this;
     }
-
-    private Screen workbenchInventoryInput () {
-        InputBuffer inputBuffer = GameState.inputBuffer;
-
-        // Exit back to world
-        if (inputBuffer.pressState(Controls.OPEN_SCREEN) == PressState.JUST_PRESSED)
-            return new WorldScreen();
-
-        // Go to player inventory subscreen
-        else if (inputBuffer.pressState(Controls.SWITCH_SUBSCREEN) == PressState.JUST_PRESSED) {
-            playerInventorySubscreen.setActive(true);
-            workbenchInventorySubscreen.setActive(false);
-            screenState = ScreenState.LOOKING_AT_PLAYER_INVENTORY;
-
-        // Transfer from chest to player
-        } else if (inputBuffer.pressState(Controls.ACTION) == PressState.JUST_PRESSED) {
-            ItemIndex transferItem = workbenchInventorySubscreen.getSelectedItem();
-            if (transferItem == null)
-                return this;
-
-            playerInventorySubscreen.getInventory().addItem(transferItem);
-            workbenchInventorySubscreen.getInventory().removeItem(transferItem);
-            workbenchInventorySubscreen.refresh();
-            playerInventorySubscreen.refresh();
-        
-        // Scrolling
-        } else if (inputBuffer.pressState(Controls.DIR_UP) == PressState.JUST_PRESSED)
-            workbenchInventorySubscreen.moveUp();
-        else if (inputBuffer.pressState(Controls.DIR_DOWN) == PressState.JUST_PRESSED)
-            workbenchInventorySubscreen.moveDown();
-
-        return this;
-    }
-
 
 
 

@@ -18,6 +18,9 @@ public class FactoryItemTubeGlass extends FacItemTube implements FacData {
     
     private final Tile tile;
 
+    private FacProducer[] adjacentProducers;
+    private boolean existsAdjProducer;
+
     private final int TICKS_PER_PULL; // Glass only pulls an item out every n ticks
     private int currentTicks;
 
@@ -34,6 +37,53 @@ public class FactoryItemTubeGlass extends FacItemTube implements FacData {
             return ItemIndex.itemToTile(transportingItem); 
 
         return tile;
+    }
+
+
+
+
+
+    //
+    // Because producers need tracking, this is overridden
+    //
+    @Override
+    public void refresh (FacData[][] factory, int x, int y) {
+        adjacentTubes = new FacItemTube[4];
+        adjacentProducers = new FacProducer[4];
+        adjacentInventories = new Inventory[4];
+        existsAdjacentSteelTube = false;
+        existsAdjProducer = false;
+        existsAdjacentInventory = false;
+
+        int width = factory.length;
+        int height = factory[0].length;
+        for (int i=0; i<4; i++) {
+            TubeDirection dir = TubeDirection.getFromIndex(i);
+            int[] offset = dir.getCordinateOffset();
+            int testX = x + offset[0];
+            int testY = y + offset[1];
+
+            if (testX < 0 || testX >= width || testY < 0 || testY >= height)
+                continue;
+            
+            FacData testData = factory[testX][testY];
+            if (testData instanceof FacItemTube) {
+                FacItemTube adjTube = (FacItemTube) testData;
+                adjacentTubes[i] = adjTube;
+                if (testData instanceof FactoryItemTubeSteel)
+                    existsAdjacentSteelTube = true;
+
+            // This is important because FacProducer is usually also FacInventory
+            // but the glass tubes don't want to treat like it's an inventory
+            } else if (testData instanceof FacProducer) {
+                adjacentProducers[i] = (FacProducer) testData;
+                existsAdjProducer = true;
+            
+            } else if (testData instanceof FacInventory) {
+                adjacentInventories[i] = ((FacInventory) testData).getInventory();
+                existsAdjacentInventory = true;
+            }
+        }
     }
 
 
@@ -77,6 +127,9 @@ public class FactoryItemTubeGlass extends FacItemTube implements FacData {
             if (tryToPullFromAdjInventory())
                 return;
 
+            if (tryToPullFromAdjProducer())
+                return;
+
         // Am with an item, try to transport it (but not into an inventory)
         } else {
             currentTicks = 0;
@@ -108,6 +161,25 @@ public class FactoryItemTubeGlass extends FacItemTube implements FacData {
             return true;
         }
 
+        return false;
+    }
+
+    private boolean tryToPullFromAdjProducer () {
+        if (existsAdjProducer == false)
+            return false;
+
+        for (int i=0; i<4; i++) {
+            FacProducer adjProducer = adjacentProducers[i];
+            if (adjProducer == null ||
+                adjProducer.canTakeProduct() == false)
+                    continue;
+            
+            // Pull from inventory
+            ItemIndex pullItem = adjProducer.takeProduct();
+            bufferTransportingItem = pullItem;
+            return true;
+        }
+        
         return false;
     }
 
