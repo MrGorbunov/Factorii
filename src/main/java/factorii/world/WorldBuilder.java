@@ -23,18 +23,18 @@ public class WorldBuilder {
         islandProcesser = new WorldBuilderIslandFilterer();
     }
 
-    public World generateDefaultWorld () {
+    public World generateIslandSeperatedWorld () {
         Tile[][] terrain;
         Tile[][] resources;
 
-        terrain = terrainGen.generateDefaultWorldBase(width, height);
-        resources = terrainGen.generateDefaultWorldResources(width, height, terrain);
+        terrain = terrainGen.generateArchipelagoWorldBase(width, height);
+        resources = terrainGen.generateArchipelagoWorldResources(width, height, terrain);
         ArrayList<IslandStats> islandComposition = new ArrayList<IslandStats>();
 
         // First we select for a certain combinatino of islands
         while (true) {
-            terrain = terrainGen.generateDefaultWorldBase(width, height);
-            resources = terrainGen.generateDefaultWorldResources(width, height, terrain);
+            terrain = terrainGen.generateArchipelagoWorldBase(width, height);
+            resources = terrainGen.generateArchipelagoWorldResources(width, height, terrain);
 
             islandComposition = islandProcesser.filterIslands(terrain, resources);
             Collections.sort(islandComposition, new Comparator<IslandStats>(){
@@ -167,6 +167,42 @@ public class WorldBuilder {
     public World generatePocketWorld () {
         Tile[][] terrain = terrainGen.generatePocketWorldBase(width, height);
         Tile[][] resources = terrainGen.generatePocketWorldResources(width, height, terrain);
+
+        int spawnX = -1;
+        int spawnY = -1;
+
+        int searchX = (int) (Math.random() * terrain.length);
+        int searchY = (int) (Math.random() * terrain[0].length);
+
+        out : for (int x=searchX; x<terrain.length; x++) {
+            for (int y=searchY; y<terrain[0].length; y++) {
+                if (terrain[x][y] == Tile.GROUND) {
+                    resources[x][y] = Tile.EMPTY;
+                    spawnX = x;
+                    spawnY = y;
+                    break out;
+                }
+            }
+        }
+
+        if (spawnX == -1 || spawnY == -1) {
+            out : for (int x=0; x<terrain.length; x++) {
+                for (int y=0; y<terrain.length; y++) {
+                    if (terrain[x][y] == Tile.GROUND) {
+                        resources[x][y] = Tile.EMPTY;
+                        spawnX = x;
+                        spawnY = y;
+                        break out;
+                    }
+                }
+            }
+        }
+
+        if (spawnX == -1 || spawnY == -1) {
+            throw new Error ("World generated without any land. No proper spawning place");
+        }
+
+        GameState.player.setSpawn(spawnX, spawnY);
 
         return new World(terrain, resources);
     }

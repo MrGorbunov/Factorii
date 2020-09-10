@@ -36,7 +36,7 @@ public class GameState {
         WorldBuilder worldBuilder = new WorldBuilder(worldWidth, worldHeight);
         factory = new Factory(worldWidth, worldHeight);
         player = new Player();
-        world = worldBuilder.generateDefaultWorld();
+        world = worldBuilder.generatePocketWorld();
 
         techLevel = TechLevel.START;
         craftingGlobals = new CraftingGlobals();
@@ -46,13 +46,7 @@ public class GameState {
      * Like a normal game, but with resources to avoid collection
      */
     public static void initDevGame (int worldWidth, int worldHeight) {
-        WorldBuilder worldBuilder = new WorldBuilder(worldWidth, worldHeight);
-        factory = new Factory(worldWidth, worldHeight);
-        player = new Player();
-        world = worldBuilder.generateDefaultWorld();
-
-        techLevel = TechLevel.START;
-        craftingGlobals = new CraftingGlobals();
+        initNormalGame(worldWidth, worldHeight);
 
         player.getInventory().addItemMulti(ItemIndex.WOOD, 100);
         player.getInventory().addItemMulti(ItemIndex.STONE, 100);

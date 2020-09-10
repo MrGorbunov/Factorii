@@ -42,8 +42,9 @@ public class WorldBuilderTerrainGenerator {
         this.height = height;
 
         boolean[][] terrainMask = randomMaskPercent(0.6);
-        for (int i=0; i<3; i++)
-            terrainMask = smoothMask(terrainMask, 3);
+        terrainMask = smoothMask(terrainMask, 1);
+        terrainMask = smoothMask(terrainMask, 3);
+        terrainMask = smoothMask(terrainMask, 1);
 
         Tile[][] terrain = convertMask(terrainMask, Tile.GROUND, Tile.WATER);
 
@@ -78,14 +79,14 @@ public class WorldBuilderTerrainGenerator {
         boolean[][] stoneMask = generateOreMask(landMask, 0.39);
         
         // Ores
-        boolean[][] coalMask = generateOreMask(landMask, 0.35);
-        boolean[][] copperMask = generateOreMask(landMask, 0.35);
-        boolean[][] ironMask = generateOreMask(landMask, 0.36);
+        boolean[][] coalMask = generateOreMask(landMask);
+        boolean[][] copperMask = generateOreMask(landMask, 0.39);
+        boolean[][] ironMask = generateOreMask(landMask);
 
         // Trees
         landMask = erodeMask(landMask);
         landMask = erodeMask(landMask);
-        boolean[][] treeMask = randomMaskPercent(0.3);
+        boolean[][] treeMask = randomMaskPercent(0.42);
         treeMask = smoothMask(treeMask, 1);
         treeMask = smoothMask(treeMask, 2);
         boolean[][] treeNoise = randomMaskPercent(0.9);
@@ -105,11 +106,11 @@ public class WorldBuilderTerrainGenerator {
     }
 
     /**
-     * Default world
+     * Archipelago world
      * 
      * Archipelago with resources scattered around
      */
-    public Tile[][] generateDefaultWorldBase (int width, int height) {
+    public Tile[][] generateArchipelagoWorldBase (int width, int height) {
         this.width = width;
         this.height = height;
 
@@ -122,7 +123,7 @@ public class WorldBuilderTerrainGenerator {
         return terrain;
     }
 
-    public Tile[][] generateDefaultWorldResources (int width, int height, Tile[][] terrainBase) {
+    public Tile[][] generateArchipelagoWorldResources (int width, int height, Tile[][] terrainBase) {
         this.width = width;
         this.height = height;
 
