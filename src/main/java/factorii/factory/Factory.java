@@ -176,9 +176,7 @@ public class Factory {
      * is legal.
      */
     public void placeFactoryTile (Tile tile, int x, int y) {
-        boolean isUpgradingDrill = tile == Tile.AUTO_MINING_UPGRADE && factory[x][y] instanceof FactoryMiningDrill;
-        if (factory[x][y] != null &&
-            isUpgradingDrill == false)
+        if (factory[x][y] != null)
                 throw new Error("Attempted to place a factory tile at illegal location");
         
         switch (tile) {
@@ -192,21 +190,11 @@ public class Factory {
                 factory[x][y] = new FactoryAutoCrafter(tile);
                 break;
             
-            case MINING_DRILL:
-                ItemIndex miningResource = GameState.world.harvestSpecific(x, y);
-                factory[x][y] = new FactoryMiningDrill(miningResource);
-                break;
-
-            case AUTO_MINING_UPGRADE:
-                FacData existingDrill = factory[x][y];
-                if (existingDrill instanceof FactoryMiningDrill == false)
-                    throw new Error("Trying to place auto-mining upgrade where there is no drill");
-                ItemIndex autoMiningResource =  ((FactoryMiningDrill) existingDrill).getResource();
-                factory[x][y] = new FactoryAutoMiningDrill(autoMiningResource);
+            case DEEP_DRILL:
+                ItemIndex autoMiningResource =  GameState.world.harvestSpecific(x, y);
+                factory[x][y] = new FactoryDeepDrill(autoMiningResource);
                 refreshAdjacent(x, y);
                 break;
-
-
 
             case CHEST:
                 factory[x][y] = new FactoryChest();

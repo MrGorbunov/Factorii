@@ -2,7 +2,6 @@ package factorii.world;
 
 import factorii.GameState;
 import factorii.factory.FacData;
-import factorii.factory.FactoryMiningDrill;
 import factorii.inventory.ItemIndex;
 
 public class World {
@@ -107,14 +106,7 @@ public class World {
             resources[playerX][playerY] = Tile.EMPTY;
             return;
 
-        } else if (testFactory == Tile.MINING_DRILL) {
-            FactoryMiningDrill drill = (FactoryMiningDrill) GameState.factory.getFacDataAt(playerX, playerY);
-            ItemIndex extractedResource = drill.getResource();
-            GameState.player.getInventory().addItem(extractedResource);
-            // Doesn't change map so no need to update anything
-            return;
         }
-
 
         for (int dx=-1; dx<=1; dx++) {
             for (int dy=-1; dy<=1; dy++) {
@@ -132,11 +124,6 @@ public class World {
                     resources[testX][testY] = Tile.EMPTY;
                     return;
 
-                } else if (testFactory == Tile.MINING_DRILL) {
-                    FactoryMiningDrill drill = (FactoryMiningDrill) GameState.factory.getFacDataAt(testX, testY);
-                    ItemIndex extractedResource = drill.getResource();
-                    GameState.player.getInventory().addItem(extractedResource);
-                    return;
                 }
             }
         }
@@ -172,15 +159,12 @@ public class World {
         Tile testFactoryTile = GameState.factory.getFactoryLayer()[x][y];
 
         switch (craftedTile) {
-            case MINING_DRILL:
+            case DEEP_DRILL:
                 return testTerrainTile == Tile.GROUND &&
                        // Trees are not mine-able
                        testResourceTile != Tile.EMPTY && testResourceTile != Tile.TREE &&
                        testFactoryTile == Tile.EMPTY;
             
-            case AUTO_MINING_UPGRADE:
-                return testFactoryTile == Tile.MINING_DRILL;
-
             case GROUND:
             case SUBMARINE:
                 return testTerrainTile == Tile.WATER &&

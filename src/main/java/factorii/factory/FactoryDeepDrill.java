@@ -3,16 +3,16 @@ package factorii.factory;
 import factorii.inventory.ItemIndex;
 import factorii.world.Tile;
 
-public class FactoryAutoMiningDrill implements FacData, FacProducer {
+public class FactoryDeepDrill implements FacData, FacProducer {
 
     private final ItemIndex PRODUCT;
     private final int TICKS_PER_TAKE;
 
     private int ticksSinceLastTake;
 
-    public Tile getTile () { return Tile.AUTO_MINING_UPGRADE; }
+    public Tile getTile () { return Tile.DEEP_DRILL; }
 
-    public FactoryAutoMiningDrill (ItemIndex product) {
+    public FactoryDeepDrill (ItemIndex product) {
         if (product == null)
             throw new NullPointerException("Product must be an actual item");
 

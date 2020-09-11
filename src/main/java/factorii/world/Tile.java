@@ -22,8 +22,7 @@ public enum Tile {
 
     PLAYER ('!', Color.WHITE),
 
-    MINING_DRILL        ('\'', Convert.hex("#B0D0EF")),
-    AUTO_MINING_UPGRADE ('"',  Convert.hex("#D0E0FF")),
+    DEEP_DRILL ('"',  Convert.hex("#D0E0FF")),
 
     ASSEMBLY_TABLE  ('H',  Convert.hex("#3C8338")),
     MANUAL_KILN     ('A',  Convert.hex("#754624")),
@@ -72,8 +71,7 @@ public enum Tile {
                 // Check if boat has been crafted
                 return GameState.player.getInventory().getQuantity(ItemIndex.BOAT) > 0;
 
-            case MINING_DRILL:
-            case AUTO_MINING_UPGRADE:
+            case DEEP_DRILL:
             case ASSEMBLY_TABLE:
             case MANUAL_KILN:
             case KILN:
@@ -130,8 +128,7 @@ public enum Tile {
             case ORE_COPPER: return ItemIndex.ORE_COPPER;
             case ORE_IRON:   return ItemIndex.ORE_IRON;
 
-            case MINING_DRILL:        return ItemIndex.MINING_DRILL;
-            case AUTO_MINING_UPGRADE: return ItemIndex.AUTO_MINING_UPGRADE;
+            case DEEP_DRILL: return ItemIndex.DEEP_DRILL;
             case ASSEMBLY_TABLE:      return ItemIndex.ASSEMBLY_TABLE;
             case MANUAL_KILN:         return ItemIndex.MANUAL_KILN;
             case KILN:                return ItemIndex.KILN;
