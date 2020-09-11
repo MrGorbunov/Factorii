@@ -122,14 +122,7 @@ public class CraftingGlobals {
 		starterCrafts = new CraftingRecipe[] {
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
-                new int[]       {2,              4},
-                true,
-                ItemIndex.MINING_DRILL,
-                "Extract infinite resources from a single tile"),
-
-            new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
-                new int[]       {4,              5},
+                new int[]       {2,              5},
                 true,
                 ItemIndex.CHEST,
                 "Can store items"),
@@ -143,7 +136,7 @@ public class CraftingGlobals {
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
-                new int[]       {2,              10},
+                new int[]       {2,              3},
                 true,
                 ItemIndex.MANUAL_KILN,
                 "Process copper & sand to produce new resources"),
@@ -160,19 +153,19 @@ public class CraftingGlobals {
                 new ItemIndex[] {ItemIndex.STONE, ItemIndex.BAR_COPPER}, 
                 new int[]       {5,               5},
                 true,
-                ItemIndex.AUTO_MINING_UPGRADE,
-                "Placed onto a mining drill, will automatically collect resources"),
+                ItemIndex.DEEP_DRILL,
+                "Place down to automatically collect resources"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.STONE}, 
-                new int[]       {5},
+                new int[]       {3},
                 true,
                 ItemIndex.ITEM_TUBE_STONE,
                 "Transports items between tubes & inserts into inventories"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.GLASS}, 
-                new int[]       {5},
+                new int[]       {3},
                 true,
                 ItemIndex.ITEM_TUBE_GLASS,
                 "Pulls items out of inventories"),
@@ -248,14 +241,14 @@ public class CraftingGlobals {
         kilnSmelts = new CraftingRecipe[] {
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.ORE_COPPER, ItemIndex.ORE_COAL}, 
-                new int[]       {2,             1},
+                new int[]       {1,             1},
                 true,
                 ItemIndex.BAR_COPPER,
                 "Can be used to craft more items"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.SAND, ItemIndex.ORE_COAL}, 
-                new int[]       {3,             1},
+                new int[]       {1,             1},
                 true,
                 ItemIndex.GLASS,
                 "Can be used to craft more items"),
@@ -264,21 +257,21 @@ public class CraftingGlobals {
         forgeSmelts = new CraftingRecipe[] {
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.ORE_IRON, ItemIndex.ORE_COAL}, 
-                new int[]       {2,             1},
+                new int[]       {1,             1},
                 true,
                 ItemIndex.BAR_IRON,
                 "Can be used to craft more items"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.BAR_COPPER, ItemIndex.BAR_IRON, ItemIndex.ORE_COAL}, 
-                new int[]       {1,                   2,                  1},
+                new int[]       {1,                    2,                  1},
                 true,
                 ItemIndex.ALLOY_BRONZE,
                 "Can be used to craft more items"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.BAR_IRON, ItemIndex.ORE_COAL}, 
-                new int[]       {3,                  2},
+                new int[]       {3,                  1},
                 true,
                 ItemIndex.ALLOY_STEEL,
                 "Can be used to craft more items"),

@@ -192,7 +192,9 @@ public class Factory {
             
             case DEEP_DRILL:
                 ItemIndex autoMiningResource =  GameState.world.harvestSpecific(x, y);
-                factory[x][y] = new FactoryDeepDrill(autoMiningResource);
+                FactoryDeepDrill drill = new FactoryDeepDrill(autoMiningResource);
+                factory[x][y] = drill;
+                drill.refresh(factory, x, y);
                 refreshAdjacent(x, y);
                 break;
 
