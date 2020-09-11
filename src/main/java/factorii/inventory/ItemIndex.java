@@ -96,61 +96,38 @@ public enum ItemIndex {
 	@Override
 	public String toString () {
 		switch (this) {
-			case WOOD:
-				return "Wood";
-			case STONE:
-				return "Stone";
-			case ORE_COAL:
-				return "Coal";
-			case ORE_COPPER:
-				return "Copper Ore";
-			case ORE_IRON:
-				return "Iron Ore";
-			case SAND:
-				return "Sand";
-			case BAR_COPPER:
-				return "Copper Bar";
-			case BAR_IRON:
-				return "Iron Bar";
-			case GLASS:
-				return "Glass";
-			case ALLOY_BRONZE:
-				return "Bronze Alloy";
-			case ALLOY_STEEL:
-				return "Steel Alloy";
+			case WOOD: 		 return "Wood";
+			case STONE:  	 return "Stone";
+			case ORE_COAL:   return "Coal";
+			case ORE_COPPER: return "Copper Ore";
+			case ORE_IRON:   return "Iron Ore";
+			case SAND: 		 return "Sand";
 
-			case MINING_DRILL:
-				return "Mining Drill";
-			case AUTO_MINING_UPGRADE:
-				return "Auto Mining Upgrade";
-			case ASSEMBLY_TABLE:
-				return "Assembly Table";
-			case MANUAL_KILN:
-				return "Manual Kiln";
-			case KILN:
-				return "Kiln";
-			case FORGE:
-				return "Forge";
+			case BAR_COPPER:   return "Copper Bar";
+			case BAR_IRON: 	   return "Iron Bar";
+			case GLASS: 	   return "Glass";
+			case ALLOY_BRONZE: return "Bronze Alloy";
+			case ALLOY_STEEL:  return "Steel Alloy";
 
-			case BOAT:
-				return "Boat";
-			case TALL_BOOTS:
-				return "Tall Boots";
+			case MINING_DRILL: 		  return "Mining Drill";
+			case AUTO_MINING_UPGRADE: return "Auto Mining Upgrade";
+
+			case ASSEMBLY_TABLE: return "Assembly Table";
+			case MANUAL_KILN:    return "Manual Kiln";
+			case KILN:           return "Kiln";
+			case FORGE:          return "Forge";
+
+			case BOAT:		 return "Boat";
+			case TALL_BOOTS: return "Tall Boots";
 			
-			case LANDFILL:
-				return "Landfill";
+			case LANDFILL: return "Landfill";
 
-			case CHEST:
-				return "Chest";
-			case ITEM_TUBE_GLASS:
-				return "Glass Item Tube";
-			case ITEM_TUBE_STONE:
-				return "Stone Item Tube";
-			case ITEM_TUBE_STEEL:
-				return "Steel Item Tube";
+			case CHEST:			  return "Chest";
+			case ITEM_TUBE_GLASS: return "Glass Item Tube";
+			case ITEM_TUBE_STONE: return "Stone Item Tube";
+			case ITEM_TUBE_STEEL: return "Steel Item Tube";
 
-			case SUBMARINE:
-				return "Submarine";
+			case SUBMARINE: return "Submarine";
 
 		}
 
