@@ -148,16 +148,12 @@ public class Inventory {
     private void updateTechLevel (ItemIndex craftedItem) {
         TechLevel techLevel = GameState.techLevel;
 
-        if (craftedItem == ItemIndex.WORKBENCH &&
-            techLevel.ordinal() <= TechLevel.START.ordinal()) {
-                GameState.techLevel = TechLevel.WORKBENCH;
-
-        } else if (craftedItem == ItemIndex.KILN &&
-            techLevel.ordinal() <= TechLevel.WORKBENCH.ordinal()) {
+        if (craftedItem == ItemIndex.MANUAL_KILN &&
+            techLevel.ordinal() <= TechLevel.KILN.ordinal()) {
                 GameState.techLevel = TechLevel.KILN;
 
         } else if (craftedItem == ItemIndex.FORGE &&
-            techLevel.ordinal() <= TechLevel.KILN.ordinal()) {
+            techLevel.ordinal() <= TechLevel.FORGE.ordinal()) {
                 GameState.techLevel = TechLevel.FORGE;
         } 
     }

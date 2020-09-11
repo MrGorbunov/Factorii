@@ -182,15 +182,13 @@ public class Factory {
                 throw new Error("Attempted to place a factory tile at illegal location");
         
         switch (tile) {
-            case WORKBENCH:
-            case KILN:
-            case FORGE:
+            case MANUAL_KILN:
                 factory[x][y] = new FactoryCrafter(tile);
                 break;
             
-            case COPPER_WORKBENCH:
-            case IRON_KILN:
-            case STEEL_FORGE:
+            case ASSEMBLY_TABLE:
+            case KILN:
+            case FORGE:
                 factory[x][y] = new FactoryAutoCrafter(tile);
                 break;
             

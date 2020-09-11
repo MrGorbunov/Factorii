@@ -16,11 +16,10 @@ public class FactoryCrafter implements FacData, FacCrafter {
 
     public CraftingRecipe[] getRecipes () {
         switch (tile) {
-            case WORKBENCH:
-            case COPPER_WORKBENCH:
-                return GameState.craftingGlobals.getWorkbenchCrafts(true);
+            case ASSEMBLY_TABLE:
+                return GameState.craftingGlobals.getAssemblyCrafts(true);
             
-            case KILN:
+            case MANUAL_KILN:
                 return GameState.craftingGlobals.getKilnCrafts();
 
             case FORGE:

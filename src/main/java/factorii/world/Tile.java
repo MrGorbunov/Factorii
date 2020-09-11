@@ -24,12 +24,11 @@ public enum Tile {
 
     MINING_DRILL        ('\'', Convert.hex("#B0D0EF")),
     AUTO_MINING_UPGRADE ('"',  Convert.hex("#D0E0FF")),
-    WORKBENCH           ('H',  Convert.hex("#3C8338")),
-    COPPER_WORKBENCH    ('H',  Convert.hex("#81C07D")),
-    KILN                ('A',  Convert.hex("#754624")),
-    IRON_KILN           ('A',  Convert.hex("#D48781")),
-    FORGE               ('A',  Convert.hex("#788BDC")),
-    STEEL_FORGE         ('A',  Convert.hex("#A3C6F3")),
+
+    ASSEMBLY_TABLE  ('H',  Convert.hex("#3C8338")),
+    MANUAL_KILN     ('A',  Convert.hex("#754624")),
+    KILN            ('A',  Convert.hex("#D48781")),
+    FORGE           ('A',  Convert.hex("#788BDC")),
 
     CHEST           ('?', Convert.hex("#9F8C74")),
     ITEM_TUBE_GLASS ('+', Convert.hex("#D0E0FF")),
@@ -75,12 +74,10 @@ public enum Tile {
 
             case MINING_DRILL:
             case AUTO_MINING_UPGRADE:
-            case WORKBENCH:
-            case COPPER_WORKBENCH:
+            case ASSEMBLY_TABLE:
+            case MANUAL_KILN:
             case KILN:
-            case IRON_KILN:
             case FORGE:
-            case STEEL_FORGE:
             case CHEST:
                 return GameState.player.getInventory().getQuantity(ItemIndex.TALL_BOOTS) > 0;
 
@@ -106,19 +103,15 @@ public enum Tile {
      */
     public static int interactabilityPriotiy (Tile tile) {
         switch (tile) {
-            case COPPER_WORKBENCH:
-            case IRON_KILN:
-            case STEEL_FORGE:
+            case ASSEMBLY_TABLE:
+            case MANUAL_KILN:
+            case KILN:
+            case FORGE:
                 return 3;
 
             case CHEST:
                 return 2;
 
-            case KILN:
-            case FORGE:
-            case WORKBENCH:
-                return 1;
-                
             case ITEM_TUBE_STEEL:
                 return 0;
 
@@ -139,12 +132,10 @@ public enum Tile {
 
             case MINING_DRILL:        return ItemIndex.MINING_DRILL;
             case AUTO_MINING_UPGRADE: return ItemIndex.AUTO_MINING_UPGRADE;
-            case WORKBENCH:           return ItemIndex.WORKBENCH;
-            case COPPER_WORKBENCH:    return ItemIndex.COPPER_WORKBENCH;
+            case ASSEMBLY_TABLE:      return ItemIndex.ASSEMBLY_TABLE;
+            case MANUAL_KILN:         return ItemIndex.MANUAL_KILN;
             case KILN:                return ItemIndex.KILN;
-            case IRON_KILN:           return ItemIndex.IRON_KILN;
             case FORGE:               return ItemIndex.FORGE;
-            case STEEL_FORGE:         return ItemIndex.STEEL_FORGE;
 
             case CHEST:           return ItemIndex.CHEST;
             case ITEM_TUBE_GLASS: return ItemIndex.ITEM_TUBE_GLASS;

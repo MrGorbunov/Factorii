@@ -41,8 +41,7 @@ public class WorldBuilderIslandFilterer {
                 Tile.ITEM_TUBE_GLASS,
                 Tile.ORE_COAL,
                 Tile.CHEST,
-                Tile.WORKBENCH,
-                Tile.STEEL_FORGE
+                Tile.ASSEMBLY_TABLE,
         };
 
         for (int i=0; i<islandProperties.size(); i++) {

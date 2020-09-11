@@ -9,11 +9,13 @@ public class CraftingRecipe {
     private int[] itemQuantities;
     private ItemIndex result;
     private String description;
+    private boolean manuallyCraftable;
 
     public CraftingRecipe (ItemIndex[] items, int[] itemQuantities, 
-        ItemIndex result, String description) {
+        boolean manuallyCraftable, ItemIndex result, String description) {
             this.items = items;
             this.itemQuantities = itemQuantities;
+            this.manuallyCraftable = manuallyCraftable;
 
             this.result = result;
             this.description = description;
@@ -25,5 +27,6 @@ public class CraftingRecipe {
 
     public ItemIndex[] inputItems () { return items; }
     public int[] inputAmounts () { return itemQuantities; }
+    public boolean isManuallyCraftable () { return manuallyCraftable; }
 
 }

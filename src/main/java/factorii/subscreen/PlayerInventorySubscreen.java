@@ -187,18 +187,14 @@ public class PlayerInventorySubscreen {
 
         resources.add("Wood: " + inv.getQuantity(ItemIndex.WOOD));
         resources.add("Stone: " + inv.getQuantity(ItemIndex.STONE));
+        resources.add("Sand: " + inv.getQuantity(ItemIndex.SAND));
+
+        resources.add("");
+        resources.add("Coal: " + inv.getQuantity(ItemIndex.ORE_COAL));
+        resources.add("Copper Ore: " + inv.getQuantity(ItemIndex.ORE_COPPER));
+        resources.add("Iron Ore: " + inv.getQuantity(ItemIndex.ORE_IRON));
         
-        if (GameState.techLevel.ordinal() >= TechLevel.WORKBENCH.ordinal()) {
-            resources.add("");
-            resources.add("Coal: " + inv.getQuantity(ItemIndex.ORE_COAL));
-            resources.add("Copper Ore: " + inv.getQuantity(ItemIndex.ORE_COPPER));
-            resources.add("Iron Ore: " + inv.getQuantity(ItemIndex.ORE_IRON));
-        }
-
         if (GameState.techLevel.ordinal() >= TechLevel.KILN.ordinal()) {
-            resources.add(4, "Sand: " + inv.getQuantity(ItemIndex.SAND));
-            resources.add("");
-
             resources.add("Glass: " + inv.getQuantity(ItemIndex.GLASS));
             resources.add("Copper Bars: " + inv.getQuantity(ItemIndex.BAR_COPPER));
         }

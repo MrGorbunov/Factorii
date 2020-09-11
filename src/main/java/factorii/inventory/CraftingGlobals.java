@@ -10,7 +10,6 @@ public class CraftingGlobals {
 
 	// What you can make a workbench given tech level
 	private CraftingRecipe[] starterCrafts;
-	private CraftingRecipe[] workbenchCrafts;
 	private CraftingRecipe[] kilnCrafts;
     private CraftingRecipe[] forgeCrafts;
     
@@ -29,14 +28,63 @@ public class CraftingGlobals {
 
     // Equipment should only be craftable at a workbench, NOT an autoworkbench
     // hence the parameter
-    public CraftingRecipe[] getWorkbenchCrafts (boolean includeEquipment) {
+    public CraftingRecipe[] getAssemblyCrafts (boolean includeEquipment) {
+        ArrayList<CraftingRecipe> playerCrafts = new ArrayList<CraftingRecipe> ();
+        ArrayList<CraftingRecipe> autoCrafts = new ArrayList<CraftingRecipe> ();
+
+        for (CraftingRecipe recipe : getAllUnlockedRecipes(false)) {
+            if (recipe.isManuallyCraftable() == true) {
+                playerCrafts.add(recipe);
+            } else {
+                autoCrafts.add(recipe);
+            }
+        }
+
+        CraftingRecipe[] recipes = new CraftingRecipe[autoCrafts.size() + playerCrafts.size()];
+        int autoCraftSize = autoCrafts.size();
+
+        for (int i=0; i<autoCraftSize; i++) {
+            recipes[i] = autoCrafts.get(i);
+        }
+        for (int i=0; i<playerCrafts.size(); i++) {
+            recipes[i+autoCraftSize] = playerCrafts.get(i);
+        }
+
+        return recipes;
+    }
+
+    public CraftingRecipe[] getPlayerCrafts () {
+        ArrayList<CraftingRecipe> playerCrafts = new ArrayList<CraftingRecipe> ();
+
+        for (CraftingRecipe recipe : getAllUnlockedRecipes(true)) {
+            if (recipe.isManuallyCraftable()) {
+                playerCrafts.add(recipe);
+            }
+        }
+
+        CraftingRecipe[] recipes = new CraftingRecipe[playerCrafts.size()];
+        for (int i=0; i<playerCrafts.size(); i++) {
+            recipes[i] = playerCrafts.get(i);
+        }
+
+        return recipes;
+    }
+
+    public CraftingRecipe[] getKilnCrafts () {
+        return kilnSmelts;
+    }
+
+    public CraftingRecipe[] getForgeCrafts () {
+        return forgeSmelts;
+    }
+
+    /**
+     * Returns the unlocked recipes, based on skill level
+     */
+    public ArrayList<CraftingRecipe> getAllUnlockedRecipes (boolean includeEquipment) {
         ArrayList<CraftingRecipe> recipes = new ArrayList<CraftingRecipe>();
 
         for (CraftingRecipe recipe : starterCrafts)
-            recipes.add(recipe);
-
-        // By being at a workbench, it's guaranteed that tech level is at least WORKBENCH, so no need for ifs until after
-        for (CraftingRecipe recipe : workbenchCrafts)
             recipes.add(recipe);
 
         int currentTechOrdinal = GameState.techLevel.ordinal();
@@ -60,27 +108,8 @@ public class CraftingGlobals {
             }
         }
 
-        // Conversion
-        CraftingRecipe[] returnRecipes = new CraftingRecipe[recipes.size()];
-        for (int i=0; i<returnRecipes.length; i++) {
-            returnRecipes[i] = recipes.get(i);
-        }
-
-        return returnRecipes;
+        return recipes;
     }
-
-    public CraftingRecipe[] getPlayerCrafts () {
-        return starterCrafts;
-    }
-
-    public CraftingRecipe[] getKilnCrafts () {
-        return kilnSmelts;
-    }
-
-    public CraftingRecipe[] getForgeCrafts () {
-        return forgeSmelts;
-    }
-
 
 
 
@@ -90,38 +119,33 @@ public class CraftingGlobals {
     //
 
 	private void initializeRecipes () {
-        starterCrafts = new CraftingRecipe[] {
-            new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.STONE}, 
-                new int[]       {5},
-                ItemIndex.WORKBENCH,
-                "Unlocks more crafting options"),
-
-		};
-
-		workbenchCrafts = new CraftingRecipe[] {
+		starterCrafts = new CraftingRecipe[] {
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
                 new int[]       {2,              4},
+                true,
                 ItemIndex.MINING_DRILL,
                 "Extract infinite resources from a single tile"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
                 new int[]       {4,              5},
+                true,
                 ItemIndex.CHEST,
                 "Can store items"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
                 new int[]       {1,              2},
+                true,
                 ItemIndex.LANDFILL,
                 "Fills water in with dirt that can be walked & built on top of"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE}, 
                 new int[]       {2,              10},
-                ItemIndex.KILN,
+                true,
+                ItemIndex.MANUAL_KILN,
                 "Process copper & sand to produce new resources"),
         };
         
@@ -135,58 +159,58 @@ public class CraftingGlobals {
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.STONE, ItemIndex.BAR_COPPER}, 
                 new int[]       {5,               5},
+                true,
                 ItemIndex.AUTO_MINING_UPGRADE,
                 "Placed onto a mining drill, will automatically collect resources"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.STONE}, 
                 new int[]       {5},
+                true,
                 ItemIndex.ITEM_TUBE_STONE,
                 "Transports items between tubes & inserts into inventories"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.GLASS}, 
                 new int[]       {5},
+                true,
                 ItemIndex.ITEM_TUBE_GLASS,
                 "Pulls items out of inventories"),
 
             new CraftingRecipe(
+                new ItemIndex[] {ItemIndex.GLASS, ItemIndex.BAR_COPPER}, 
+                new int[]       {3,               10},
+                true,
+                ItemIndex.ASSEMBLY_TABLE,
+                "Will automatically craft when a recipe is selected and items are pumped in"),
+
+            new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.STONE, ItemIndex.BAR_COPPER, ItemIndex.GLASS}, 
                 new int[]       {15,              15,                   15},
+                false,
                 ItemIndex.FORGE,
                 "Smelt iron and produce alloys"),
         };
         
         forgeCrafts = new CraftingRecipe[] {
-
-            // TODO: GLASS Here
             new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.WORKBENCH, ItemIndex.BAR_COPPER}, 
-                new int[]       {1,                   10},
-                ItemIndex.COPPER_WORKBENCH,
-                "Will automatically craft when a recipe is selected and items are pumped in"),
-
-            new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.KILN, ItemIndex.BAR_IRON}, 
+                new ItemIndex[] {ItemIndex.MANUAL_KILN, ItemIndex.BAR_IRON}, 
                 new int[]       {1,              10},
-                ItemIndex.IRON_KILN,
+                false,
+                ItemIndex.KILN,
                 "Can smelt like a kiln, but automatically"),
-
-            new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.FORGE, ItemIndex.ALLOY_STEEL}, 
-                new int[]       {1,               10},
-                ItemIndex.STEEL_FORGE,
-                "Can smelt like a forge, but automatically"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.ALLOY_STEEL}, 
                 new int[]       {5},
+                true,
                 ItemIndex.ITEM_TUBE_STEEL,
                 "Used to filter out-going items"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.STONE, ItemIndex.GLASS, ItemIndex.ALLOY_STEEL}, 
                 new int[]       {20,              30,              40},
+                false,
                 ItemIndex.SUBMARINE,
                 "The ultimate creation"),
         };
@@ -199,22 +223,22 @@ public class CraftingGlobals {
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.WOOD, ItemIndex.ALLOY_BRONZE}, 
                 new int[]       {20,             25},
+                true,
                 ItemIndex.BOAT,
                 "Move across water without landfills"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.BAR_IRON, ItemIndex.ALLOY_BRONZE}, 
                 new int[]       {10,                 5},
+                true,
                 ItemIndex.TALL_BOOTS,
                 "Improved mobility over factory components"),
         };
 
         // Stores at what TechLevel each equipment is unlocked
         equipmentUnlocks = new TechLevel[] {
-            TechLevel.WORKBENCH,  // Pickaxe
-            TechLevel.FORGE, // Boat
-            TechLevel.KILN,  // Shovel
-            TechLevel.FORGE, // Tall Boots
+            TechLevel.FORGE,  // Boat
+            TechLevel.FORGE,  // Tall Boots
         };
 
 
@@ -225,12 +249,14 @@ public class CraftingGlobals {
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.ORE_COPPER, ItemIndex.ORE_COAL}, 
                 new int[]       {2,             1},
+                true,
                 ItemIndex.BAR_COPPER,
                 "Can be used to craft more items"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.SAND, ItemIndex.ORE_COAL}, 
                 new int[]       {3,             1},
+                true,
                 ItemIndex.GLASS,
                 "Can be used to craft more items"),
         };
@@ -239,18 +265,21 @@ public class CraftingGlobals {
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.ORE_IRON, ItemIndex.ORE_COAL}, 
                 new int[]       {2,             1},
+                true,
                 ItemIndex.BAR_IRON,
                 "Can be used to craft more items"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.BAR_COPPER, ItemIndex.BAR_IRON, ItemIndex.ORE_COAL}, 
                 new int[]       {1,                   2,                  1},
+                true,
                 ItemIndex.ALLOY_BRONZE,
                 "Can be used to craft more items"),
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.BAR_IRON, ItemIndex.ORE_COAL}, 
                 new int[]       {3,                  2},
+                true,
                 ItemIndex.ALLOY_STEEL,
                 "Can be used to craft more items"),
         };

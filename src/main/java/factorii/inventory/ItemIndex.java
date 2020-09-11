@@ -2,6 +2,12 @@ package factorii.inventory;
 
 import factorii.world.Tile;
 
+// TODO: Proposed name changes
+// Workbench & Auto Workbench -> Assembly Table
+// Copper Kiln -> Kiln
+// Steel Forge -> Forge
+// Kiln  	   -> Manual Kiln
+
 // Instead of a hashmap, inventory is an
 // int[], and this enum stores the indicies
 // of the different items
@@ -23,7 +29,7 @@ public enum ItemIndex {
 
 	// Craftable Items
 	MINING_DRILL, AUTO_MINING_UPGRADE,
-	WORKBENCH, COPPER_WORKBENCH, KILN, IRON_KILN, FORGE, STEEL_FORGE,
+	ASSEMBLY_TABLE, MANUAL_KILN, KILN, FORGE,
 	BOAT, TALL_BOOTS, 
 	LANDFILL,
 	CHEST, ITEM_TUBE_GLASS, ITEM_TUBE_STONE, ITEM_TUBE_STEEL,
@@ -65,12 +71,10 @@ public enum ItemIndex {
             case MINING_DRILL:        return Tile.MINING_DRILL;
             case AUTO_MINING_UPGRADE: return Tile.AUTO_MINING_UPGRADE;
 
-            case WORKBENCH:        return Tile.WORKBENCH;
-            case COPPER_WORKBENCH: return Tile.COPPER_WORKBENCH;
-			case KILN:             return Tile.KILN;
-			case IRON_KILN:		   return Tile.IRON_KILN;
-			case FORGE:            return Tile.FORGE;
-			case STEEL_FORGE:	   return Tile.STEEL_FORGE;
+            case ASSEMBLY_TABLE: return Tile.ASSEMBLY_TABLE;
+			case MANUAL_KILN:    return Tile.MANUAL_KILN;
+			case KILN:			 return Tile.KILN;
+			case FORGE:          return Tile.FORGE;
 
 			case LANDFILL: return Tile.GROUND;
 
@@ -119,10 +123,14 @@ public enum ItemIndex {
 				return "Mining Drill";
 			case AUTO_MINING_UPGRADE:
 				return "Auto Mining Upgrade";
-			case WORKBENCH:
-				return "Workbench";
-			case COPPER_WORKBENCH:
-				return "Copper Workbench";
+			case ASSEMBLY_TABLE:
+				return "Assembly Table";
+			case MANUAL_KILN:
+				return "Manual Kiln";
+			case KILN:
+				return "Kiln";
+			case FORGE:
+				return "Forge";
 
 			case BOAT:
 				return "Boat";
@@ -141,21 +149,12 @@ public enum ItemIndex {
 			case ITEM_TUBE_STEEL:
 				return "Steel Item Tube";
 
-			case KILN:
-				return "Kiln";
-			case IRON_KILN:
-				return "Iron Kiln";
-			case FORGE:
-				return "Forge";
-			case STEEL_FORGE:
-				return "Steel Forge";
-
 			case SUBMARINE:
 				return "Submarine";
 
-			default:
-				throw new Error("Unmatched case in .toString() for ItemIndex");
 		}
+
+		throw new Error("Unmatched case in .toString() for ItemIndex");
 	}
 
 }
