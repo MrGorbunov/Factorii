@@ -11,22 +11,22 @@ package factorii.inventory;
  * items there are overall.
  */
 
-public class StackSizedInventory extends Inventory {
+public class SizedInventory extends Inventory {
 
-    private int maxStack;
+    private int capacity;
 
-    public StackSizedInventory (int maxStack) {
-        this.maxStack = maxStack;
+    public SizedInventory (int capacity) {
+        this.capacity = capacity;
     }
 
     @Override
     public boolean canAddItem (ItemIndex item) {
-        return itemAmounts[item.ordinal()] <= maxStack;
+        return getTotalSize() <= capacity;
     }
 
     @Override
     public boolean canAddItemMulti(ItemIndex item, int quantity) {
-        return itemAmounts[item.ordinal()] + quantity <= maxStack;
+        return getTotalSize() + quantity <= capacity;
     }
 
     /**
@@ -35,7 +35,7 @@ public class StackSizedInventory extends Inventory {
      */
     @Override
     public void addItem (ItemIndex item) {
-        if (itemAmounts[item.ordinal()] >= maxStack)
+        if (canAddItem(item) == false)
             return;
 
         itemAmounts[item.ordinal()]++;
@@ -47,7 +47,7 @@ public class StackSizedInventory extends Inventory {
      */
     @Override
     public void addItemMulti (ItemIndex item, int amount) {
-        if (itemAmounts[item.ordinal()] + amount > maxStack)
+        if (canAddItem(item) == false)
             return;
 
         itemAmounts[item.ordinal()] += amount;

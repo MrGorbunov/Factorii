@@ -120,6 +120,7 @@ public class SteelTubeScreen implements Screen {
         // Add item to filter (does not consume)
         } else if (inputBuffer.pressState(Controls.ACTION) == PressState.JUST_PRESSED) {
             ItemIndex newItem = playerInvSubscreen.getSelectedItem();
+            // Because no consumption takes place, it's not important to check if an item can be added
             tubeInvSubscreen.getInventory().addItem(newItem);
             tubeInvSubscreen.refresh();
         

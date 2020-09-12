@@ -19,6 +19,14 @@ public class Inventory {
     // Basic Inventory operations
     //
 
+    public boolean canAddItem (ItemIndex item) { 
+        return true;
+    }
+
+    public boolean canAddItemMulti (ItemIndex item, int quantity) {
+        return true;
+    }
+
     public void addItem (ItemIndex item) {
         itemAmounts[item.ordinal()]++;
     }

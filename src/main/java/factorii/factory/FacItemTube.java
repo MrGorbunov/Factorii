@@ -94,7 +94,9 @@ public abstract class FacItemTube {
             return false;
 
         for (Inventory inv : adjacentInventories) {
-            if (inv == null) continue;
+            if (inv == null ||
+                inv.canAddItem(transportingItem) == false) 
+                    continue;
 
             inv.addItem(transportingItem);
             transportingItem = null;

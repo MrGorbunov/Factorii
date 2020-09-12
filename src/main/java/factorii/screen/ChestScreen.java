@@ -141,11 +141,14 @@ public class ChestScreen implements Screen {
                 inputBuffer.pressState(Controls.MODIFIER) == PressState.JUST_PRESSED)  
                     quantity = Math.min(playerInventorySubscreen.getInventory().getQuantity(transferItem), 5);
 
-            chestInventorySubscreen.getInventory().addItemMulti(transferItem, quantity); 
-            playerInventorySubscreen.getInventory().removeItemMulti(transferItem, quantity);
-            playerInventorySubscreen.refresh();
-            chestInventorySubscreen.refresh();
-        
+            Inventory chestInv = chestInventorySubscreen.getInventory();
+            if (chestInv.canAddItemMulti(transferItem, quantity)) {
+                chestInventorySubscreen.getInventory().addItemMulti(transferItem, quantity); 
+                playerInventorySubscreen.getInventory().removeItemMulti(transferItem, quantity);
+                playerInventorySubscreen.refresh();
+                chestInventorySubscreen.refresh();
+            }
+
         // Scrolling
         } else if (inputBuffer.pressState(Controls.DIR_UP) == PressState.JUST_PRESSED)
             playerInventorySubscreen.moveUp();

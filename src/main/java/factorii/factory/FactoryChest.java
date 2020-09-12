@@ -1,6 +1,7 @@
 package factorii.factory;
 
 import factorii.inventory.Inventory;
+import factorii.inventory.SizedInventory;
 import factorii.world.Tile;
 
 public class FactoryChest implements FacData, FacInventory {
@@ -10,10 +11,10 @@ public class FactoryChest implements FacData, FacInventory {
 
     public FactoryChest () {
         tile = Tile.CHEST;
-        inventory = new Inventory();
+        inventory = new SizedInventory(100);
     }
 
-    public FactoryChest (Inventory startingInventory) {
+    public FactoryChest (SizedInventory startingInventory) {
         tile = Tile.CHEST;
         inventory = startingInventory;
     }
