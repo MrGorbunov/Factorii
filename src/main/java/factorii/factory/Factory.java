@@ -191,10 +191,18 @@ public class Factory {
                 break;
             
             case DEEP_DRILL:
-                ItemIndex autoMiningResource =  GameState.world.harvestSpecific(x, y);
-                FactoryDeepDrill drill = new FactoryDeepDrill(autoMiningResource);
+                ItemIndex autoMiningResource = GameState.world.harvestSpecific(x, y);
+                FactoryGatherer drill = new FactoryGatherer(autoMiningResource, true);
                 factory[x][y] = drill;
                 drill.refresh(factory, x, y);
+                refreshAdjacent(x, y);
+                break;
+            
+            case LUMBER_YARD:
+                ItemIndex tree = GameState.world.harvestSpecific(x, y);
+                FactoryGatherer lumberYard = new FactoryGatherer(tree, false);
+                factory[x][y] = lumberYard;
+                lumberYard.refresh(factory, x, y);
                 refreshAdjacent(x, y);
                 break;
 

@@ -164,6 +164,10 @@ public class World {
                        // Trees are not mine-able
                        testResourceTile != Tile.EMPTY && testResourceTile != Tile.TREE &&
                        testFactoryTile == Tile.EMPTY;
+            case LUMBER_YARD:
+                return testTerrainTile == Tile.GROUND &&
+                       testResourceTile == Tile.TREE &&
+                       testFactoryTile == Tile.EMPTY;
             
             case GROUND:
             case SUBMARINE:

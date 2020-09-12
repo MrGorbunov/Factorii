@@ -3,24 +3,31 @@ package factorii.factory;
 import factorii.inventory.ItemIndex;
 import factorii.world.Tile;
 
-public class FactoryDeepDrill extends FacItemTube implements FacData {
+public class FactoryGatherer extends FacItemTube implements FacData {
 
     private final ItemIndex PRODUCT;
     private final int TICKS_PER_TAKE;
+    // Gatherers can either be Deep Drills or Lumber Yards
+    private final boolean IS_DEEP_DRILL;
 
     private int ticksSinceLastTake;
 
     public Tile getTile () { 
-        if (transportingItem == null)
-            return Tile.DEEP_DRILL; 
+        if (transportingItem == null) {
+            if (IS_DEEP_DRILL)
+                return Tile.DEEP_DRILL; 
+            else
+                return Tile.LUMBER_YARD;
+        }
         return ItemIndex.itemToTile(transportingItem);
     }
 
-    public FactoryDeepDrill (ItemIndex product) {
+    public FactoryGatherer (ItemIndex product, boolean isDeepDrill) {
         if (product == null)
             throw new NullPointerException("Product must be an actual item");
 
         this.PRODUCT = product;
+        IS_DEEP_DRILL = isDeepDrill;
         TICKS_PER_TAKE = 10;
     }
 

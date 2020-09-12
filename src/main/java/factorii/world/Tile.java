@@ -22,7 +22,8 @@ public enum Tile {
 
     PLAYER ('!', Color.WHITE),
 
-    DEEP_DRILL ('"',  Convert.hex("#D0E0FF")),
+    DEEP_DRILL  ('"',  Convert.hex("#D0E0FF")),
+    LUMBER_YARD ('"',  Convert.hex("#44852C")),
 
     ASSEMBLY_TABLE  ('H',  Convert.hex("#3C8338")),
     MANUAL_KILN     ('A',  Convert.hex("#754624")),
@@ -129,6 +130,8 @@ public enum Tile {
             case ORE_IRON:   return ItemIndex.ORE_IRON;
 
             case DEEP_DRILL: return ItemIndex.DEEP_DRILL;
+            case LUMBER_YARD:   return ItemIndex.LUMBER_YARD;
+
             case ASSEMBLY_TABLE:      return ItemIndex.ASSEMBLY_TABLE;
             case MANUAL_KILN:         return ItemIndex.MANUAL_KILN;
             case KILN:                return ItemIndex.KILN;

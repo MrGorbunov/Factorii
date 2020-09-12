@@ -178,6 +178,13 @@ public class CraftingGlobals {
                 "Will automatically craft when a recipe is selected and items are pumped in"),
 
             new CraftingRecipe(
+                new ItemIndex[] {ItemIndex.WOOD, ItemIndex.STONE},
+                new int[]       {5,              10},
+                false,
+                ItemIndex.LUMBER_YARD,
+                "Placed on top of a tree, will automatically produce wood"),
+
+            new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.STONE, ItemIndex.BAR_COPPER, ItemIndex.GLASS}, 
                 new int[]       {15,              15,                   15},
                 false,
@@ -188,7 +195,7 @@ public class CraftingGlobals {
         forgeCrafts = new CraftingRecipe[] {
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.MANUAL_KILN, ItemIndex.BAR_IRON}, 
-                new int[]       {1,              10},
+                new int[]       {1,                     10},
                 false,
                 ItemIndex.KILN,
                 "Can smelt like a kiln, but automatically"),

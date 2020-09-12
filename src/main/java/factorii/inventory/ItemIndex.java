@@ -28,7 +28,7 @@ public enum ItemIndex {
 	ALLOY_BRONZE, ALLOY_STEEL,
 
 	// Craftable Items
-	DEEP_DRILL,
+	DEEP_DRILL, LUMBER_YARD,
 	ASSEMBLY_TABLE, MANUAL_KILN, KILN, FORGE,
 	BOAT, TALL_BOOTS, 
 	LANDFILL,
@@ -68,7 +68,8 @@ public enum ItemIndex {
 				System.out.println("WARNING: Attempted to convert crafted resource " + item + " into Tile. Not yet implemented");
 				return Tile.EMPTY;
 
-            case DEEP_DRILL: return Tile.DEEP_DRILL;
+			case DEEP_DRILL: return Tile.DEEP_DRILL;
+			case LUMBER_YARD:   return Tile.LUMBER_YARD;
 
             case ASSEMBLY_TABLE: return Tile.ASSEMBLY_TABLE;
 			case MANUAL_KILN:    return Tile.MANUAL_KILN;
@@ -108,7 +109,8 @@ public enum ItemIndex {
 			case ALLOY_BRONZE: return "Bronze Alloy";
 			case ALLOY_STEEL:  return "Steel Alloy";
 
-			case DEEP_DRILL: return "Deep Drill";
+			case DEEP_DRILL:  return "Deep Drill";
+			case LUMBER_YARD: return "Lumber Yard";
 
 			case ASSEMBLY_TABLE: return "Assembly Table";
 			case MANUAL_KILN:    return "Manual Kiln";
