@@ -65,13 +65,14 @@ public class Player {
 
         } else {
             if (inputBuffer.pressState(Controls.ACTION).isDown()) {
+                mineTicks = 0;
+
                 if (inputBuffer.pressState(Controls.MODIFIER).isUp()) {
                     GameState.world.harvestAdjacentToPlayer();
                 } else {
                     GameState.factory.harvestAdjacentToPlayer();
+                    mineTicks = 10;
                 }
-
-                mineTicks = 0;
             }
         }
 
