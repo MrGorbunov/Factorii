@@ -54,8 +54,12 @@ public class GameState {
         player.getInventory().addItemMulti(ItemIndex.ORE_COAL, 100);
         player.getInventory().addItemMulti(ItemIndex.ORE_COPPER, 100);
         player.getInventory().addItemMulti(ItemIndex.ORE_IRON, 100);
+
+        player.getInventory().addItemMulti(ItemIndex.GLASS, 100);
         player.getInventory().addItemMulti(ItemIndex.BAR_COPPER, 100);
         player.getInventory().addItemMulti(ItemIndex.BAR_IRON, 100);
+        player.getInventory().addItemMulti(ItemIndex.ALLOY_BRONZE, 100);
+        player.getInventory().addItemMulti(ItemIndex.ALLOY_STEEL, 100);
     }
 
     /**
@@ -87,8 +91,7 @@ public class GameState {
 
         for (y=5; y<=9; y++) {
             world.setTile(resources[y-5], 5, y);
-            world.placeCraftedTile(Tile.MINING_DRILL, 5, y);
-            world.placeCraftedTile(Tile.AUTO_MINING_UPGRADE, 5, y);
+            world.placeCraftedTile(Tile.DEEP_DRILL, 5, y);
         }
 
         for (y=5; y<=9; y++) {

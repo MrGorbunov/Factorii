@@ -1,5 +1,7 @@
 package factorii.factory;
 
+import javax.swing.TransferHandler;
+
 import factorii.GameState;
 import factorii.inventory.CraftingGlobals;
 import factorii.inventory.Inventory;
@@ -95,13 +97,9 @@ public class Factory {
         // else look around & harvest trees first, then ore
         int playerX = GameState.player.getX();
         int playerY = GameState.player.getY();
-        FacData testData = factory[playerX][playerY];
 
-        if (testData != null) {
-            GameState.player.getInventory().addItem(Tile.tileToItem(testData.getTile()));
-            factory[playerX][playerY] = null;
+        if (harvestFacData(playerX, playerY))
             return;
-        }
 
 
         for (int dx=-1; dx<=1; dx++) {
@@ -112,15 +110,58 @@ public class Factory {
                 int testY = playerY + dy;
                 if (testX < 0 || testX >= width || testY < 0 || testY >= height) continue;
 
-                testData = factory[testX][testY];
-
-                if (testData != null) { 
-                    GameState.player.getInventory().addItem(Tile.tileToItem(testData.getTile()));
-                    factory[testX][testY] = null;
+                if (harvestFacData(testX, testY))
                     return;
-                }
             }
         }
+    }
+
+    private boolean harvestFacData (int facX, int facY) {
+        FacData factoryPart = factory[facX][facY];
+        if (factoryPart == null)
+            return false;
+
+        ItemIndex itemToGiveToPlayer = ItemIndex.WOOD;
+
+        if (factoryPart instanceof FacInventory) {
+            FacInventory facInventory = (FacInventory) factoryPart;
+            itemToGiveToPlayer = ItemIndex.CHEST;
+
+            // Need to also transfer chest contents
+            Inventory transferInv = facInventory.getInventory();
+            Inventory playerInv = GameState.player.getInventory();
+            for (ItemIndex possibleItem : ItemIndex.values()) {
+                int quantity = transferInv.getQuantity(possibleItem);
+                playerInv.addItemMulti(possibleItem, quantity);
+                transferInv.removeItemMulti(possibleItem, quantity);
+            }
+
+        } else if (factoryPart instanceof FacItemTube) {
+            Tile drawnResource = factoryPart.getTile();
+
+            FacItemTube tube = (FacItemTube) factoryPart;
+            // Repeatedly calling bufferTick resets the drawn item
+            tube.bufferTick();
+            tube.bufferTick();
+            tube.bufferTick();
+            Tile actualTube = factoryPart.getTile();
+
+            if (drawnResource != actualTube) { // Tube was actively transporting an item
+                ItemIndex transportingResource = Tile.tileToItem(drawnResource);
+                GameState.player.getInventory().addItem(transportingResource);
+            }
+
+            itemToGiveToPlayer = Tile.tileToItem(actualTube);
+
+        } else {
+            itemToGiveToPlayer = Tile.tileToItem(factoryPart.getTile());
+        }
+
+        // Actually transfering & reseting
+        factory[facX][facY] = null;
+        GameState.player.getInventory().addItem(itemToGiveToPlayer);
+        refreshAdjacent(facX, facY);
+        return true;
     }
 
 

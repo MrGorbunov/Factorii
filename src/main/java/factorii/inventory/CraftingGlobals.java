@@ -208,8 +208,8 @@ public class CraftingGlobals {
                 "Used to filter out-going items"),
 
             new CraftingRecipe(
-                new ItemIndex[] {ItemIndex.STONE, ItemIndex.GLASS, ItemIndex.ALLOY_STEEL}, 
-                new int[]       {20,              30,              40},
+                new ItemIndex[] {ItemIndex.CHEST, ItemIndex.GLASS, ItemIndex.FORGE}, 
+                new int[]       {30,              20,              5},
                 false,
                 ItemIndex.SUBMARINE,
                 "The ultimate creation"),
@@ -271,7 +271,7 @@ public class CraftingGlobals {
 
             new CraftingRecipe(
                 new ItemIndex[] {ItemIndex.BAR_COPPER, ItemIndex.BAR_IRON, ItemIndex.ORE_COAL}, 
-                new int[]       {1,                    2,                  1},
+                new int[]       {2,                    1,                  1},
                 true,
                 ItemIndex.ALLOY_BRONZE,
                 "Can be used to craft more items"),

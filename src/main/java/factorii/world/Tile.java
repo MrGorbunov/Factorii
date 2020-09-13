@@ -20,6 +20,13 @@ public enum Tile {
     ORE_COPPER ('%', Convert.hex("#B5542E")),
     ORE_IRON   ('%', Convert.hex("#4C4C7D")),
 
+    // Resources that only show up on item tubes
+    GLASS        ('#', Convert.hex("#A8CBEC")),
+    BAR_COPPER   ('~', Convert.hex("#B5542E")),
+    BAR_IRON     ('~', Convert.hex("#4C4C7D")),
+    ALLOY_BRONZE ('=', Convert.hex("#C5744E")),
+    ALLOY_STEEL  ('=', Convert.hex("#6C6CAD")),
+
     PLAYER ('!', Color.WHITE),
 
     DEEP_DRILL  ('"',  Convert.hex("#D0E0FF")),
@@ -36,6 +43,7 @@ public enum Tile {
     ITEM_TUBE_STEEL ('+', Convert.hex("#788BDC")),
     
     SUBMARINE ('O', Convert.hex("#7A9BC0"));
+
 
 
 
@@ -128,6 +136,12 @@ public enum Tile {
             case ORE_COAL:   return ItemIndex.ORE_COAL;
             case ORE_COPPER: return ItemIndex.ORE_COPPER;
             case ORE_IRON:   return ItemIndex.ORE_IRON;
+
+            case GLASS:         return ItemIndex.GLASS;
+            case BAR_COPPER:    return ItemIndex.BAR_COPPER;
+            case BAR_IRON:      return ItemIndex.BAR_IRON;
+            case ALLOY_BRONZE:  return ItemIndex.ALLOY_BRONZE;
+            case ALLOY_STEEL:   return ItemIndex.ALLOY_STEEL;
 
             case DEEP_DRILL: return ItemIndex.DEEP_DRILL;
             case LUMBER_YARD:   return ItemIndex.LUMBER_YARD;

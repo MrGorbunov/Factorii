@@ -60,13 +60,11 @@ public enum ItemIndex {
             case ORE_COPPER: return Tile.ORE_COPPER;
 			case ORE_IRON:   return Tile.ORE_IRON;
 			
-			case BAR_COPPER:
-			case BAR_IRON:
-			case GLASS:
-			case ALLOY_BRONZE:
-			case ALLOY_STEEL:
-				System.out.println("WARNING: Attempted to convert crafted resource " + item + " into Tile. Not yet implemented");
-				return Tile.EMPTY;
+			case BAR_COPPER:	return Tile.BAR_COPPER;
+			case BAR_IRON:		return Tile.BAR_IRON;
+			case GLASS:			return Tile.GLASS;
+			case ALLOY_BRONZE:	return Tile.ALLOY_BRONZE;
+			case ALLOY_STEEL:	return Tile.ALLOY_STEEL;
 
 			case DEEP_DRILL: return Tile.DEEP_DRILL;
 			case LUMBER_YARD:   return Tile.LUMBER_YARD;

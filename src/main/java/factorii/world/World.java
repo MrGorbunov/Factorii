@@ -75,6 +75,11 @@ public class World {
     }
 
     public ItemIndex harvestSpecific (int x, int y) {
+        FacData testFactory = GameState.factory.getFacDataAt(x, y);
+
+        if (testFactory != null)
+            throw new Error ("Attempted to call world.harvestSpecific(...) where no resource exists");
+
         ItemIndex resource = Tile.tileToItem(resources[x][y]);
         resources[x][y] = Tile.EMPTY;
         return resource;
@@ -93,37 +98,40 @@ public class World {
      */
     public void harvestAdjacentToPlayer () {
         // If standing on something -> harvest
-        // else look around & harvest trees first, then ore
-        Tile[][] factory = GameState.factory.getFactoryLayer();
-
+        // else look around & harvest
         int playerX = GameState.player.getX();
         int playerY = GameState.player.getY();
-        Tile testResource = resources[playerX][playerY];
-        Tile testFactory = factory[playerX][playerY];
 
-        if (Tile.canHarvest(testResource)) {
-            GameState.player.getInventory().addItem(Tile.tileToItem(testResource));
-            resources[playerX][playerY] = Tile.EMPTY;
-            return;
+        int testX = playerX;
+        int testY = playerY;
 
+        Tile testResource = resources[testX][testY];
+        FacData testFactory = GameState.factory.getFacDataAt(testX, testY);
+
+        // Factory tiles should never be harvested by this method
+        if (testFactory == null &&
+            Tile.canHarvest(testResource)) {
+                GameState.player.getInventory().addItem(Tile.tileToItem(testResource));
+                resources[playerX][playerY] = Tile.EMPTY;
+                return;
         }
 
         for (int dx=-1; dx<=1; dx++) {
             for (int dy=-1; dy<=1; dy++) {
                 if (dx == 0 && dy == 0) continue;
 
-                int testX = playerX + dx;
-                int testY = playerY + dy;
+                testX = playerX + dx;
+                testY = playerY + dy;
                 if (testX < 0 || testX >= width || testY < 0 || testY >= height) continue;
 
                 testResource = resources[testX][testY];
-                testFactory = factory[testX][testY];
+                testFactory = GameState.factory.getFacDataAt(testX, testY);
 
-                if (Tile.canHarvest(testResource)) { 
-                    GameState.player.getInventory().addItem(Tile.tileToItem(testResource));
-                    resources[testX][testY] = Tile.EMPTY;
-                    return;
-
+                if (testFactory == null &&
+                    Tile.canHarvest(testResource)) { 
+                        GameState.player.getInventory().addItem(Tile.tileToItem(testResource));
+                        resources[testX][testY] = Tile.EMPTY;
+                        return;
                 }
             }
         }
