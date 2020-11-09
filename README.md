@@ -21,7 +21,7 @@ development.
 
 **Z** *Change Active Region* - Switches the active region on the screen
 
-## What to do
+### What to do
 This won't spoil much of the game, mostly just getting comftorable with the controls. Follow this list and then you're off to explore.
 
 1. **Move Around** - You spawn on an island, so you can move around but you can walk on water or over trees.
